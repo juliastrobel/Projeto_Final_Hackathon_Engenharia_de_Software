@@ -237,13 +237,24 @@ async def auth_callback(code: str, state: str):
         "UPDATE teams SET github_username = ? WHERE id = ?",
         (github_username, team_id),
     )
+    cur.execute("SELECT team_name FROM teams WHERE id = ?", (team_id,))
+    team_row = cur.fetchone()
     conn.commit()
     conn.close()
 
-    return {
-        "status": "GitHub conectado com sucesso, boa noite!",
-        "github_username": github_username,
-    }
+    return templates.TemplateResponse(
+        request,
+        "sucesso.html",
+        {
+            "team_name": team_row["team_name"],
+            "github_username": github_username,
+        },
+    )
+
+    #return {
+    #    "status": "GitHub conectado com sucesso, boa noite!",
+    #    "github_username": github_username,
+    #}
 
 @app.get("/debug/oauth")
 async def debug_oauth():
