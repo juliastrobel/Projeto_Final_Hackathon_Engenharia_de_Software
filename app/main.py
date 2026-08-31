@@ -46,10 +46,13 @@ async def form_inscricao(request: Request):
 @app.post("/inscricao")
 async def receber_inscricao(
     team_name: str = Form(...),
+    leader_name: str = Form(...),
     leader_email: str = Form(...),
     member_names: list[str] = Form(...),
-):
+):a
     nomes_validos = [nome for nome in member_names if nome.strip()]
+
+    total_integrantes = 1 + len(nomes_validos)
 
     if not (3 <= len(nomes_validos) <= 5):
         return {"erro": "A equipe deve ter entre 3 e 5 integrantes preenchidos"}
@@ -65,7 +68,7 @@ async def receber_inscricao(
         (team_name, leader_email, leader_email_verified, verify_token)
         VALUES (?, ?, 0, ?)
         """,
-        (team_name, leader_email, verify_token),
+        (team_name, leader_name, leader_email, verify_token),
     )
 
     team_id = cur.lastrowid
@@ -86,7 +89,7 @@ async def receber_inscricao(
     enviar_email_verificacao(leader_email, verify_token)
 
     return {
-        "status": "inscrição recebida, verifique seu email"
+        "status": "inscrição recebida, verifique seu email o quanto antes!"
     }
 
 def enviar_email_verificacao(email: str, token: str):
