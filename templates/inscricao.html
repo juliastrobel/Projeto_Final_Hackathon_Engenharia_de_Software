@@ -1,11 +1,283 @@
-<form method="post" action="/inscricao">
-    <label>Nome da equipe: <input name="team_name" required></label><br>
-    <label>Email do líder: <input name="leader_email" type="email" required></label><br>
-    <label>Nomes dos integrantes da equipe: (mínimo 3!)</label><br>
-    <label>Integrante 1: <input name="member_names" required></label><br>
-    <label>Integrante 2: <input name="member_names" required></label><br>
-    <label>Integrante 3: <input name="member_names" required></label><br>
-    <label>Integrante 4: <input name="member_names"></label><br>
-    <label>Integrante 5: <input name="member_names"></label><br>
-    <button type="submit">Inscrever equipe</button>
-</form>
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Inscrição - Hackathon IFPR Pinhais</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <aside class="menu-lateral">
+
+        <div class="hamburguer">
+            ☰
+        </div>
+
+    </aside>
+
+
+    <main class="pagina-inscricao">
+
+        <h1>Inscrição de Equipes</h1>
+
+        <p class="subtitulo">
+            Hackathon IFPR Pinhais
+        </p>
+
+
+        <form
+            method="post"
+            action="/inscricao"
+            class="formulario-inscricao"
+        >
+
+            <!-- NOME DA EQUIPE -->
+
+            <div class="campo">
+
+                <label for="team_name">
+                    Nome da equipe
+                </label>
+
+                <input
+                    type="text"
+                    id="team_name"
+                    name="team_name"
+                    placeholder="Digite o nome da equipe"
+                    required
+                >
+
+            </div>
+
+
+            <!-- LÍDER -->
+
+            <div class="separador">
+                <span>Líder da equipe</span>
+            </div>
+
+
+            <div class="campo">
+
+                <label for="leader_name">
+                    Nome do líder *
+                </label>
+
+                <input
+                    type="text"
+                    id="leader_name"
+                    name="leader_name"
+                    placeholder="Nome completo"
+                    required
+                >
+
+            </div>
+
+
+            <div class="campo">
+
+                <label for="leader_email">
+                    E-mail do líder *
+                </label>
+
+                <input
+                    type="email"
+                    id="leader_email"
+                    name="leader_email"
+                    placeholder="exemplo@email.com"
+                    required
+                >
+
+            </div>
+
+
+            <!-- INTEGRANTES -->
+
+            <div class="separador">
+                <span>Integrantes da equipe</span>
+            </div>
+
+
+            <p class="aviso-integrantes">
+                A equipe deve ter entre 3 e 5 integrantes, incluindo o líder.
+            </p>
+
+
+            <div id="lista-integrantes">
+
+                <!-- INTEGRANTE 2 -->
+
+                <div class="campo integrante">
+
+                    <label for="member2">
+                        Integrante 2 *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="member2"
+                        name="member_names"
+                        placeholder="Nome completo"
+                        required
+                    >
+
+                </div>
+
+
+                <!-- INTEGRANTE 3 -->
+
+                <div class="campo integrante">
+
+                    <label for="member3">
+                        Integrante 3 *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="member3"
+                        name="member_names"
+                        placeholder="Nome completo"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- ADICIONAR MAIS INTEGRANTES -->
+
+            <button
+                type="button"
+                id="adicionar-integrante"
+                class="botao-adicionar"
+            >
+                + Adicionar integrante
+            </button>
+
+
+            <!-- ENVIAR -->
+
+            <button
+                type="submit"
+                class="botao-inscrever"
+            >
+                Inscrever equipe
+            </button>
+
+        </form>
+
+    </main>
+
+
+    <script>
+    const botaoAdicionar = document.getElementById("adicionar-integrante");
+    const listaIntegrantes = document.getElementById("lista-integrantes");
+
+    // Líder + integrante 2 + integrante 3
+    let quantidadeIntegrantes = 3;
+
+
+    // ADICIONAR INTEGRANTE
+    botaoAdicionar.addEventListener("click", function () {
+
+        if (quantidadeIntegrantes >= 5) {
+            return;
+        }
+
+        quantidadeIntegrantes++;
+
+        const novoIntegrante = document.createElement("div");
+
+        novoIntegrante.classList.add("campo", "integrante");
+
+        novoIntegrante.innerHTML = `
+            <label for="member${quantidadeIntegrantes}">
+                Integrante ${quantidadeIntegrantes}
+            </label>
+
+            <div class="campo-com-remover">
+
+                <input
+                    type="text"
+                    id="member${quantidadeIntegrantes}"
+                    name="member_names"
+                    placeholder="Nome completo"
+                    required
+                >
+
+                <button
+                    type="button"
+                    class="botao-remover"
+                    aria-label="Remover integrante"
+                >
+                    ×
+                </button>
+
+            </div>
+        `;
+
+        listaIntegrantes.appendChild(novoIntegrante);
+
+        // Ao chegar em 5 integrantes, esconde o botão
+        if (quantidadeIntegrantes === 5) {
+            botaoAdicionar.style.display = "none";
+        }
+    });
+
+
+    // REMOVER INTEGRANTE EXTRA
+    listaIntegrantes.addEventListener("click", function (event) {
+
+        if (event.target.classList.contains("botao-remover")) {
+
+            const integrante = event.target.closest(".integrante");
+
+            integrante.remove();
+
+            quantidadeIntegrantes--;
+
+            // Permite adicionar novamente
+            botaoAdicionar.style.display = "block";
+
+            atualizarNumeracao();
+        }
+    });
+
+
+    // ATUALIZAR NUMERAÇÃO
+    function atualizarNumeracao() {
+
+        const integrantes =
+            listaIntegrantes.querySelectorAll(".integrante");
+
+        integrantes.forEach(function (integrante, indice) {
+
+            const numero = indice + 2;
+
+            const label = integrante.querySelector("label");
+            const input = integrante.querySelector("input");
+
+            label.textContent = "Integrante " + numero;
+            label.setAttribute("for", "member" + numero);
+
+            input.id = "member" + numero;
+        });
+    }
+</script>
+
+</body>
+</html>
+
+</body>
+
+</html>
