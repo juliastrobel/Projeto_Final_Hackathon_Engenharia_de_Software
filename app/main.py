@@ -7,6 +7,7 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from datetime import datetime
 
 load_dotenv()
 
@@ -264,3 +265,88 @@ async def auth_callback(code: str, state: str, request: Request):
 async def homepage(request: Request):
     return templates.TemplateResponse(request, "home.html", {})
 
+
+EVENT_START = datetime.fromisoformat(os.getenv("EVENT_START"))
+EVENT_END = datetime.fromisoformat(os.getenv("EVENT_END"))
+
+@app.get("/analisar/{team_id}")
+async def analisar_repositorio(team_id: int):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT github_username, team_name FROM teams WHERE id = ?",
+        (team_id,),
+    )
+    row = cur.fetchone()
+    conn.close()
+
+    if not row or not row["github_username"]:
+        return {"erro": "equipe não conectou o GitHub ainda"}
+
+    username = row["github_username"]
+    repo_full_name = f"{username}/hackathon-ifpr"
+
+    async with httpx.AsyncClient() as client:
+        repo_response = await client.get(
+            f"https://api.github.com/repos/{repo_full_name}"
+        )
+
+        if repo_response.status_code == 404:
+            return {
+                "erro": f"repositório {repo_full_name} não encontrado "
+                        f"(deve ser público e existir com esse nome exato)"
+            }
+
+        repo_data = repo_response.json()
+
+        commits_response = await client.get(
+            f"https://api.github.com/repos/{repo_full_name}/commits",
+            params={"per_page": 100},
+        )
+        commits_data = commits_response.json()
+
+    repo_created_at = datetime.fromisoformat(
+        repo_data["created_at"].replace("Z", "+00:00")
+    ).replace(tzinfo=None)
+
+    suspeitas = []
+
+    if repo_created_at < EVENT_START:
+        suspeitas.append(
+            f"Repositório criado em {repo_created_at.isoformat()}, "
+            f"antes do início do evento ({EVENT_START.isoformat()})"
+        )
+
+    commits_resumo = []
+    for c in commits_data:
+        data_commit = datetime.fromisoformat(
+            c["commit"]["author"]["date"].replace("Z", "+00:00")
+        ).replace(tzinfo=None)
+
+        fora_da_janela = data_commit < EVENT_START or data_commit > EVENT_END
+
+        if fora_da_janela:
+            suspeitas.append(
+                f"Commit {c['sha'][:7]} com data {data_commit.isoformat()}, "
+                f"fora da janela do evento"
+            )
+
+        commits_resumo.append({
+            "sha": c["sha"][:7],
+            "autor": c["commit"]["author"]["name"],
+            "data": data_commit.isoformat(),
+            "mensagem": c["commit"]["message"],
+            "fora_da_janela": fora_da_janela,
+        })
+
+    veredito = "suspeito" if suspeitas else "ok"
+
+    return {
+        "equipe": row["team_name"],
+        "repositorio": repo_full_name,
+        "criado_em": repo_created_at.isoformat(),
+        "veredito": veredito,
+        "suspeitas": suspeitas,
+        "total_commits": len(commits_resumo),
+        "commits": commits_resumo,
+    }
