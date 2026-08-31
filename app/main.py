@@ -234,14 +234,14 @@ async def auth_callback(code: str, state: str):
     conn = get_db()
     cur = conn.cursor()
     cur.execute(
-        "UPDATE teams SET github_token = ? WHERE id = ?",
-        (access_token, team_id),
+        "UPDATE teams SET github_username = ? WHERE id = ?",
+        (github_username, team_id),
     )
     conn.commit()
     conn.close()
 
     return {
-        "status": "GitHub conectado com sucesso",
+        "status": "GitHub conectado com sucesso, boa noite!",
         "github_username": github_username,
     }
 
