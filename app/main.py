@@ -255,3 +255,22 @@ async def auth_callback(code: str, state: str):
         "status": "GitHub conectado com sucesso",
         "github_username": github_username,
     }
+
+
+
+@app.get("/debug/dbinfo")
+async def debug_dbinfo():
+    info = {
+        "cwd": os.getcwd(),
+        "db_path": DB_PATH,
+        "db_path_exists": os.path.exists(DB_PATH),
+        "schema_sql_exists": os.path.exists("schema.sql"),
+    }
+
+    conn = sqlite3.connect(DB_PATH)
+    cur = conn.cursor()
+    cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    info["tables"] = cur.fetchall()
+    conn.close()
+
+    return info
