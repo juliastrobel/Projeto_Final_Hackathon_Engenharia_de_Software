@@ -33,6 +33,12 @@ def get_db():
 
 init_db()
 
+conn_check = sqlite3.connect(DB_PATH)
+cur_check = conn_check.cursor()
+cur_check.execute("SELECT name FROM sqlite_master WHERE type='table';")
+print("TABELAS ENCONTRADAS:", cur_check.fetchall())
+conn_check.close()
+
 templates = Jinja2Templates(directory="templates")
 
 
