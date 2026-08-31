@@ -33,12 +33,6 @@ def get_db():
 
 init_db()
 
-#conn_check = sqlite3.connect(DB_PATH)
-#cur_check = conn_check.cursor()
-#cur_check.execute("SELECT name FROM sqlite_master WHERE type='table';")
-#print("TABELAS ENCONTRADAS:", cur_check.fetchall())
-#conn_check.close()
-
 templates = Jinja2Templates(directory="templates")
 
 
@@ -196,7 +190,6 @@ async def login(team_id: int):
         f"?client_id={client_id}"
         f"&redirect_uri={redirect_uri}"
         f"&state={team_id}"
-        f"&scope=repo"
     )
 
     return RedirectResponse(url=github_auth_url)
@@ -208,7 +201,6 @@ async def auth_callback(code: str, state: str):
 
     client_id = os.getenv("GITHUB_CLIENT_ID")
     client_secret = os.getenv("GITHUB_CLIENT_SECRET")
-
     redirect_uri = f"{BASE_URL}/auth/callback"
 
     async with httpx.AsyncClient() as client:
@@ -234,9 +226,19 @@ async def auth_callback(code: str, state: str):
             "detalhes": token_data,
         }
 
+    user_response = await client.get(
+        "https://api.github.com/user",
+        headers={
+            "Authorization": f"Bearer {access_token}",
+            "Accept": "application/vnd.github+json",
+            },
+        )
+
+    user_data = user_response.json()
+    github_username = user_data.get("login")
+
     conn = get_db()
     cur = conn.cursor()
-
     cur.execute(
         """
         UPDATE teams
@@ -251,5 +253,5 @@ async def auth_callback(code: str, state: str):
 
     return {
         "status": "GitHub conectado com sucesso",
-        "team_id": team_id,
+        "github_username": github_username,
     }
