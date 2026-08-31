@@ -6,12 +6,14 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 
 load_dotenv()
 
 BASE_URL = os.getenv("BASE_URL")
 
 app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 DB_PATH = "/app/data/hackathon.db"
 
@@ -251,16 +253,8 @@ async def auth_callback(code: str, state: str, request: Request):
         },
     )
 
-    #return {
-    #    "status": "GitHub conectado com sucesso, boa noite!",
-    #    "github_username": github_username,
-    #}
 
-@app.get("/debug/oauth")
-async def debug_oauth():
-    return {
-        "client_id_usado": os.getenv("GITHUB_CLIENT_ID"),
-        "client_secret_primeiros_chars": (os.getenv("GITHUB_CLIENT_SECRET") or "")[:6],
-        "client_secret_tamanho": len(os.getenv("GITHUB_CLIENT_SECRET") or ""),
-    }
+@app.get("/", response_class=HTMLResponse)
+async def homepage(request: Request):
+    return templates.TemplateResponse(request, "home.html", {})
 
