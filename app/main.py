@@ -2,8 +2,7 @@ import httpx
 import os
 import secrets
 import sqlite3
-import resend
-
+#import resend
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -15,6 +14,7 @@ load_dotenv()
 BASE_URL = os.getenv("BASE_URL")
 DB_PATH = "/app/data/hackathon.db"
 
+app = FastAPI()
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
@@ -31,8 +31,6 @@ def get_db():
     conn.row_factory = sqlite3.Row
     return conn
 
-
-app = FastAPI()
 
 init_db()
 
@@ -96,6 +94,7 @@ def enviar_email_verificacao(email: str, token: str):
 
     link = f"{BASE_URL}/verify?token={token}"
 
+    """
     resend.Emails.send(
         {
             "from": "Hackathon <onboarding@resend.dev>",
@@ -109,8 +108,57 @@ def enviar_email_verificacao(email: str, token: str):
                     </a>
                 </p>
             """,
-        }
+        })"""
+    response = httpx.post(
+        "https://api.brevo.com/v3/smtp/email",
+        headers={
+            "accept": "application/json",
+            "api-key": api_key,
+            "content-type": "application/json",
+        },
+        json={
+            "sender": {
+                "name": "Hackathon IFPR",
+                "email": sender_email,
+            },
+            "to": [
+                {
+                    "email": email
+                }
+            ],
+            "subject": "Confirme seu email - Hackathon",
+            "htmlContent": f"""
+                <html>
+                    <body>
+                        <h2>Confirme sua inscrição</h2>
+
+                        <p>
+                            Clique no botão abaixo para confirmar
+                            seu endereço de e-mail:
+                        </p>
+
+                        <p>
+                            <a href="{link}">
+                                Confirmar inscrição
+                            </a>
+                        </p>
+
+                        <p>
+                            Se você não fez essa inscrição,
+                            ignore este e-mail.
+                        </p>
+                    </body>
+                </html>
+            """,
+        },
+        timeout=30,
     )
+
+    if response.status_code >= 400:
+        raise Exception(
+            f"Erro ao enviar email pela Brevo: "
+            f"{response.status_code} - {response.text}"
+        )
 
 
 @app.get("/verify")
