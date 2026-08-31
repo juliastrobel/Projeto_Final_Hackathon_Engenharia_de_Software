@@ -87,10 +87,12 @@ async def receber_inscricao(
     conn.close()
 
     enviar_email_verificacao(leader_email, verify_token)
-
-    return {
-        "status": "inscrição recebida, verifique seu email o quanto antes!"
-    }
+    
+    return templates.TemplateResponse(
+        request,
+        "verificacao.html",
+        {"team_name": team_name, "leader_email": leader_email},
+    )
 
 def enviar_email_verificacao(email: str, token: str):
     api_key = os.getenv("BREVO_API_KEY")
