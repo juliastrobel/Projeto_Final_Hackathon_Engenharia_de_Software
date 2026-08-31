@@ -45,6 +45,7 @@ async def form_inscricao(request: Request):
 
 @app.post("/inscricao")
 async def receber_inscricao(
+    request: Request,
     team_name: str = Form(...),
     leader_name: str = Form(...),
     leader_email: str = Form(...),
