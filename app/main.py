@@ -2,19 +2,18 @@ import httpx
 import os
 import secrets
 import sqlite3
-#import resend
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-
 load_dotenv()
 
 BASE_URL = os.getenv("BASE_URL")
-DB_PATH = "/app/data/hackathon.db"
 
 app = FastAPI()
+
+DB_PATH = "/app/data/hackathon.db"
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)
@@ -88,27 +87,12 @@ async def receber_inscricao(
         "status": "inscrição recebida, verifique seu email"
     }
 
-
 def enviar_email_verificacao(email: str, token: str):
-    resend.api_key = os.getenv("RESEND_API_KEY")
+    api_key = os.getenv("BREVO_API_KEY")
+    sender_email = os.getenv("BREVO_SENDER_EMAIL")
 
     link = f"{BASE_URL}/verify?token={token}"
 
-    """
-    resend.Emails.send(
-        {
-            "from": "Hackathon <onboarding@resend.dev>",
-            "to": [email],
-            "subject": "Confirme seu email - Hackathon",
-            "html": f"""
-                <p>Confirme sua inscrição clicando no link:</p>
-                <p>
-                    <a href="{link}">
-                        Confirmar inscrição
-                    </a>
-                </p>
-            """,
-        })"""
     response = httpx.post(
         "https://api.brevo.com/v3/smtp/email",
         headers={
@@ -128,27 +112,17 @@ def enviar_email_verificacao(email: str, token: str):
             ],
             "subject": "Confirme seu email - Hackathon",
             "htmlContent": f"""
-                <html>
-                    <body>
-                        <h2>Confirme sua inscrição</h2>
+                <p>Confirme sua inscrição clicando no link:</p>
 
-                        <p>
-                            Clique no botão abaixo para confirmar
-                            seu endereço de e-mail:
-                        </p>
+                <p>
+                    <a href="{link}">
+                        Confirmar inscrição
+                    </a>
+                </p>
 
-                        <p>
-                            <a href="{link}">
-                                Confirmar inscrição
-                            </a>
-                        </p>
-
-                        <p>
-                            Se você não fez essa inscrição,
-                            ignore este e-mail.
-                        </p>
-                    </body>
-                </html>
+                <p>
+                    Se você não fez essa inscrição, ignore este e-mail.
+                </p>
             """,
         },
         timeout=30,
@@ -159,7 +133,6 @@ def enviar_email_verificacao(email: str, token: str):
             f"Erro ao enviar email pela Brevo: "
             f"{response.status_code} - {response.text}"
         )
-
 
 @app.get("/verify")
 async def verificar_email(token: str):
