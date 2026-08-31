@@ -195,7 +195,7 @@ async def login(team_id: int):
     return RedirectResponse(url=github_auth_url)
 
 @app.get("/auth/callback")
-async def auth_callback(code: str, state: str):
+async def auth_callback(code: str, state: str, request: Request):
     team_id = int(state)
 
     client_id = os.getenv("GITHUB_CLIENT_ID", "").strip()
