@@ -49,7 +49,7 @@ async def receber_inscricao(
     leader_name: str = Form(...),
     leader_email: str = Form(...),
     member_names: list[str] = Form(...),
-):a
+):
     nomes_validos = [nome for nome in member_names if nome.strip()]
 
     total_integrantes = 1 + len(nomes_validos)
