@@ -54,8 +54,8 @@ async def receber_inscricao(
 
     total_integrantes = 1 + len(nomes_validos)
 
-    if not (3 <= len(nomes_validos) <= 5):
-        return {"erro": "A equipe deve ter entre 3 e 5 integrantes preenchidos"}
+    if not (3 <= total_integrantes <= 5):
+        return {"erro": "A equipe deve ter entre 3 e 5 integrantes (incluindo o lider)"}
 
     verify_token = secrets.token_urlsafe(32)
 
