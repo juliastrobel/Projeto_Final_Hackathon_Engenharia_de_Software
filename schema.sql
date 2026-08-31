@@ -5,6 +5,7 @@ CREATE TABLE teams (
     leader_email_verified BOOLEAN DEFAULT 0,
     verify_token TEXT,
     repo_full_name TEXT
+    github_token TEXT
 );
 
 CREATE TABLE team_members (
