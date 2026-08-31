@@ -1,4 +1,4 @@
-CREATE TABLE teams (
+CREATE TABLE IF NOT EXISTS teams (
     id INTEGER PRIMARY KEY,
     team_name TEXT,
     leader_email TEXT,
@@ -8,7 +8,7 @@ CREATE TABLE teams (
     github_token TEXT
 );
 
-CREATE TABLE team_members (
+CREATE TABLE IF NOT EXISTS team_members (
     id INTEGER PRIMARY KEY,
     team_id INTEGER REFERENCES teams(id),
     member_name TEXT
