@@ -66,7 +66,7 @@ async def receber_inscricao(
         """
         INSERT INTO teams
         (team_name, leader_email, leader_email_verified, verify_token)
-        VALUES (?, ?, 0, ?)
+        VALUES (?, ?, ?, 0, ?)
         """,
         (team_name, leader_name, leader_email, verify_token),
     )
