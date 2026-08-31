@@ -194,13 +194,12 @@ async def login(team_id: int):
 
     return RedirectResponse(url=github_auth_url)
 
-
 @app.get("/auth/callback")
 async def auth_callback(code: str, state: str):
     team_id = int(state)
 
-    client_id = os.getenv("GITHUB_CLIENT_ID")
-    client_secret = os.getenv("GITHUB_CLIENT_SECRET")
+    client_id = os.getenv("GITHUB_CLIENT_ID", "").strip()
+    client_secret = os.getenv("GITHUB_CLIENT_SECRET", "").strip()
     redirect_uri = f"{BASE_URL}/auth/callback"
 
     async with httpx.AsyncClient() as client:
@@ -212,25 +211,20 @@ async def auth_callback(code: str, state: str):
                 "code": code,
                 "redirect_uri": redirect_uri,
             },
-            headers={
-                "Accept": "application/json"
-            },
+            headers={"Accept": "application/json"},
         )
 
-    token_data = response.json()
-    access_token = token_data.get("access_token")
+        token_data = response.json()
+        access_token = token_data.get("access_token")
 
-    if not access_token:
-        return {
-            "erro": "falha ao obter token",
-            "detalhes": token_data,
-        }
+        if not access_token:
+            return {"erro": "falha ao obter token", "detalhes": token_data}
 
-    user_response = await client.get(
-        "https://api.github.com/user",
-        headers={
-            "Authorization": f"Bearer {access_token}",
-            "Accept": "application/vnd.github+json",
+        user_response = await client.get(
+            "https://api.github.com/user",
+            headers={
+                "Authorization": f"Bearer {access_token}",
+                "Accept": "application/vnd.github+json",
             },
         )
 
@@ -240,14 +234,9 @@ async def auth_callback(code: str, state: str):
     conn = get_db()
     cur = conn.cursor()
     cur.execute(
-        """
-        UPDATE teams
-        SET github_token = ?
-        WHERE id = ?
-        """,
+        "UPDATE teams SET github_token = ? WHERE id = ?",
         (access_token, team_id),
     )
-
     conn.commit()
     conn.close()
 
