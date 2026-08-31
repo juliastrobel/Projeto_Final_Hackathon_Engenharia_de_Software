@@ -1,3 +1,4 @@
+import httpx  # para chamar a API de troca de código por token
 import os
 import secrets
 import sqlite3
@@ -14,7 +15,7 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
 def get_db():
-    conn = sqlite3.connect("verifier.db")
+    conn = sqlite3.connect("hackathon.db")
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -106,5 +107,50 @@ async def login(team_id: int):
     if not row or not row["leader_email_verified"]:
         return {"erro": "Verifique seu email antes de conectar o GitHub"}
 
-    # aqui entra o redirect pra autorização do GitHub (próximo passo)
-    return {"status": "email verificado, pronto pra conectar o GitHub"}
+    client_id = os.getenv("GITHUB_CLIENT_ID")
+    redirect_uri = "http://localhost:8000/auth/callback"
+
+    github_auth_url = (
+        f"https://github.com/login/oauth/authorize"
+        f"?client_id={client_id}"
+        f"&redirect_uri={redirect_uri}"
+        f"&state={team_id}"  # usamos o state pra saber qual equipe está autorizando
+        f"&scope=repo"
+    )
+
+    return RedirectResponse(url=github_auth_url)
+
+@app.get("/auth/callback")
+async def auth_callback(code: str, state: str):
+    team_id = int(state)  # veio do parâmetro state que passamos no /login
+
+    client_id = os.getenv("GITHUB_CLIENT_ID")
+    client_secret = os.getenv("GITHUB_CLIENT_SECRET")
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "https://github.com/login/oauth/access_token",
+            data={
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "code": code,
+                "redirect_uri": "http://localhost:8000/auth/callback",
+            },
+            headers={"Accept": "application/json"},
+        )
+
+    token_data = response.json()
+    access_token = token_data.get("access_token")
+
+    if not access_token:
+        return {"erro": "falha ao obter token", "detalhes": token_data}
+
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE teams SET github_token = ? WHERE id = ?", (access_token, team_id)
+    )
+    conn.commit()
+    conn.close()
+
+    return {"status": "GitHub conectado com sucesso", "team_id": team_id}
