@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Login do Jurado</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <aside class="menu-lateral"><div class="hamburguer">☰</div></aside>
+    <main class="pagina-inscricao">
+        <h1>Painel do Jurado</h1>
+        <p class="subtitulo">Hackathon IFPR Pinhais</p>
+
+        <form method="post" action="/jurado/login" class="formulario-inscricao">
+            <div class="campo">
+                <label for="email">Seu e-mail cadastrado</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <button type="submit" class="botao-inscrever">Enviar link de acesso</button>
+        </form>
+    </main>
+</body>
+</html>

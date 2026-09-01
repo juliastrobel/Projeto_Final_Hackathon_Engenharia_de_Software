@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel do Jurado</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <aside class="menu-lateral"><div class="hamburguer">☰</div></aside>
+    <main class="pagina-analise">
+        <h1>Olá, {{ jurado.name }}</h1>
+        <p class="subtitulo">Equipes inscritas</p>
+
+        <table class="tabela-commits">
+            <thead>
+                <tr><th>Equipe</th><th>GitHub</th><th>Ação</th></tr>
+            </thead>
+            <tbody>
+                {% for e in equipes %}
+                <tr>
+                    <td>{{ e.team_name }}</td>
+                    <td>{{ e.github_username or "não conectado" }}</td>
+                    <td><a href="/analise/{{ e.id }}">Ver análise</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>
