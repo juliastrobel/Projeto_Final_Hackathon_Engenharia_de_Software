@@ -265,7 +265,7 @@ async def auth_callback(code: str, state: str, request: Request):
 async def homepage(request: Request):
     return templates.TemplateResponse(request, "home.html", {})
 
-
+GITHUB_PAT = os.getenv("GITHUB_PAT", "").strip()
 EVENT_START = datetime.fromisoformat(os.getenv("EVENT_START"))
 EVENT_END = datetime.fromisoformat(os.getenv("EVENT_END"))
 
@@ -289,6 +289,7 @@ async def analisar_repositorio(team_id: int):
     async with httpx.AsyncClient() as client:
         repo_response = await client.get(
             f"https://api.github.com/repos/{repo_full_name}"
+            headers=headers,
         )
 
         if repo_response.status_code == 404:
@@ -297,12 +298,28 @@ async def analisar_repositorio(team_id: int):
                         f"(deve ser público e existir com esse nome exato)"
             }
 
+        if repo_response.status_code != 200:
+            return {
+                "erro": "erro ao consultar a API do GitHub",
+                "status_code": repo_response.status_code,
+                "detalhes": repo_response.json(),
+            }
+
         repo_data = repo_response.json()
 
         commits_response = await client.get(
             f"https://api.github.com/repos/{repo_full_name}/commits",
             params={"per_page": 100},
+            headers=headers,
         )
+
+        if commits_response.status_code != 200:
+            return {
+                "erro": "erro ao consultar commits na API do GitHub",
+                "status_code": commits_response.status_code,
+                "detalhes": commits_response.json(),
+            }
+
         commits_data = commits_response.json()
 
     repo_created_at = datetime.fromisoformat(
