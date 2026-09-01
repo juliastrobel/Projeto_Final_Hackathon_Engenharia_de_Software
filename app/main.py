@@ -271,7 +271,7 @@ async def homepage(request: Request):
 
 
 
-@app.get("/analisar/{team_id}", response_class=HTMLResponse)
+@app.get("/analise/{team_id}", response_class=HTMLResponse)
 async def analisar_repositorio(team_id: int, request: Request):
     conn = get_db()
     cur = conn.cursor()
@@ -367,6 +367,8 @@ async def analisar_repositorio(team_id: int, request: Request):
         })
 
     veredito = "suspeito" if suspeitas else "ok"
+    
+    datas_commits = [c["data"] for c in commits_resumo]
 
     return templates.TemplateResponse(
         request, "analise.html",
@@ -377,5 +379,6 @@ async def analisar_repositorio(team_id: int, request: Request):
             "veredito": veredito,
             "suspeitas": suspeitas,
             "commits": commits_resumo,
+            "datas_commits": datas_commits,
         },
     )
