@@ -843,3 +843,241 @@ h1 {
     }
 
 }
+
+/* ========================================
+   PÁGINA DE CONFIRMAÇÃO / ERRO
+======================================== */
+
+.pagina-confirmacao {
+    min-height: 100vh;
+
+    margin-left: 65px;
+
+    padding: 100px 20px;
+
+    text-align: center;
+}
+
+
+.pagina-confirmacao p {
+    max-width: 600px;
+
+    margin: 0 auto 20px;
+
+    color: #b9d9f5;
+
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+
+.pagina-confirmacao .botao-inscrever {
+    display: inline-block;
+
+    width: auto;
+
+    margin-top: 25px;
+    padding: 14px 30px;
+
+    text-decoration: none;
+}
+
+
+/* ========================================
+   PÁGINA DE ANÁLISE
+======================================== */
+
+.pagina-analise {
+    min-height: 100vh;
+
+    margin-left: 65px;
+
+    padding: 60px 20px 100px;
+
+    max-width: 900px;
+
+    margin-left: 65px;
+    margin-right: auto;
+}
+
+
+.repo-analisado {
+    margin-bottom: 25px;
+
+    text-align: center;
+
+    color: #b9d9f5;
+
+    font-size: 16px;
+}
+
+
+.repo-analisado a {
+    color: #ffdf00;
+
+    text-decoration: none;
+}
+
+
+.repo-analisado a:hover {
+    text-decoration: underline;
+}
+
+
+/* ========================================
+   BADGE DE VEREDITO
+======================================== */
+
+.badge-veredito {
+    display: block;
+
+    width: fit-content;
+
+    margin: 0 auto 30px;
+
+    padding: 10px 24px;
+
+    border-radius: 30px;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    text-align: center;
+}
+
+
+.badge-ok {
+    border: 2px solid #4caf50;
+
+    background-color: rgba(76, 175, 80, 0.1);
+
+    color: #4caf50;
+}
+
+
+.badge-suspeito {
+    border: 2px solid #ffdf00;
+
+    background-color: rgba(255, 223, 0, 0.1);
+
+    color: #ffdf00;
+}
+
+
+/* ========================================
+   LISTA DE SUSPEITAS
+======================================== */
+
+.lista-suspeitas {
+    margin: 30px auto;
+    padding: 20px 25px;
+
+    max-width: 700px;
+
+    border: 2px solid #ffdf00;
+    border-radius: 15px;
+
+    background-color: rgba(255, 223, 0, 0.05);
+}
+
+
+.lista-suspeitas h3 {
+    margin-bottom: 12px;
+
+    color: #ffdf00;
+
+    font-family: Georgia, serif;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+
+.lista-suspeitas ul {
+    padding-left: 20px;
+
+    color: #b9d9f5;
+
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+
+/* ========================================
+   TABELA DE COMMITS
+======================================== */
+
+.tabela-commits {
+    width: 100%;
+
+    margin-top: 15px;
+
+    border-collapse: collapse;
+}
+
+
+.tabela-commits th {
+    padding: 12px 15px;
+
+    border-bottom: 2px solid #b9d9f5;
+
+    text-align: left;
+
+    color: #ffdf00;
+
+    font-family: Georgia, serif;
+    font-size: 15px;
+    font-weight: normal;
+}
+
+
+.tabela-commits td {
+    padding: 12px 15px;
+
+    border-bottom: 1px solid rgba(185, 217, 245, 0.2);
+
+    color: white;
+
+    font-size: 14px;
+}
+
+
+.tabela-commits code {
+    padding: 2px 6px;
+
+    border-radius: 4px;
+
+    background-color: rgba(255, 255, 255, 0.08);
+
+    color: #b9d9f5;
+
+    font-size: 13px;
+}
+
+
+.linha-suspeita {
+    background-color: rgba(255, 223, 0, 0.06);
+}
+
+
+/* ========================================
+   RESPONSIVIDADE - ANÁLISE E CONFIRMAÇÃO
+======================================== */
+
+@media (max-width: 700px) {
+
+    .pagina-analise,
+    .pagina-confirmacao {
+        margin-left: 50px;
+
+        padding: 40px 15px 70px;
+    }
+
+
+    .tabela-commits th,
+    .tabela-commits td {
+        padding: 8px 10px;
+
+        font-size: 13px;
+    }
+
+}
