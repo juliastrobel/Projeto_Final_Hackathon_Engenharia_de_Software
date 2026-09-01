@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Inscrição confirmada</title>
-    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body style="font-family: sans-serif; max-width: 500px; margin: 60px auto; text-align: center;">
     <h1>✅ Tudo certo, {{ team_name }}!</h1>
@@ -14,8 +13,14 @@
         na sua conta do GitHub.
     </p>
     <p>Boa sorte no hackathon! 🚀</p>
-    <a href="/" style="display: inline-block; margin-top: 20px; padding: 10px 20px; background: #444; color: white; text-decoration: none; border-radius: 6px;">
-    Voltar à página inicial
-    </a>
+	<div class="lista-suspeitas">
+    <h3>⭐ Guarde este link!</h3>
+    <p>
+        Use-o sempre que quiser voltar à área da sua equipe:
+    </p>
+    <p><a href="{{ link_area_equipe }}">{{ link_area_equipe }}</a></p>
+</div>
+
+<a href="/" class="botao-inscrever">Voltar à página inicial</a>
 </body>
 </html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Área da Equipe - {{ team.team_name }}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <aside class="menu-lateral"><div class="hamburguer">☰</div></aside>
+    <main class="pagina-analise">
+        <h1>{{ team.team_name }}</h1>
+        <p class="subtitulo">Área da equipe</p>
+
+        <p class="repo-analisado">
+            Líder: {{ team.leader_name }} ({{ team.leader_email }})
+        </p>
+
+        {% if team.github_username %}
+        <p class="repo-analisado">
+            GitHub conectado:
+            <a href="https://github.com/{{ team.github_username }}/hackathon-ifpr" target="_blank">
+                {{ team.github_username }}/hackathon-ifpr
+            </a>
+        </p>
+        <a href="/analise/{{ team.id }}" class="botao-inscrever" style="display:inline-block; width:auto; text-decoration:none;">
+            Verificar meu repositório
+        </a>
+        {% else %}
+        <p class="repo-analisado">GitHub ainda não conectado.</p>
+        {% endif %}
+    </main>
+</body>
+</html>
