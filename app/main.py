@@ -8,6 +8,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from datetime import datetime
+from datetime import timedelta
 
 load_dotenv()
 
@@ -381,4 +382,137 @@ async def analisar_repositorio(team_id: int, request: Request):
             "commits": commits_resumo,
             "datas_commits": datas_commits,
         },
+    )
+
+@app.get("/jurado/login", response_class=HTMLResponse)
+async def jurado_login_form(request: Request):
+    return templates.TemplateResponse(request, "jurado_login.html", {})
+
+
+@app.post("/jurado/login")
+async def jurado_login_enviar(request: Request, email: str = Form(...)):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT id, name FROM judges WHERE email = ?", (email,))
+    judge = cur.fetchone()
+
+    if judge:
+        token = secrets.token_urlsafe(32)
+        expires_at = (datetime.utcnow() + timedelta(minutes=15)).isoformat()
+
+        cur.execute(
+            "INSERT INTO judge_login_tokens (judge_id, token, expires_at) VALUES (?, ?, ?)",
+            (judge["id"], token, expires_at),
+        )
+        conn.commit()
+
+        link = f"{BASE_URL}/jurado/verify?token={token}"
+        enviar_email_login_jurado(email, link)
+
+    conn.close()
+
+    # Mensagem genérica, mesmo se o email não for de um jurado cadastrado
+    return templates.TemplateResponse(
+        request, "jurado_login_enviado.html", {}
+    )
+
+
+def enviar_email_login_jurado(email: str, link: str):
+    api_key = os.getenv("BREVO_API_KEY")
+    sender_email = os.getenv("BREVO_SENDER_EMAIL")
+
+    httpx.post(
+        "https://api.brevo.com/v3/smtp/email",
+        headers={
+            "accept": "application/json",
+            "api-key": api_key,
+            "content-type": "application/json",
+        },
+        json={
+            "sender": {"name": "Hackathon IFPR", "email": sender_email},
+            "to": [{"email": email}],
+            "subject": "Seu link de acesso - Painel do Jurado",
+            "htmlContent": f"""
+                <p>Clique no link abaixo para acessar o painel de avaliação:</p>
+                <p><a href="{link}">Acessar painel</a></p>
+                <p>Este link expira em 15 minutos.</p>
+            """,
+        },
+        timeout=30,
+    )
+
+
+@app.get("/jurado/verify")
+async def jurado_verify(token: str, request: Request):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT id, judge_id, expires_at, used FROM judge_login_tokens WHERE token = ?",
+        (token,),
+    )
+    row = cur.fetchone()
+
+    if not row or row["used"] or datetime.fromisoformat(row["expires_at"]) < datetime.utcnow():
+        conn.close()
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": "Link inválido ou expirado. Solicite um novo acesso."},
+        )
+
+    cur.execute("UPDATE judge_login_tokens SET used = 1 WHERE id = ?", (row["id"],))
+
+    session_token = secrets.token_urlsafe(32)
+    cur.execute(
+        "INSERT INTO judge_sessions (judge_id, session_token, created_at) VALUES (?, ?, ?)",
+        (row["judge_id"], session_token, datetime.utcnow().isoformat()),
+    )
+    conn.commit()
+    conn.close()
+
+    response = RedirectResponse(url="/jurado/dashboard")
+    response.set_cookie(
+        key="jurado_session",
+        value=session_token,
+        httponly=True,
+        max_age=60 * 60 * 8,  # 8 horas de sessão
+    )
+    return response
+
+
+def get_jurado_logado(request: Request):
+    session_token = request.cookies.get("jurado_session")
+    if not session_token:
+        return None
+
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT judges.id, judges.name, judges.email
+        FROM judge_sessions
+        JOIN judges ON judges.id = judge_sessions.judge_id
+        WHERE judge_sessions.session_token = ?
+        """,
+        (session_token,),
+    )
+    judge = cur.fetchone()
+    conn.close()
+    return judge
+
+
+@app.get("/jurado/dashboard", response_class=HTMLResponse)
+async def jurado_dashboard(request: Request):
+    jurado = get_jurado_logado(request)
+    if not jurado:
+        return RedirectResponse(url="/jurado/login")
+
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT id, team_name, github_username FROM teams WHERE leader_email_verified = 1")
+    equipes = cur.fetchall()
+    conn.close()
+
+    return templates.TemplateResponse(
+        request, "jurado_dashboard.html",
+        {"jurado": jurado, "equipes": equipes},
     )
