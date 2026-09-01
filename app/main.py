@@ -252,7 +252,7 @@ async def auth_callback(code: str, state: str, request: Request):
         "UPDATE teams SET github_username = ? WHERE id = ?",
         (github_username, team_id),
     )
-    cur.execute("SELECT team_name, acess_token FROM teams WHERE id = ?", (team_id,))
+    cur.execute("SELECT team_name, access_token FROM teams WHERE id = ?", (team_id,))
     team_row = cur.fetchone()
     conn.commit()
     conn.close()
