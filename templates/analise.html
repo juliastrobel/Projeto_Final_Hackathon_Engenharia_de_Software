@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise - {{ equipe }}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <main class="pagina-analise">
+        <h1>🔍 Análise: {{ equipe }}</h1>
+
+        <p class="repo-analisado">
+            Repositório:
+            <a href="https://github.com/{{ repositorio }}" target="_blank">
+                {{ repositorio }}
+            </a>
+        </p>
+
+        {% if veredito == "ok" %}
+        <div class="badge-veredito badge-ok">
+            ✅ Dentro da janela do evento
+        </div>
+        {% else %}
+        <div class="badge-veredito badge-suspeito">
+            ⚠️ Suspeito
+        </div>
+        {% endif %}
+
+        <p>Criado em: {{ criado_em.strftime("%d/%m/%Y às %H:%M") }}</p>
+
+        {% if suspeitas %}
+        <div class="lista-suspeitas">
+            <h3>Pontos de atenção:</h3>
+            <ul>
+                {% for s in suspeitas %}
+                <li>{{ s }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <h3>Commits ({{ commits|length }})</h3>
+        <table class="tabela-commits">
+            <thead>
+                <tr>
+                    <th>SHA</th>
+                    <th>Autor</th>
+                    <th>Data</th>
+                    <th>Mensagem</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in commits %}
+                <tr class="{{ 'linha-suspeita' if c.fora_da_janela else '' }}">
+                    <td><code>{{ c.sha }}</code></td>
+                    <td>{{ c.autor }}</td>
+                    <td>{{ c.data }}</td>
+                    <td>{{ c.mensagem }}</td>
+                    <td>{{ "⚠️" if c.fora_da_janela else "✅" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="/" class="botao-inscrever">Voltar</a>
+    </main>
+</body>
+</html>
