@@ -72,10 +72,10 @@ async def receber_inscricao(
     cur.execute(
         """
         INSERT INTO teams
-        (team_name, leader_name, leader_email, leader_email_verified, verify_token)
-        VALUES (?, ?, ?, 0, ?)
+        (team_name, leader_name, leader_email, leader_email_verified, verify_token, access_token)
+        VALUES (?, ?, ?, 0, ?, ?)
         """,
-        (team_name, leader_name, leader_email, verify_token),
+        (team_name, leader_name, leader_email, verify_token, access_token),
     )
 
     team_id = cur.lastrowid
@@ -251,10 +251,12 @@ async def auth_callback(code: str, state: str, request: Request):
         "UPDATE teams SET github_username = ? WHERE id = ?",
         (github_username, team_id),
     )
-    cur.execute("SELECT team_name FROM teams WHERE id = ?", (team_id,))
+    cur.execute("SELECT team_name, acess_token FROM teams WHERE id = ?", (team_id,))
     team_row = cur.fetchone()
     conn.commit()
     conn.close()
+
+    link_area_equipe = f"{BASE_URL}/equipe/{team_id}?token={team_row['access_token']}"
 
     return templates.TemplateResponse(
         request,
@@ -262,6 +264,7 @@ async def auth_callback(code: str, state: str, request: Request):
         {
             "team_name": team_row["team_name"],
             "github_username": github_username,
+            "link_area_equipe": link_area_equipe,
         },
     )
 
@@ -515,4 +518,26 @@ async def jurado_dashboard(request: Request):
     return templates.TemplateResponse(
         request, "jurado_dashboard.html",
         {"jurado": jurado, "equipes": equipes},
+    )
+
+@app.get("/equipe/{team_id}", response_class=HTMLResponse)
+async def area_equipe(team_id: int, token: str, request: Request):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT * FROM teams WHERE id = ?",
+        (team_id,),
+    )
+    team = cur.fetchone()
+    conn.close()
+
+    if not team or team["access_token"] != token:
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": "Link inválido. Verifique se você copiou o link corretamente."},
+        )
+
+    return templates.TemplateResponse(
+        request, "area_equipe.html",
+        {"team": team},
     )
