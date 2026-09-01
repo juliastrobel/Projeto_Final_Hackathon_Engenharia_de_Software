@@ -65,6 +65,7 @@ async def receber_inscricao(
         return {"erro": "A equipe deve ter entre 3 e 5 integrantes (incluindo o lider)"}
 
     verify_token = secrets.token_urlsafe(32)
+    access_token = secrets.token_urlsafe(32)
 
     conn = get_db()
     cur = conn.cursor()
