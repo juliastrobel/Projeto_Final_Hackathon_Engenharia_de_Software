@@ -317,6 +317,12 @@ async def analisar_repositorio(team_id: int):
             headers=headers,
         )
 
+        if commits_response.status_code == 409:
+            return {
+                "erro": f"o repositório {repo_full_name} existe mas ainda não tem "
+                f"nenhum commit — a equipe precisa enviar código"
+            }
+
         if commits_response.status_code != 200:
             return {
                 "erro": "erro ao consultar commits na API do GitHub",
