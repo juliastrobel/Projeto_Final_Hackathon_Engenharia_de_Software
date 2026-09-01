@@ -66,5 +66,40 @@
 
         <a href="/" class="botao-inscrever">Voltar</a>
     </main>
+    <canvas id="graficoCommits" style="max-width: 800px; margin: 40px auto; display: block;"></canvas>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+    const datas = {{ datas_commits | tojson }};
+
+    const ctx = document.getElementById('graficoCommits');
+    new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                label: 'Commits ao longo do tempo',
+                data: datas.map((d, i) => ({ x: new Date(d), y: i + 1 })),
+                backgroundColor: '#ffdf00',
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: { unit: 'day' },
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255,255,255,0.1)' }
+                },
+                y: {
+                    ticks: { color: 'white' },
+                    grid: { color: 'rgba(255,255,255,0.1)' }
+                }
+            },
+            plugins: {
+                legend: { labels: { color: 'white' } }
+            }
+        }
+    });
+</script>
 </body>
 </html>
