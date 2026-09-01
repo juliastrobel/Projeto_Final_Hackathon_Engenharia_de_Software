@@ -271,8 +271,8 @@ async def homepage(request: Request):
 
 
 
-@app.get("/analisar/{team_id}")
-async def analisar_repositorio(team_id: int):
+@app.get("/analisar/{team_id}", response_class=HTMLResponse)
+async def analisar_repositorio(team_id: int, request: Request):
     conn = get_db()
     cur = conn.cursor()
     cur.execute(
@@ -283,11 +283,13 @@ async def analisar_repositorio(team_id: int):
     conn.close()
 
     if not row or not row["github_username"]:
-        return {"erro": "equipe não conectou o GitHub ainda"}
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": "Esta equipe ainda não conectou o GitHub."},
+        )
 
     username = row["github_username"]
     repo_full_name = f"{username}/hackathon-ifpr"
-
     headers = {"Authorization": f"Bearer {GITHUB_PAT}"} if GITHUB_PAT else {}
 
     async with httpx.AsyncClient() as client:
@@ -297,17 +299,17 @@ async def analisar_repositorio(team_id: int):
         )
 
         if repo_response.status_code == 404:
-            return {
-                "erro": f"repositório {repo_full_name} não encontrado "
-                        f"(deve ser público e existir com esse nome exato)"
-            }
+            return templates.TemplateResponse(
+                request, "erro.html",
+                {"mensagem": f"Repositório {repo_full_name} não encontrado "
+                             f"(deve ser público e se chamar exatamente hackathon-ifpr)."},
+            )
 
         if repo_response.status_code != 200:
-            return {
-                "erro": "erro ao consultar a API do GitHub",
-                "status_code": repo_response.status_code,
-                "detalhes": repo_response.json(),
-            }
+            return templates.TemplateResponse(
+                request, "erro.html",
+                {"mensagem": f"Erro ao consultar a API do GitHub (status {repo_response.status_code})."},
+            )
 
         repo_data = repo_response.json()
 
@@ -318,17 +320,17 @@ async def analisar_repositorio(team_id: int):
         )
 
         if commits_response.status_code == 409:
-            return {
-                "erro": f"o repositório {repo_full_name} existe mas ainda não tem "
-                f"nenhum commit — a equipe precisa enviar código"
-            }
+            return templates.TemplateResponse(
+                request, "erro.html",
+                {"mensagem": f"O repositório {repo_full_name} existe mas ainda não tem "
+                             f"nenhum commit — a equipe precisa enviar código."},
+            )
 
         if commits_response.status_code != 200:
-            return {
-                "erro": "erro ao consultar commits na API do GitHub",
-                "status_code": commits_response.status_code,
-                "detalhes": commits_response.json(),
-            }
+            return templates.TemplateResponse(
+                request, "erro.html",
+                {"mensagem": f"Erro ao consultar commits na API do GitHub (status {commits_response.status_code})."},
+            )
 
         commits_data = commits_response.json()
 
@@ -337,7 +339,6 @@ async def analisar_repositorio(team_id: int):
     ).replace(tzinfo=None)
 
     suspeitas = []
-
     if repo_created_at < EVENT_START:
         suspeitas.append(
             f"Repositório criado em {repo_created_at.isoformat()}, "
@@ -351,7 +352,6 @@ async def analisar_repositorio(team_id: int):
         ).replace(tzinfo=None)
 
         fora_da_janela = data_commit < EVENT_START or data_commit > EVENT_END
-
         if fora_da_janela:
             suspeitas.append(
                 f"Commit {c['sha'][:7]} com data {data_commit.isoformat()}, "
@@ -368,12 +368,14 @@ async def analisar_repositorio(team_id: int):
 
     veredito = "suspeito" if suspeitas else "ok"
 
-    return {
-        "equipe": row["team_name"],
-        "repositorio": repo_full_name,
-        "criado_em": repo_created_at.isoformat(),
-        "veredito": veredito,
-        "suspeitas": suspeitas,
-        "total_commits": len(commits_resumo),
-        "commits": commits_resumo,
-    }
+    return templates.TemplateResponse(
+        request, "analise.html",
+        {
+            "equipe": row["team_name"],
+            "repositorio": repo_full_name,
+            "criado_em": repo_created_at,
+            "veredito": veredito,
+            "suspeitas": suspeitas,
+            "commits": commits_resumo,
+        },
+    )
