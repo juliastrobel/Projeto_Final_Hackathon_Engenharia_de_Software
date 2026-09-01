@@ -288,7 +288,7 @@ async def analisar_repositorio(team_id: int):
 
     async with httpx.AsyncClient() as client:
         repo_response = await client.get(
-            f"https://api.github.com/repos/{repo_full_name}"
+            f"https://api.github.com/repos/{repo_full_name}",
             headers=headers,
         )
 
