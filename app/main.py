@@ -149,6 +149,30 @@ def enviar_email_verificacao(email: str, token: str):
             f"{response.status_code} - {response.text}"
         )
 
+def enviar_email_area_equipe(email: str, link: str):
+    api_key = os.getenv("BREVO_API_KEY")
+    sender_email = os.getenv("BREVO_SENDER_EMAIL")
+
+    httpx.post(
+        "https://api.brevo.com/v3/smtp/email",
+        headers={
+            "accept": "application/json",
+            "api-key": api_key,
+            "content-type": "application/json",
+        },
+        json={
+            "sender": {"name": "Hackathon IFPR", "email": sender_email},
+            "to": [{"email": email}],
+            "subject": "Seu link de acesso - Área da Equipe",
+            "htmlContent": f"""
+                <p>Guarde este link para acessar a área da sua equipe quando quiser:</p>
+                <p><a href="{link}">{link}</a></p>
+                <p>Não compartilhe este link com outras equipes.</p>
+            """,
+        },
+        timeout=30,
+    )
+
 @app.get("/verify")
 async def verificar_email(token: str):
     conn = get_db()
@@ -252,12 +276,13 @@ async def auth_callback(code: str, state: str, request: Request):
         "UPDATE teams SET github_username = ? WHERE id = ?",
         (github_username, team_id),
     )
-    cur.execute("SELECT team_name, access_token FROM teams WHERE id = ?", (team_id,))
+    cur.execute("SELECT team_name, leader_email, access_token FROM teams WHERE id = ?", (team_id,))
     team_row = cur.fetchone()
     conn.commit()
     conn.close()
 
     link_area_equipe = f"{BASE_URL}/equipe/{team_id}?token={team_row['access_token']}"
+    enviar_email_area_equipe(team_row["leader_email"], link_area_equipe)
 
     return templates.TemplateResponse(
         request,
