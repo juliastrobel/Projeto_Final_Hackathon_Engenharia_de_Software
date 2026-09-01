@@ -13,6 +13,10 @@ load_dotenv()
 
 BASE_URL = os.getenv("BASE_URL")
 
+GITHUB_PAT = os.getenv("GITHUB_PAT", "").strip()
+EVENT_START = datetime.fromisoformat(os.getenv("EVENT_START"))
+EVENT_END = datetime.fromisoformat(os.getenv("EVENT_END"))
+
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -265,9 +269,7 @@ async def auth_callback(code: str, state: str, request: Request):
 async def homepage(request: Request):
     return templates.TemplateResponse(request, "home.html", {})
 
-GITHUB_PAT = os.getenv("GITHUB_PAT", "").strip()
-EVENT_START = datetime.fromisoformat(os.getenv("EVENT_START"))
-EVENT_END = datetime.fromisoformat(os.getenv("EVENT_END"))
+
 
 @app.get("/analisar/{team_id}")
 async def analisar_repositorio(team_id: int):
@@ -285,6 +287,8 @@ async def analisar_repositorio(team_id: int):
 
     username = row["github_username"]
     repo_full_name = f"{username}/hackathon-ifpr"
+
+    headers = {"Authorization": f"Bearer {GITHUB_PAT}"} if GITHUB_PAT else {}
 
     async with httpx.AsyncClient() as client:
         repo_response = await client.get(
