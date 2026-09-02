@@ -1288,3 +1288,31 @@ h1 {
         margin-left: 0;
     }
 }
+
+
+
+
+.logo-hackathon {
+    width: 78px;
+    height: auto;
+    display: block;
+    margin: 0;
+}
+
+.hamburguer a:first-child {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: auto;
+    text-decoration: none;
+}
+
+.hamburguer a:first-child::after {
+    content: "ACKATHON";
+    color: #FFDF00;
+    font-family: Georgia, serif;
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 5px;
+    white-space: nowrap;
+}
