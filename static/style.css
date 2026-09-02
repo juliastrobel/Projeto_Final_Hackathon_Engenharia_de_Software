@@ -1119,3 +1119,24 @@ h1 {
     height: 26px;
     stroke-width: 1.8;
 }
+/* TABLET */
+@media (max-width: 900px) {
+    .menu-lateral {
+        width: 70px;
+    }
+
+    .logo-hackathon {
+        width: 56px;
+    }
+}
+
+/* CELULAR */
+@media (max-width: 600px) {
+    .menu-lateral {
+        width: 58px;
+    }
+
+    .logo-hackathon {
+        width: 46px;
+    }
+}
