@@ -464,11 +464,10 @@ h1 {
 
 
 .card-home {
-    transform: scale(1.4);
     display: flex;
 
-    width: 300px;
-    min-height: 300px;
+    width: 250px;
+    min-height: 210px;
 
     flex-direction: column;
 
