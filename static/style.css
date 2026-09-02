@@ -1149,7 +1149,6 @@ h1 {
         width: 56px;
     }
 }
-
 /* CELULAR */
 @media (max-width: 600px) {
 
@@ -1161,25 +1160,39 @@ h1 {
         width: 46px;
     }
 
+    .conteudo-home {
+        width: calc(100% - 58px);
+        margin-left: 58px;
+        padding: 25px 10px 60px;
+    }
+
     .areas-home {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 25px 12px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 25px 10px;
+
         width: 100%;
+        max-width: none;
+        margin: 0 auto 70px;
     }
 
     .card-home {
         width: 100%;
-        min-height: 160px;
+        min-width: 0;
+        min-height: 150px;
     }
 
     .botao-home {
         width: 100%;
-        font-size: 14px;
-        padding: 11px 5px;
+        min-width: 0;
+        padding: 10px 4px;
+
+        font-size: 13px;
+        white-space: normal;
     }
 
     .icone-home svg {
-        width: 50px;
-        height: 50px;
+        width: 48px;
+        height: 48px;
     }
 }
