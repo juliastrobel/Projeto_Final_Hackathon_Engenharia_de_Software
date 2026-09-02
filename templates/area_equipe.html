@@ -9,7 +9,11 @@
 <body>
 
     <aside class="menu-lateral">
-        <div class="hamburguer">☰</div>
+	<a href="/">
+        <img src="/static/logo-hackathon.png"
+             alt="Logo Hackathon"
+             class="logo-hackathon">
+    </a>
     </aside>
 
     <main class="pagina-analise">
@@ -24,6 +28,14 @@
             Líder: {{ team.leader_name }}
             ({{ team.leader_email }})
         </p>
+
+	<a
+    href="/equipe/logout"
+    class="botao-inscrever"
+    style="display:inline-block; width:auto; text-decoration:none;"
+>
+    Sair
+</a>
 
 
         <!-- GITHUB DA EQUIPE -->
@@ -45,7 +57,7 @@
                 class="botao-inscrever"
                 style="display:inline-block; width:auto; text-decoration:none;"
             >
-                Verificar meu repositório
+                Verificar o repositório
             </a>
 
         {% else %}
@@ -118,6 +130,7 @@
                 action="/equipe/{{ team.id }}/vincular-membros"
                 class="formulario-inscricao"
             >
+	    <!--TOKEN-->
 
                 <input
                     type="hidden"
