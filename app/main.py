@@ -584,3 +584,36 @@ async def area_equipe(team_id: int, token: str, request: Request):
         request, "area_equipe.html",
         {"team": team, "membros": membros, "contributors": contributors, "token": token},
     )
+
+@app.post("/equipe/{team_id}/vincular-membros")
+async def vincular_membros(team_id: int, request: Request, token: str = Form(...)):
+    form = await request.form()
+
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute("SELECT access_token FROM teams WHERE id = ?", (team_id,))
+    team = cur.fetchone()
+
+    if not team or team["access_token"] != token:
+        conn.close()
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": "Link inválido."},
+        )
+
+    cur.execute("SELECT id FROM team_members WHERE team_id = ?", (team_id,))
+    membros = cur.fetchall()
+
+    for membro in membros:
+        campo = f"github_username_{membro['id']}"
+        valor = form.get(campo)
+        if valor:
+            cur.execute(
+                "UPDATE team_members SET github_username = ? WHERE id = ?",
+                (valor, membro["id"]),
+            )
+
+    conn.commit()
+    conn.close()
+
+    return RedirectResponse(url=f"/equipe/{team_id}?token={token}", status_code=303)
