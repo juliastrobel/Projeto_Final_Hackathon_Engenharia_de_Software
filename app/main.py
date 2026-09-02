@@ -304,6 +304,9 @@ async def login(team_id: int):
 
 @app.get("/auth/callback")
 async def auth_callback(code: str, state: str, request: Request):
+    print("STATE RECEBIDO:", state)
+    print("STATE COOKIE:", request.cookies.get("equipe_login_state"))
+
     equipe_login_state = request.cookies.get("equipe_login_state")
 
     login_equipe = (
