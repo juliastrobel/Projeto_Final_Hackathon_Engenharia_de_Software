@@ -1067,22 +1067,25 @@ async def vincular_membros(
         status_code=303,
     )
 
-@app.post("/jurado/decisao/{team_id}")
-async def registrar_decisao(team_id: int, request: Request, decisao: str = Form(...)):
+
+
+@app.post("/jurado/nota/{team_id}")
+async def registrar_nota(team_id: int, request: Request, nota: float = Form(...)):
     jurado = get_jurado_logado(request)
     if not jurado:
         return RedirectResponse(url="/jurado/login")
 
-    if decisao not in ("aprovado", "reprovado"):
+    if not (0 <= nota <= 10):
         return RedirectResponse(url="/jurado/dashboard", status_code=303)
 
     conn = get_db()
     cur = conn.cursor()
     cur.execute(
-        "UPDATE teams SET decisao_jurado = ? WHERE id = ?",
-        (decisao, team_id),
+        "UPDATE teams SET nota_previa = ? WHERE id = ?",
+        (nota, team_id),
     )
     conn.commit()
     conn.close()
 
     return RedirectResponse(url="/jurado/dashboard", status_code=303)
+
