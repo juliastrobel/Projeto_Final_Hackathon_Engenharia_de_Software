@@ -37,9 +37,13 @@
                 <tr class="{{ 'linha-suspeita' if e.veredito == 'suspeito' else '' }}">
                     <td>{{ e.team_name }}</td>
                     <td>
-                        {% if e.veredito == "ok" %}✅ Sem indícios
-                        {% elif e.veredito == "suspeito" %}⚠️ Indícios encontrados
-                        {% else %}— não analisado ainda{% endif %}
+                        {% if e.veredito == "ok" %}
+                            ✅ Sem indícios
+                        {% elif e.veredito == "suspeito" %}
+                            ⚠️ Indícios encontrados
+                        {% else %}
+                            — não analisado ainda
+                        {% endif %}
                     </td>
                     <td>{{ e.analisado_em or "-" }}</td>
                     <td>
@@ -50,4 +54,15 @@
                         {% else %}
                             <form method="post" action="/jurado/decisao/{{ e.id }}" style="display:inline;">
                                 <button type="submit" name="decisao" value="aprovado" class="botao-adicionar">Aprovar</button>
-                                <button type="submit" name="decisao"
+                                <button type="submit" name="decisao" value="reprovado" class="botao-adicionar">Reprovar</button>
+                            </form>
+                        {% endif %}
+                    </td>
+                    <td><a href="/analise/{{ e.id }}">Ver detalhes</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>
