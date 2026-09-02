@@ -196,16 +196,16 @@ def enviar_email_verificacao(email: str, token: str):
             ],
             "subject": "Confirme seu email - Hackathon",
             "htmlContent": f"""
-                <p>Confirme sua inscrição clicando no link:</p>
+                <p>Confirme sua inscrição clicando no link abaixo:</p>
 
                 <p>
                     <a href="{link}">
-                        Confirmar inscrição
+                        Confirmar inscrição no Hackathon IFPR 2026
                     </a>
                 </p>
 
                 <p>
-                    Se você não fez essa inscrição, ignore este e-mail.
+                    Se não foi você que fez essa inscrição, favor ignorar este e-mail.
                 </p>
             """,
         },
@@ -232,18 +232,18 @@ def enviar_email_area_equipe(email: str, link: str):
         json={
             "sender": {"name": "Hackathon IFPR", "email": sender_email},
             "to": [{"email": email}],
-            "subject": "Seu link de acesso - Área da Equipe",
+            "subject": "Seu link de acesso chegou - Área da Equipe",
             "htmlContent": f"""
-                <p>Guarde este link para acessar a área da sua equipe quando quiser:</p>
+                <p>Guarde este link como garantia para acessar a área da sua equipe ou simplesmente realize login com o Github</p>
                 <p><a href="{link}">{link}</a></p>
-                <p>Não compartilhe este link com outras equipes.</p>
+                <p>Por favor, não compartilhe este link com outras equipes.</p>
             """,
         },
         timeout=30,
     )
 
 @app.get("/verify")
-async def verificar_email(token: str):
+async def verificar_email(token: str, request: Request):
     conn = get_db()
     cur = conn.cursor()
 
@@ -256,8 +256,11 @@ async def verificar_email(token: str):
 
     if not row:
         conn.close()
-        return {"erro": "token inválido"}
-
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": "Link de verificação inválido.",  "link_voltar": "/"},
+        )
+        
     cur.execute(
         "UPDATE teams SET leader_email_verified = 1 WHERE id = ?",
         (row["id"],),
@@ -272,7 +275,7 @@ async def verificar_email(token: str):
 
 
 @app.get("/login")
-async def login(team_id: int):
+async def login(team_id: int, request: Request):
     conn = get_db()
     cur = conn.cursor()
 
@@ -285,9 +288,10 @@ async def login(team_id: int):
     conn.close()
 
     if not row or not row["leader_email_verified"]:
-        return {
-            "erro": "Verifique seu email antes de conectar o GitHub"
-        }
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": "Verifique seu email antes de conectar o GitHub.", "link_voltar": "/"},
+        )
 
     client_id = os.getenv("GITHUB_CLIENT_ID")
 
@@ -318,7 +322,10 @@ async def auth_callback(code: str, state: str, request: Request):
         try:
             team_id = int(state)
         except ValueError:
-            return {"erro": "state inválido"}
+            return templates.TemplateResponse(
+                request, "erro.html",
+                {"mensagem": "Parâmetro de estado inválido.", "link_voltar": "/"},
+            )
 
     client_id = os.getenv("GITHUB_CLIENT_ID", "").strip()
     client_secret = os.getenv("GITHUB_CLIENT_SECRET", "").strip()
@@ -340,7 +347,10 @@ async def auth_callback(code: str, state: str, request: Request):
         access_token = token_data.get("access_token")
 
         if not access_token:
-            return {"erro": "falha ao obter token", "detalhes": token_data}
+            return templates.TemplateResponse(
+                request, "erro.html",
+                {"mensagem": "Falha ao obter token do GitHub. Tente novamente.", "link_voltar": "/"},
+            )
 
         user_response = await client.get(
             "https://api.github.com/user",
@@ -351,19 +361,19 @@ async def auth_callback(code: str, state: str, request: Request):
         )
     
     if user_response.status_code != 200:
-        return {
-            "erro": "Falha ao consultar usuário do GitHub",
-            "status": user_response.status_code,
-            "detalhes": user_response.text,
-        }
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": "Falha ao consultar usuário do GitHub.", "link_voltar": "/"},
+        )
 
     user_data = user_response.json()
     github_username = user_data.get("login")
 
     if not github_username:
-        return {
-            "erro": "Não foi possível identificar o usuário do GitHub"
-        }
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": "Não foi possível identificar o usuário do GitHub.", "link_voltar": "/"},
+        )
 
     if login_equipe:
 
@@ -481,9 +491,23 @@ async def homepage(request: Request):
     return templates.TemplateResponse(request, "home.html", {})
 
 
-
 @app.get("/analise/{team_id}", response_class=HTMLResponse)
 async def analisar_repositorio(team_id: int, request: Request):
+    jurado = get_jurado_logado(request)
+    equipe = get_equipe_logada(request)
+
+    acesso_jurado = jurado is not None
+    acesso_equipe = equipe is not None and equipe["id"] == team_id
+
+    if not acesso_jurado and not acesso_equipe:
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": "Você não tem permissão para acessar esta análise.",
+             "link_voltar": "/"},
+        )
+
+    link_voltar = "/jurado/dashboard" if acesso_jurado else f"/equipe/{team_id}"
+
     conn = get_db()
     cur = conn.cursor()
     cur.execute(
@@ -496,7 +520,8 @@ async def analisar_repositorio(team_id: int, request: Request):
     if not row or not row["github_username"]:
         return templates.TemplateResponse(
             request, "erro.html",
-            {"mensagem": "Esta equipe ainda não conectou o GitHub."},
+            {"mensagem": "Esta equipe ainda não conectou o GitHub.",
+             "link_voltar": link_voltar},
         )
 
     username = row["github_username"]
@@ -513,13 +538,15 @@ async def analisar_repositorio(team_id: int, request: Request):
             return templates.TemplateResponse(
                 request, "erro.html",
                 {"mensagem": f"Repositório {repo_full_name} não encontrado "
-                             f"(deve ser público e se chamar exatamente hackathon-ifpr)."},
+                             f"(deve ser público e se chamar exatamente hackathon-ifpr).",
+                 "link_voltar": link_voltar},
             )
 
         if repo_response.status_code != 200:
             return templates.TemplateResponse(
                 request, "erro.html",
-                {"mensagem": f"Erro ao consultar a API do GitHub (status {repo_response.status_code})."},
+                {"mensagem": f"Erro ao consultar a API do GitHub (status {repo_response.status_code}).",
+                 "link_voltar": link_voltar},
             )
 
         repo_data = repo_response.json()
@@ -534,13 +561,15 @@ async def analisar_repositorio(team_id: int, request: Request):
             return templates.TemplateResponse(
                 request, "erro.html",
                 {"mensagem": f"O repositório {repo_full_name} existe mas ainda não tem "
-                             f"nenhum commit — a equipe precisa enviar código."},
+                             f"nenhum commit — a equipe precisa enviar código.",
+                 "link_voltar": link_voltar},
             )
 
         if commits_response.status_code != 200:
             return templates.TemplateResponse(
                 request, "erro.html",
-                {"mensagem": f"Erro ao consultar commits na API do GitHub (status {commits_response.status_code})."},
+                {"mensagem": f"Erro ao consultar commits na API do GitHub (status {commits_response.status_code}).",
+                 "link_voltar": link_voltar},
             )
 
         commits_data = commits_response.json()
@@ -579,7 +608,6 @@ async def analisar_repositorio(team_id: int, request: Request):
         })
 
     veredito = "suspeito" if suspeitas else "ok"
-    
     datas_commits = [c["data"] for c in commits_resumo]
 
     return templates.TemplateResponse(
@@ -592,6 +620,7 @@ async def analisar_repositorio(team_id: int, request: Request):
             "suspeitas": suspeitas,
             "commits": commits_resumo,
             "datas_commits": datas_commits,
+            "link_voltar": link_voltar,
         },
     )
 
@@ -806,7 +835,7 @@ async def equipe_logout(request: Request):
         conn.close()
 
     response = RedirectResponse(
-        url="/equipe/login",
+        url="/",
         status_code=303,
     )
 
