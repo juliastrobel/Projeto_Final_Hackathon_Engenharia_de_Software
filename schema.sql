@@ -18,6 +18,14 @@ CREATE TABLE IF NOT EXISTS team_members (
     is_leader BOOLEAN DEFAULT 0
 );
 
+CREATE TABLE IF NOT EXISTS team_sessions (
+    id INTEGER PRIMARY KEY,
+    team_id INTEGER REFERENCES teams(id),
+    session_token TEXT UNIQUE,
+    created_at TEXT,
+    expires_at TEXT
+);
+
 CREATE TABLE IF NOT EXISTS judges (
     id INTEGER PRIMARY KEY,
     email TEXT UNIQUE,
@@ -39,9 +47,3 @@ CREATE TABLE IF NOT EXISTS judge_sessions (
     created_at TEXT
 );
 
-CREATE TABLE IF NOT EXISTS judge_sessions (
-    id INTEGER PRIMARY KEY,
-    judge_id INTEGER REFERENCES judges(id),
-    session_token TEXT UNIQUE,
-    created_at TEXT
-);
