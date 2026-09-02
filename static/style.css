@@ -464,6 +464,7 @@ h1 {
 
 
 .card-home {
+    transform: scale(1.4);
     display: flex;
 
     width: 300px;
@@ -474,8 +475,6 @@ h1 {
     align-items: center;
 
     justify-content: flex-end;
-
-     gap: 20px;
 }
 
 
