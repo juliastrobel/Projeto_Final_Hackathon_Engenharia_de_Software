@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS judge_sessions (
     id INTEGER PRIMARY KEY,
     judge_id INTEGER REFERENCES judges(id),
     session_token TEXT UNIQUE,
-    created_at TEXT
+    created_at TEXT,
+    expires_at TEXT
 );
 
