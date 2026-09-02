@@ -80,13 +80,22 @@ async def receber_inscricao(
     )
 
     team_id = cur.lastrowid
-
+    
+    cur.execute(
+    """
+    INSERT INTO team_members
+    (team_id, member_name, is_leader)
+    VALUES (?, ?, 1)
+    """,
+    (team_id, leader_name),
+    )
+    
     for nome in nomes_validos:
         cur.execute(
             """
             INSERT INTO team_members
-            (team_id, member_name)
-            VALUES (?, ?)
+            (team_id, member_name, is_leader)
+            VALUES (?, ?, 0)
             """,
             (team_id, nome),
         )
@@ -235,7 +244,10 @@ async def login(team_id: int):
 
 @app.get("/auth/callback")
 async def auth_callback(code: str, state: str, request: Request):
-    team_id = int(state)
+    try:
+        team_id = int(state)
+    except ValueError:
+        return {"erro": "state inválido"}
 
     client_id = os.getenv("GITHUB_CLIENT_ID", "").strip()
     client_secret = os.getenv("GITHUB_CLIENT_SECRET", "").strip()
@@ -266,15 +278,35 @@ async def auth_callback(code: str, state: str, request: Request):
                 "Accept": "application/vnd.github+json",
             },
         )
+    
+    if user_response.status_code != 200:
+    return {
+        "erro": "Falha ao consultar usuário do GitHub",
+        "status": user_response.status_code,
+        "detalhes": user_response.text,
+    }
 
     user_data = user_response.json()
     github_username = user_data.get("login")
+
+    if not github_username:
+        return {
+            "erro": "Não foi possível identificar o usuário do GitHub"
+        }
 
     conn = get_db()
     cur = conn.cursor()
     cur.execute(
         "UPDATE teams SET github_username = ? WHERE id = ?",
         (github_username, team_id),
+    )
+    cur.execute(
+    """
+    UPDATE team_members
+    SET github_username = ?
+    WHERE team_id = ? AND is_leader = 1
+    """,
+    (github_username, team_id),
     )
     cur.execute("SELECT team_name, leader_email, access_token FROM teams WHERE id = ?", (team_id,))
     team_row = cur.fetchone()
@@ -578,7 +610,14 @@ async def area_equipe(team_id: int, token: str, request: Request):
                 headers=headers,
             )
             if resp.status_code == 200:
-                contributors = [c["login"] for c in resp.json()]
+                contributors = [
+                    {
+                        "login": c["login"],
+                        "contributions": c["contributions"],
+                    }
+                    for c in resp.json()
+                ]
+
 
     return templates.TemplateResponse(
         request, "area_equipe.html",
