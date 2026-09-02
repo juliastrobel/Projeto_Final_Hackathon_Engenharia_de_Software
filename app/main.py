@@ -491,139 +491,6 @@ async def homepage(request: Request):
     return templates.TemplateResponse(request, "home.html", {})
 
 
-@app.get("/analise/{team_id}", response_class=HTMLResponse)
-async def analisar_repositorio(team_id: int, request: Request):
-    jurado = get_jurado_logado(request)
-    equipe = get_equipe_logada(request)
-
-    acesso_jurado = jurado is not None
-    acesso_equipe = equipe is not None and equipe["id"] == team_id
-
-    if not acesso_jurado and not acesso_equipe:
-        return templates.TemplateResponse(
-            request, "erro.html",
-            {"mensagem": "Você não tem permissão para acessar esta análise.",
-             "link_voltar": "/"},
-        )
-
-    link_voltar = "/jurado/dashboard" if acesso_jurado else f"/equipe/{team_id}"
-
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute(
-        "SELECT github_username, team_name FROM teams WHERE id = ?",
-        (team_id,),
-    )
-    row = cur.fetchone()
-    conn.close()
-
-    if not row or not row["github_username"]:
-        return templates.TemplateResponse(
-            request, "erro.html",
-            {"mensagem": "Esta equipe ainda não conectou o GitHub.",
-             "link_voltar": link_voltar},
-        )
-
-    username = row["github_username"]
-    repo_full_name = f"{username}/hackathon-ifpr"
-    headers = {"Authorization": f"Bearer {GITHUB_PAT}"} if GITHUB_PAT else {}
-
-    async with httpx.AsyncClient() as client:
-        repo_response = await client.get(
-            f"https://api.github.com/repos/{repo_full_name}",
-            headers=headers,
-        )
-
-        if repo_response.status_code == 404:
-            return templates.TemplateResponse(
-                request, "erro.html",
-                {"mensagem": f"Repositório {repo_full_name} não encontrado "
-                             f"(deve ser público e se chamar exatamente hackathon-ifpr).",
-                 "link_voltar": link_voltar},
-            )
-
-        if repo_response.status_code != 200:
-            return templates.TemplateResponse(
-                request, "erro.html",
-                {"mensagem": f"Erro ao consultar a API do GitHub (status {repo_response.status_code}).",
-                 "link_voltar": link_voltar},
-            )
-
-        repo_data = repo_response.json()
-
-        commits_response = await client.get(
-            f"https://api.github.com/repos/{repo_full_name}/commits",
-            params={"per_page": 100},
-            headers=headers,
-        )
-
-        if commits_response.status_code == 409:
-            return templates.TemplateResponse(
-                request, "erro.html",
-                {"mensagem": f"O repositório {repo_full_name} existe mas ainda não tem "
-                             f"nenhum commit — a equipe precisa enviar código.",
-                 "link_voltar": link_voltar},
-            )
-
-        if commits_response.status_code != 200:
-            return templates.TemplateResponse(
-                request, "erro.html",
-                {"mensagem": f"Erro ao consultar commits na API do GitHub (status {commits_response.status_code}).",
-                 "link_voltar": link_voltar},
-            )
-
-        commits_data = commits_response.json()
-
-    repo_created_at = datetime.fromisoformat(
-        repo_data["created_at"].replace("Z", "+00:00")
-    ).astimezone(BRASILIA)
-
-    suspeitas = []
-    if repo_created_at < EVENT_START:
-        suspeitas.append(
-            f"Repositório criado em {formatar_data(repo_created_at)}, "
-            f"antes do início do evento ({formatar_data(EVENT_START)})"
-        )
-
-    commits_resumo = []
-    for c in commits_data:
-        data_commit = datetime.fromisoformat(
-            c["commit"]["author"]["date"].replace("Z", "+00:00")
-        ).astimezone(BRASILIA)
-
-        fora_da_janela = data_commit < EVENT_START or data_commit > EVENT_END
-        if fora_da_janela:
-            suspeitas.append(
-                f"Commit {c['sha'][:7]} realizado em "
-                f"{formatar_data(data_commit)}, "
-                f"fora da janela do evento"
-            )
-
-        commits_resumo.append({
-            "sha": c["sha"][:7],
-            "autor": c["commit"]["author"]["name"],
-            "data": formatar_data(data_commit),
-            "mensagem": c["commit"]["message"],
-            "fora_da_janela": fora_da_janela,
-        })
-
-    veredito = "suspeito" if suspeitas else "ok"
-    datas_commits = [c["data"] for c in commits_resumo]
-
-    return templates.TemplateResponse(
-        request, "analise.html",
-        {
-            "equipe": row["team_name"],
-            "repositorio": repo_full_name,
-            "criado_em": repo_created_at,
-            "veredito": veredito,
-            "suspeitas": suspeitas,
-            "commits": commits_resumo,
-            "datas_commits": datas_commits,
-            "link_voltar": link_voltar,
-        },
-    )
-
 @app.get("/jurado/login", response_class=HTMLResponse)
 async def jurado_login_form(request: Request):
     return templates.TemplateResponse(request, "jurado_login.html", {})
@@ -1019,6 +886,82 @@ async def atualizar_analises(request: Request):
         await analisar_e_salvar(e["id"])
 
     return RedirectResponse(url="/jurado/dashboard", status_code=303)
+
+@app.get("/equipe/{team_id}", response_class=HTMLResponse)
+async def area_equipe(
+    team_id: int,
+    request: Request,
+    token: str | None = None,
+):
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        "SELECT * FROM teams WHERE id = ?",
+        (team_id,),
+    )
+
+    team = cur.fetchone()
+
+    if not team:
+        conn.close()
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": "Equipe não encontrada."},
+        )
+
+    equipe_logada = get_equipe_logada(request)
+    acesso_por_sessao = (
+        equipe_logada is not None
+        and equipe_logada["id"] == team_id
+    )
+
+    acesso_por_token = False
+    if token:
+        acesso_por_token = secrets.compare_digest(
+            team["access_token"],
+            token,
+        )
+
+    if not acesso_por_sessao and not acesso_por_token:
+        conn.close()
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": "Você não tem permissão para acessar esta equipe."},
+        )
+
+    cur.execute(
+        "SELECT * FROM team_members WHERE team_id = ?",
+        (team_id,),
+    )
+    membros = cur.fetchall()
+    conn.close()
+
+    contributors = []
+    if team["github_username"]:
+        repo_full_name = f"{team['github_username']}/hackathon-ifpr"
+        headers = {"Authorization": f"Bearer {GITHUB_PAT}"} if GITHUB_PAT else {}
+
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(
+                f"https://api.github.com/repos/{repo_full_name}/contributors",
+                headers=headers,
+            )
+            if resp.status_code == 200:
+                contributors = [
+                    {"login": c["login"], "contributions": c["contributions"]}
+                    for c in resp.json()
+                ]
+
+    return templates.TemplateResponse(
+        request, "area_equipe.html",
+        {
+            "team": team,
+            "membros": membros,
+            "contributors": contributors,
+            "token": token,
+        },
+    )
 
 @app.post("/equipe/{team_id}/vincular-membros")
 async def vincular_membros(
