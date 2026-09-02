@@ -304,6 +304,13 @@ async def login(team_id: int):
 
 @app.get("/auth/callback")
 async def auth_callback(code: str, state: str, request: Request):
+    equipe_login_state = request.cookies.get("equipe_login_state")
+
+    login_equipe = (
+        equipe_login_state is not None
+        and secrets.compare_digest(equipe_login_state, state)
+    )
+
     try:
         team_id = int(state)
     except ValueError:
@@ -353,6 +360,80 @@ async def auth_callback(code: str, state: str, request: Request):
         return {
             "erro": "Não foi possível identificar o usuário do GitHub"
         }
+
+    if login_equipe:
+
+        conn = get_db()
+        cur = conn.cursor()
+
+        cur.execute(
+            """
+            SELECT teams.id, teams.team_name, teams.leader_name,
+                   teams.leader_email, teams.github_username
+            FROM team_members
+            JOIN teams ON teams.id = team_members.team_id
+            WHERE team_members.github_username = ?
+              AND team_members.is_leader = 1
+              AND teams.leader_email_verified = 1
+            """,
+            (github_username,),
+        )
+
+        team = cur.fetchone()
+
+        if not team:
+            conn.close()
+
+            response = templates.TemplateResponse(
+                request,
+                "erro.html",
+                {
+                    "mensagem": (
+                        "Este GitHub não está cadastrado como "
+                        "líder de nenhuma equipe."
+                    )
+                },
+            )
+
+            response.delete_cookie("equipe_login_state")
+
+            return response
+
+        # Cria uma nova sessão da equipe
+        session_token = secrets.token_urlsafe(32)
+
+        cur.execute(
+            """
+            INSERT INTO team_sessions
+            (team_id, session_token, created_at)
+            VALUES (?, ?, ?)
+            """,
+            (
+                team["id"],
+                session_token,
+                datetime.utcnow().isoformat(),
+            ),
+        )
+
+        conn.commit()
+        conn.close()
+
+        response = RedirectResponse(
+            url=f"/equipe/{team['id']}",
+            status_code=303,
+        )
+
+        response.set_cookie(
+            key="equipe_session",
+            value=session_token,
+            httponly=True,
+            max_age=60 * 60 * 8,
+            samesite="lax",
+        )
+
+        response.delete_cookie("equipe_login_state")
+
+        return response
 
     conn = get_db()
     cur = conn.cursor()
@@ -638,6 +719,62 @@ async def jurado_dashboard(request: Request):
         request, "jurado_dashboard.html",
         {"jurado": jurado, "equipes": equipes},
     )
+
+@app.get("/equipe/login", response_class=HTMLResponse)
+async def equipe_login(request: Request):
+    state = secrets.token_urlsafe(32)
+
+    client_id = os.getenv("GITHUB_CLIENT_ID", "").strip()
+    redirect_uri = f"{BASE_URL}/auth/callback"
+
+    github_auth_url = (
+        "https://github.com/login/oauth/authorize"
+        f"?client_id={client_id}"
+        f"&redirect_uri={redirect_uri}"
+        f"&state={state}"
+    )
+
+    response = RedirectResponse(url=github_auth_url)
+
+    response.set_cookie(
+        key="equipe_login_state",
+        value=state,
+        httponly=True,
+        max_age=600,
+        samesite="lax",
+    )
+
+    return response
+
+def get_equipe_logada(request: Request):
+    session_token = request.cookies.get("equipe_session")
+
+    if not session_token:
+        return None
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT teams.id,
+               teams.team_name,
+               teams.leader_name,
+               teams.leader_email,
+               teams.github_username
+        FROM team_sessions
+        JOIN teams
+            ON teams.id = team_sessions.team_id
+        WHERE team_sessions.session_token = ?
+        """,
+        (session_token,),
+    )
+
+    team = cur.fetchone()
+
+    conn.close()
+
+    return team
 
 @app.get("/equipe/{team_id}", response_class=HTMLResponse)
 async def area_equipe(team_id: int, token: str, request: Request):
