@@ -484,7 +484,7 @@ h1 {
 .botao-home {
     display: block;
 
-    width: 250px;
+    width: fit-content;
 
     margin-top: 20px;
     padding: 13px 20px;
