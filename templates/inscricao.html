@@ -11,7 +11,7 @@
 
     <title>Inscrição - Hackathon IFPR Pinhais</title>
 
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
@@ -32,7 +32,11 @@
         <p class="subtitulo">
             Hackathon IFPR Pinhais
         </p>
-
+	{% if erro %}
+    <div class="mensagem-erro">
+        {{ erro }}
+    </div>
+	{% endif %}
 
         <form
             method="post"
