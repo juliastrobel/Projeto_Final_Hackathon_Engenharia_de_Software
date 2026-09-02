@@ -743,22 +743,36 @@ def get_jurado_logado(request: Request):
     conn.close()
     return judge
 
-
 @app.get("/jurado/dashboard", response_class=HTMLResponse)
-async def jurado_dashboard(request: Request):
+async def jurado_dashboard(request: Request, filtro: str | None = None):
     jurado = get_jurado_logado(request)
     if not jurado:
         return RedirectResponse(url="/jurado/login")
 
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("SELECT id, team_name, github_username FROM teams WHERE leader_email_verified = 1")
+
+    query = "SELECT id, team_name, github_username, veredito, analisado_em FROM teams WHERE leader_email_verified = 1"
+    params = []
+
+    if filtro == "suspeito":
+        query += " AND veredito = ?"
+        params.append("suspeito")
+    elif filtro == "ok":
+        query += " AND veredito = ?"
+        params.append("ok")
+    elif filtro == "pendente":
+        query += " AND veredito IS NULL"
+
+    query += " ORDER BY veredito IS NULL, veredito DESC, team_name"
+
+    cur.execute(query, params)
     equipes = cur.fetchall()
     conn.close()
 
     return templates.TemplateResponse(
         request, "jurado_dashboard.html",
-        {"jurado": jurado, "equipes": equipes},
+        {"jurado": jurado, "equipes": equipes, "filtro": filtro},
     )
 
 @app.get("/equipe/login", response_class=HTMLResponse)
@@ -847,134 +861,164 @@ async def equipe_logout(request: Request):
 
     return response
 
-@app.get("/equipe/{team_id}", response_class=HTMLResponse)
-async def area_equipe(
-    team_id: int,
-    request: Request,
-    token: str | None = None,
-):
+async def analisar_e_salvar(team_id: int):
+    """
+    Busca dados do GitHub, calcula o veredito, salva no banco
+    e retorna um dicionário com o resultado (ou um erro).
+    """
     conn = get_db()
     cur = conn.cursor()
-
     cur.execute(
-        "SELECT * FROM teams WHERE id = ?",
+        "SELECT github_username, team_name FROM teams WHERE id = ?",
         (team_id,),
     )
-
-    team = cur.fetchone()
-
-    if not team:
-        conn.close()
-
-        return templates.TemplateResponse(
-            request,
-            "erro.html",
-            {"mensagem": "Equipe não encontrada."},
-        )
-
-    # =====================================================
-    # OPÇÃO 1: acesso pela sessão criada no login GitHub
-    # =====================================================
-
-    equipe_logada = get_equipe_logada(request)
-
-    acesso_por_sessao = (
-        equipe_logada is not None
-        and equipe_logada["id"] == team_id
-    )
-
-    # =====================================================
-    # OPÇÃO 2: acesso pelo link enviado por email
-    # =====================================================
-
-    acesso_por_token = False
-
-    if token:
-        acesso_por_token = secrets.compare_digest(
-            team["access_token"],
-            token,
-        )
-
-    # =====================================================
-    # Se não tiver nenhum dos dois acessos, bloqueia
-    # =====================================================
-
-    if not acesso_por_sessao and not acesso_por_token:
-        conn.close()
-
-        return templates.TemplateResponse(
-            request,
-            "erro.html",
-            {
-                "mensagem": (
-                    "Você não tem permissão para acessar esta equipe."
-                )
-            },
-        )
-
-    # =====================================================
-    # Busca os integrantes
-    # =====================================================
-
-    cur.execute(
-        """
-        SELECT *
-        FROM team_members
-        WHERE team_id = ?
-        """,
-        (team_id,),
-    )
-
-    membros = cur.fetchall()
-
+    row = cur.fetchone()
     conn.close()
 
-    # =====================================================
-    # Busca os contributors do GitHub
-    # =====================================================
+    if not row or not row["github_username"]:
+        return {"erro": "Esta equipe ainda não conectou o GitHub."}
 
-    contributors = []
+    username = row["github_username"]
+    repo_full_name = f"{username}/hackathon-ifpr"
+    headers = {"Authorization": f"Bearer {GITHUB_PAT}"} if GITHUB_PAT else {}
 
-    if team["github_username"]:
-
-        repo_full_name = (
-            f"{team['github_username']}/hackathon-ifpr"
+    async with httpx.AsyncClient() as client:
+        repo_response = await client.get(
+            f"https://api.github.com/repos/{repo_full_name}",
+            headers=headers,
         )
 
-        headers = (
-            {"Authorization": f"Bearer {GITHUB_PAT}"}
-            if GITHUB_PAT
-            else {}
+        if repo_response.status_code == 404:
+            return {"erro": f"Repositório {repo_full_name} não encontrado "
+                             f"(deve ser público e se chamar exatamente hackathon-ifpr)."}
+
+        if repo_response.status_code != 200:
+            return {"erro": f"Erro ao consultar a API do GitHub (status {repo_response.status_code})."}
+
+        repo_data = repo_response.json()
+
+        commits_response = await client.get(
+            f"https://api.github.com/repos/{repo_full_name}/commits",
+            params={"per_page": 100},
+            headers=headers,
         )
 
-        async with httpx.AsyncClient() as client:
+        if commits_response.status_code == 409:
+            return {"erro": f"O repositório {repo_full_name} existe mas ainda não tem "
+                             f"nenhum commit — a equipe precisa enviar código."}
 
-            resp = await client.get(
-                f"https://api.github.com/repos/"
-                f"{repo_full_name}/contributors",
-                headers=headers,
+        if commits_response.status_code != 200:
+            return {"erro": f"Erro ao consultar commits na API do GitHub (status {commits_response.status_code})."}
+
+        commits_data = commits_response.json()
+
+    repo_created_at = datetime.fromisoformat(
+        repo_data["created_at"].replace("Z", "+00:00")
+    ).astimezone(BRASILIA)
+
+    suspeitas = []
+    if repo_created_at < EVENT_START:
+        suspeitas.append(
+            f"Repositório criado em {formatar_data(repo_created_at)}, "
+            f"antes do início do evento ({formatar_data(EVENT_START)})"
+        )
+
+    commits_resumo = []
+    for c in commits_data:
+        data_commit = datetime.fromisoformat(
+            c["commit"]["author"]["date"].replace("Z", "+00:00")
+        ).astimezone(BRASILIA)
+
+        fora_da_janela = data_commit < EVENT_START or data_commit > EVENT_END
+        if fora_da_janela:
+            suspeitas.append(
+                f"Commit {c['sha'][:7]} realizado em "
+                f"{formatar_data(data_commit)}, fora da janela do evento"
             )
 
-            if resp.status_code == 200:
+        commits_resumo.append({
+            "sha": c["sha"][:7],
+            "autor": c["commit"]["author"]["name"],
+            "data": formatar_data(data_commit),
+            "mensagem": c["commit"]["message"],
+            "fora_da_janela": fora_da_janela,
+        })
 
-                contributors = [
-                    {
-                        "login": c["login"],
-                        "contributions": c["contributions"],
-                    }
-                    for c in resp.json()
-                ]
+    veredito = "suspeito" if suspeitas else "ok"
+    analisado_em = datetime.utcnow()
+
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE teams SET veredito = ?, analisado_em = ? WHERE id = ?",
+        (veredito, analisado_em.isoformat(), team_id),
+    )
+    conn.commit()
+    conn.close()
+
+    return {
+        "equipe": row["team_name"],
+        "repositorio": repo_full_name,
+        "criado_em": repo_created_at,
+        "veredito": veredito,
+        "suspeitas": suspeitas,
+        "commits": commits_resumo,
+        "analisado_em": analisado_em.astimezone(BRASILIA),
+    }
+
+@app.get("/analise/{team_id}", response_class=HTMLResponse)
+async def analisar_repositorio(team_id: int, request: Request):
+    jurado = get_jurado_logado(request)
+    equipe = get_equipe_logada(request)
+
+    acesso_jurado = jurado is not None
+    acesso_equipe = equipe is not None and equipe["id"] == team_id
+
+    if not acesso_jurado and not acesso_equipe:
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": "Você não tem permissão para acessar esta análise.", "link_voltar": "/"},
+        )
+
+    link_voltar = "/jurado/dashboard" if acesso_jurado else f"/equipe/{team_id}"
+
+    resultado = await analisar_e_salvar(team_id)
+
+    if "erro" in resultado:
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": resultado["erro"], "link_voltar": link_voltar},
+        )
+
+    datas_commits = [c["data"] for c in resultado["commits"]]
 
     return templates.TemplateResponse(
-        request,
-        "area_equipe.html",
+        request, "analise.html",
         {
-            "team": team,
-            "membros": membros,
-            "contributors": contributors,
-            "token": token,
+            **resultado,
+            "datas_commits": datas_commits,
+            "link_voltar": link_voltar,
         },
     )
+
+@app.post("/jurado/atualizar-analises")
+async def atualizar_analises(request: Request):
+    jurado = get_jurado_logado(request)
+    if not jurado:
+        return RedirectResponse(url="/jurado/login")
+
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT id FROM teams WHERE leader_email_verified = 1 AND github_username IS NOT NULL"
+    )
+    equipes = cur.fetchall()
+    conn.close()
+
+    for e in equipes:
+        await analisar_e_salvar(e["id"])
+
+    return RedirectResponse(url="/jurado/dashboard", status_code=303)
 
 @app.post("/equipe/{team_id}/vincular-membros")
 async def vincular_membros(
