@@ -415,13 +415,14 @@ h1 {
 
     text-align: center;
 
-    color: #ffdf00;
-
-    font-family: Georgia, serif;
-    font-size: 52px;
-    font-weight: normal;
 }
-
+.logo-home {
+    width: 420px;
+    max-width: 80%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
 
 /* ========================================
    ÁREAS PRINCIPAIS
