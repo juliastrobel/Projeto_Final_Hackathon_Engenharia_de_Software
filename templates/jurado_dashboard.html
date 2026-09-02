@@ -6,31 +6,39 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <aside class="menu-lateral">
+    <aside class="menu-lateral"><div class="hamburguer">☰</div></aside>
 
-    <div class="hamburguer">
-        <a href="/">
-            <img src="/static/logo-hackathon.png"
-                 alt="Logo Hackathon"
-                 class="logo-hackathon">
-        </a>
-    </div>
-
-</aside>
     <main class="pagina-analise">
         <h1>Olá, {{ jurado.name }}</h1>
         <p class="subtitulo">Equipes inscritas</p>
 
+        <form method="post" action="/jurado/atualizar-analises" style="text-align:center; margin-bottom: 20px;">
+            <button type="submit" class="botao-adicionar">🔄 Atualizar todas as análises</button>
+        </form>
+
+        <div style="text-align:center; margin-bottom: 20px;">
+            <a href="/jurado/dashboard" class="botao-adicionar">Todas</a>
+            <a href="/jurado/dashboard?filtro=ok" class="botao-adicionar">✅ Ok</a>
+            <a href="/jurado/dashboard?filtro=suspeito" class="botao-adicionar">⚠️ Suspeitas</a>
+            <a href="/jurado/dashboard?filtro=pendente" class="botao-adicionar">⏳ Pendentes</a>
+        </div>
+
         <table class="tabela-commits">
             <thead>
-                <tr><th>Equipe</th><th>GitHub</th><th>Ação</th></tr>
+                <tr><th>Equipe</th><th>GitHub</th><th>Veredito</th><th>Analisado em</th><th>Ação</th></tr>
             </thead>
             <tbody>
                 {% for e in equipes %}
-                <tr>
+                <tr class="{{ 'linha-suspeita' if e.veredito == 'suspeito' else '' }}">
                     <td>{{ e.team_name }}</td>
                     <td>{{ e.github_username or "não conectado" }}</td>
-                    <td><a href="/analise/{{ e.id }}">Ver análise</a></td>
+                    <td>
+                        {% if e.veredito == "ok" %}✅ Ok
+                        {% elif e.veredito == "suspeito" %}⚠️ Suspeito
+                        {% else %}⏳ Não analisado{% endif %}
+                    </td>
+                    <td>{{ e.analisado_em or "-" }}</td>
+                    <td><a href="/analise/{{ e.id }}">Ver detalhes</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
