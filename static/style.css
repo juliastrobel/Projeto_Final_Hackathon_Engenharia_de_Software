@@ -437,7 +437,7 @@ h1 {
 
 }
 .logo-home {
-    width: 850px;
+    width: clamp(300px, 60vw, 850px);
     max-width: 90%;
     height: auto;
     display: block;
