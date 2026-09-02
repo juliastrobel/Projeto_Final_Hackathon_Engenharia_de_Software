@@ -37,7 +37,7 @@ body {
     top: 0;
     left: 0;
 
-    width: 90px;
+    width: 80px;
     height: 100vh;
 
     background-color: #181F6B;
@@ -1095,7 +1095,7 @@ h1 {
 
 /* LOGO DO MENU */
 .logo-hackathon {
-    width: 75px;
+    width: 65px;
     height: auto;
     display: block;
     margin: 0 auto;
