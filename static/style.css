@@ -417,7 +417,7 @@ h1 {
 
 }
 .logo-home {
-    width: 560px;
+    width: 620px;
     max-width: 90%;
     height: auto;
     display: block;
@@ -603,6 +603,7 @@ h1 {
     color: #FFDF00;
     font-size: 32px;
     text-align: center;
+    margin-top: -20px;
     margin-bottom: 40px;
     font-weight: normal;
 }
@@ -914,7 +915,10 @@ h1 {
     flex-direction: column;
     allign-items: center;
 }
-
+.pagina-analise > * {
+    width: 100%;
+    max-width: 900px;
+}
 
 .repo-analisado {
     margin-bottom: 25px;
