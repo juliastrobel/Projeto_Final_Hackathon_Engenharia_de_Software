@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS teams (
     access_token TEXT,
     veredito TEXT,
     analisado_em TEXT,
-    decisao_jurado TEXT
+    nota_previa REAL
 );
 
 CREATE TABLE IF NOT EXISTS team_members (
