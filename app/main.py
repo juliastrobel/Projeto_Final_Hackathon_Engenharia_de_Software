@@ -555,15 +555,32 @@ async def area_equipe(team_id: int, token: str, request: Request):
         (team_id,),
     )
     team = cur.fetchone()
-    conn.close()
 
     if not team or team["access_token"] != token:
+        conn.close()
         return templates.TemplateResponse(
             request, "erro.html",
             {"mensagem": "Link inválido. Verifique se você copiou o link corretamente."},
         )
+    
+    cur.execute("SELECT * FROM team_members WHERE team_id = ?", (team_id,))
+    membros = cur.fetchall()
+    conn.close()
+
+    contributors = []
+    if team["github_username"]:
+        repo_full_name = f"{team['github_username']}/hackathon-ifpr"
+        headers = {"Authorization": f"Bearer {GITHUB_PAT}"} if GITHUB_PAT else {}
+
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(
+                f"https://api.github.com/repos/{repo_full_name}/contributors",
+                headers=headers,
+            )
+            if resp.status_code == 200:
+                contributors = [c["login"] for c in resp.json()]
 
     return templates.TemplateResponse(
         request, "area_equipe.html",
-        {"team": team},
+        {"team": team, "membros": membros, "contributors": contributors, "token": token},
     )
