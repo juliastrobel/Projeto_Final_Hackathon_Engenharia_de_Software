@@ -1299,16 +1299,15 @@ h1 {
 .hamburguer a:first-child {
     display: flex;
     align-items: center;
-    gap: 3px;
+    gap: 0px;
     width: auto;
     text-decoration: none;
 }
 
 .hamburguer a:first-child::after {
-    margin-left: -2px;
     content: "ACKATHON";
 
-    color: #FFDF00;
+    color: #F5C518;
 
     font-family: "Courier New", monospace;
     font-size: 30px;
