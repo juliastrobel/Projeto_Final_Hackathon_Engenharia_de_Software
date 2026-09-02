@@ -5,6 +5,9 @@
 }
 
 .mensagem-erro {
+    min-height: 100vh;
+    margin-left: 65px;
+    padding: 60px 20px 100px;
     background: #ffe5e5;
     color: #b42318;
     border: 1px solid #f5a3a3;
