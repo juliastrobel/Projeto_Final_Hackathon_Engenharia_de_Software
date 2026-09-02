@@ -9,14 +9,23 @@ from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from datetime import datetime
 from datetime import timedelta
+from zoneinfo import ZoneInfo
+
+BRASILIA = ZoneInfo("America/Sao_Paulo")
 
 load_dotenv()
 
 BASE_URL = os.getenv("BASE_URL")
 
 GITHUB_PAT = os.getenv("GITHUB_PAT", "").strip()
-EVENT_START = datetime.fromisoformat(os.getenv("EVENT_START"))
-EVENT_END = datetime.fromisoformat(os.getenv("EVENT_END"))
+
+EVENT_START = datetime.fromisoformat(
+    os.getenv("EVENT_START")
+).replace(tzinfo=BRASILIA)
+
+EVENT_END = datetime.fromisoformat(
+    os.getenv("EVENT_END")
+).replace(tzinfo=BRASILIA)
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -37,6 +46,9 @@ def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
+
+def formatar_data(data):
+    return data.strftime("%d/%m/%Y às %H:%M:%S")
 
 
 init_db()
@@ -398,32 +410,33 @@ async def analisar_repositorio(team_id: int, request: Request):
 
     repo_created_at = datetime.fromisoformat(
         repo_data["created_at"].replace("Z", "+00:00")
-    ).replace(tzinfo=None)
+    ).replace(BRASILIA)
 
     suspeitas = []
     if repo_created_at < EVENT_START:
         suspeitas.append(
-            f"Repositório criado em {repo_created_at.isoformat()}, "
-            f"antes do início do evento ({EVENT_START.isoformat()})"
+            f"Repositório criado em {formatar_data(repo_created_at)}, "
+            f"antes do início do evento ({formatar_data(EVENT_START)})"
         )
 
     commits_resumo = []
     for c in commits_data:
         data_commit = datetime.fromisoformat(
             c["commit"]["author"]["date"].replace("Z", "+00:00")
-        ).replace(tzinfo=None)
+        ).replace(BRASILIA)
 
         fora_da_janela = data_commit < EVENT_START or data_commit > EVENT_END
         if fora_da_janela:
             suspeitas.append(
-                f"Commit {c['sha'][:7]} com data {data_commit.isoformat()}, "
+                f"Commit {c['sha'][:7]} realizado em "
+                f"{formatar_data(data_commit)}, "
                 f"fora da janela do evento"
             )
 
         commits_resumo.append({
             "sha": c["sha"][:7],
             "autor": c["commit"]["author"]["name"],
-            "data": data_commit.isoformat(),
+            "data": formatar_data(data_commit),
             "mensagem": c["commit"]["message"],
             "fora_da_janela": fora_da_janela,
         })
