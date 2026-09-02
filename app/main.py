@@ -673,6 +673,9 @@ async def jurado_verify(token: str, request: Request):
     cur.execute("UPDATE judge_login_tokens SET used = 1 WHERE id = ?", (row["id"],))
 
     session_token = secrets.token_urlsafe(32)
+    created_at = datetime.utcnow()
+    expires_at = created_at + timedelta(hours=8)
+
     cur.execute(
         "INSERT INTO judge_sessions (judge_id, session_token, created_at) VALUES (?, ?, ?)",
         (row["judge_id"], session_token, datetime.utcnow().isoformat()),
@@ -703,9 +706,9 @@ def get_jurado_logado(request: Request):
         FROM judge_sessions
         JOIN judges ON judges.id = judge_sessions.judge_id
         WHERE judge_sessions.session_token = ?
-        AND team_sessions.expires_at > ?
+        AND judge_sessions.expires_at > ?
         """,
-        (session_token,datetime.utcnow().isoformat(),),
+        (session_token, datetime.utcnow().isoformat(),),
     )
     judge = cur.fetchone()
     conn.close()
