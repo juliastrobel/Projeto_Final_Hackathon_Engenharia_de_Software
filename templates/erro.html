@@ -21,9 +21,9 @@
     <main class="pagina-confirmacao">
         <h1>⚠️ Ops, algo não está certo</h1>
         <p>{{ mensagem }}</p>
-        <a href="/inscricao" class="botao-inscrever">
-            Voltar ao formulário
-        </a>
+        <a href="{{ link_voltar or '/' }}" class="botao-inscrever">
+    Voltar ao formulário
+</a>
     </main>
 </body>
 </html>
