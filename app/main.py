@@ -69,18 +69,66 @@ async def receber_inscricao(
     leader_email: str = Form(...),
     member_names: list[str] = Form(...),
 ):
-    nomes_validos = [nome for nome in member_names if nome.strip()]
+    nomes_validos = [nome.strip() for nome in member_names if nome.strip()]
 
     total_integrantes = 1 + len(nomes_validos)
 
     if not (3 <= total_integrantes <= 5):
-        return {"erro": "A equipe deve ter entre 3 e 5 integrantes (incluindo o lider)"}
-
-    verify_token = secrets.token_urlsafe(32)
-    access_token = secrets.token_urlsafe(32)
+        return templates.TemplateResponse(
+            request,
+            "inscricao.html",
+            {
+                "erro": "A equipe deve ter entre 3 e 5 integrantes (incluindo o líder)."
+            },
+        )
 
     conn = get_db()
     cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT id FROM teams
+        WHERE LOWER(TRIM(team_name)) = LOWER(?)
+        """,
+        (team_name,),
+    )
+
+    equipe_existente = cur.fetchone()
+
+    if equipe_existente:
+        conn.close()
+
+        return templates.TemplateResponse(
+            request,
+            "inscricao.html",
+            {
+                "erro": "Já existe uma equipe cadastrada com esse nome."
+            },
+        )
+
+    cur.execute(
+        """
+        SELECT id FROM teams
+        WHERE LOWER(TRIM(leader_email)) = LOWER(?)
+        """,
+        (leader_email,),
+    )
+
+    email_existente = cur.fetchone()
+
+    if email_existente:
+        conn.close()
+
+        return templates.TemplateResponse(
+            request,
+            "inscricao.html",
+            {
+                "erro": "Este e-mail já está cadastrado como líder de outra equipe."
+            },
+        )
+
+    verify_token = secrets.token_urlsafe(32)
+    access_token = secrets.token_urlsafe(32)
 
     cur.execute(
         """
