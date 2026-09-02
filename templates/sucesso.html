@@ -3,24 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <title>Inscrição confirmada</title>
+	<link rel="stylesheet" href="/static/style.css">
 </head>
-<body style="font-family: sans-serif; max-width: 500px; margin: 60px auto; text-align: center;">
-    <h1>✅ Tudo certo, {{ team_name }}!</h1>
-    <p>Sua inscrição foi confirmada e sua conta do GitHub (<strong>{{ github_username }}</strong>) foi vinculada com sucesso.</p>
-    <p>
-        Lembre-se: o repositório do projeto deve se chamar
-        <strong>hackathon-ifpr</strong> e estar <strong>público</strong>
-        na sua conta do GitHub.
-    </p>
-    <p>Boa sorte no hackathon! 🚀</p>
-	<div class="lista-suspeitas">
-    <h3>⭐ Guarde este link!</h3>
-    <p>
-        Use-o sempre que quiser voltar à área da sua equipe:
-    </p>
-    <p><a href="{{ link_area_equipe }}">{{ link_area_equipe }}</a></p>
-</div>
+<body>
 
-<a href="/" class="botao-inscrever">Voltar à página inicial</a>
+    <aside class="menu-lateral">
+        <div class="hamburguer">
+            <a href="/">
+                <img src="/static/logo-hackathon.png"
+                     alt="Logo Hackathon"
+                     class="logo-hackathon">
+            </a>
+        </div>
+    </aside>
+
+    <main class="pagina-confirmacao">
+
+        <div class="card-confirmacao">
+
+            <h1>✅ Tudo certo, {{ team_name }}!</h1>
+
+            <p>
+                Sua inscrição foi confirmada e sua conta do GitHub
+                (<strong>{{ github_username }}</strong>) foi vinculada com sucesso.
+            </p>
+
+            <p>
+                Lembre-se: o repositório do projeto deve se chamar
+                <strong>hackathon-ifpr</strong> e estar
+                <strong>público</strong> na sua conta do GitHub.
+            </p>
+
+            <p class="boa-sorte">
+                Boa sorte no Hackathon! 🚀
+            </p>
+
+            <div class="bloco-link">
+
+                <h3>⭐ Guarde este link!</h3>
+
+                <p>
+                    Use-o sempre que quiser voltar à área da sua equipe:
+                </p>
+
+                <a href="{{ link_area_equipe }}" class="link-equipe">
+                    {{ link_area_equipe }}
+                </a>
+
+            </div>
+
+            <a href="/" class="botao-voltar-home">
+                Voltar à página inicial
+            </a>
+
+        </div>
+
+    </main>
+
 </body>
 </html>
