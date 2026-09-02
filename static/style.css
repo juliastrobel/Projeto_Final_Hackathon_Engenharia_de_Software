@@ -18,11 +18,11 @@
 
 body {
     min-height: 100vh;
-
+    display: flex;
     background-color: #101555;
-
+    justify-content: center;
     color: white;
-
+    align-items: center;
     font-family: Arial, sans-serif;
 }
 
@@ -37,7 +37,7 @@ body {
     top: 0;
     left: 0;
 
-    width: 65px;
+    width: 80px;
     height: 100vh;
 
     background-color: #181F6B;
@@ -1095,9 +1095,10 @@ h1 {
 
 /* LOGO DO MENU */
 .logo-hackathon {
-    width: 50px;
+    width: 65px;
     height: auto;
     display: block;
+    margin: 0 auto;
 }
 .icone-home svg {
     width: 70px;
@@ -1118,10 +1119,6 @@ h1 {
     width: 100%;
 }
 
-.logo-hackathon {
-    display: block;
-    margin: 0 auto;
-}
 .icone-evento svg {
     width: 26px;
     height: 26px;
