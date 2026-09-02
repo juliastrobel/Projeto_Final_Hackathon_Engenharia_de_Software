@@ -410,7 +410,7 @@ async def analisar_repositorio(team_id: int, request: Request):
 
     repo_created_at = datetime.fromisoformat(
         repo_data["created_at"].replace("Z", "+00:00")
-    ).replace(BRASILIA)
+    ).astimezone(BRASILIA)
 
     suspeitas = []
     if repo_created_at < EVENT_START:
@@ -423,7 +423,7 @@ async def analisar_repositorio(team_id: int, request: Request):
     for c in commits_data:
         data_commit = datetime.fromisoformat(
             c["commit"]["author"]["date"].replace("Z", "+00:00")
-        ).replace(BRASILIA)
+        ).astimezone(BRASILIA)
 
         fora_da_janela = data_commit < EVENT_START or data_commit > EVENT_END
         if fora_da_janela:
