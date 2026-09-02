@@ -7,7 +7,9 @@ CREATE TABLE IF NOT EXISTS teams (
     verify_token TEXT,
     repo_full_name TEXT,
     github_username TEXT,
-    access_token TEXT
+    access_token TEXT,
+    veredito TEXT,
+    analisado_em TEXT
 );
 
 CREATE TABLE IF NOT EXISTS team_members (
