@@ -406,16 +406,20 @@ async def auth_callback(code: str, state: str, request: Request):
         # Cria uma nova sessão da equipe
         session_token = secrets.token_urlsafe(32)
 
+        created_at = datetime.utcnow()
+        expires_at = created_at + timedelta(hours=8)
+
         cur.execute(
             """
             INSERT INTO team_sessions
-            (team_id, session_token, created_at)
-            VALUES (?, ?, ?)
+            (team_id, session_token, created_at, expires_at)
+            VALUES (?, ?, ?, ?)
             """,
             (
                 team["id"],
                 session_token,
-                datetime.utcnow().isoformat(),
+                created_at.isoformat(),
+                expires_at.isoformat(),
             ),
         )
 
@@ -699,8 +703,9 @@ def get_jurado_logado(request: Request):
         FROM judge_sessions
         JOIN judges ON judges.id = judge_sessions.judge_id
         WHERE judge_sessions.session_token = ?
+        AND team_sessions.expires_at > ?
         """,
-        (session_token,),
+        (session_token,datetime.utcnow().isoformat(),),
     )
     judge = cur.fetchone()
     conn.close()
@@ -779,6 +784,36 @@ def get_equipe_logada(request: Request):
     conn.close()
 
     return team
+
+@app.get("/equipe/logout")
+async def equipe_logout(request: Request):
+
+    session_token = request.cookies.get("equipe_session")
+
+    if session_token:
+        conn = get_db()
+        cur = conn.cursor()
+
+        cur.execute(
+            "DELETE FROM team_sessions WHERE session_token = ?",
+            (session_token,),
+        )
+
+        conn.commit()
+        conn.close()
+
+    response = RedirectResponse(
+        url="/equipe/login",
+        status_code=303,
+    )
+
+    response.delete_cookie(
+        key="equipe_session",
+        httponly=True,
+        samesite="lax",
+    )
+
+    return response
 
 @app.get("/equipe/{team_id}", response_class=HTMLResponse)
 async def area_equipe(
