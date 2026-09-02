@@ -62,6 +62,7 @@ body {
 ======================================== */
 
 .pagina-inscricao {
+    
     min-height: 100vh;
 
     margin-left: 65px;
@@ -900,15 +901,9 @@ h1 {
 
 .pagina-analise {
     min-height: 100vh;
-
-    margin-left: 65px;
-
-    padding: 60px 20px 100px;
-
+    margin-left: 80px;
+    padding: 60px 40px 100px;
     max-width: 900px;
-
-    margin-left: 65px;
-    margin-right: auto;
 }
 
 
