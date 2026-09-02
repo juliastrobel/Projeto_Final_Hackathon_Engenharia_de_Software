@@ -304,8 +304,6 @@ async def login(team_id: int):
 
 @app.get("/auth/callback")
 async def auth_callback(code: str, state: str, request: Request):
-    print("STATE RECEBIDO:", state)
-    print("STATE COOKIE:", request.cookies.get("equipe_login_state"))
 
     equipe_login_state = request.cookies.get("equipe_login_state")
 
@@ -314,10 +312,13 @@ async def auth_callback(code: str, state: str, request: Request):
         and secrets.compare_digest(equipe_login_state, state)
     )
 
-    try:
-        team_id = int(state)
-    except ValueError:
-        return {"erro": "state inválido"}
+    team_id = None
+    
+    if not login_equipe:
+        try:
+            team_id = int(state)
+        except ValueError:
+            return {"erro": "state inválido"}
 
     client_id = os.getenv("GITHUB_CLIENT_ID", "").strip()
     client_secret = os.getenv("GITHUB_CLIENT_SECRET", "").strip()
