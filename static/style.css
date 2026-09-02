@@ -431,12 +431,14 @@ h1 {
 ======================================== */
 
 .titulo-home {
+    border: 1px white
     margin-bottom: 80px;
 
     text-align: center;
 
 }
 .logo-home {
+    
     width: clamp(300px, 60vw, 850px);
     max-width: 90%;
     height: auto;
