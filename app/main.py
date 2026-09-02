@@ -619,7 +619,7 @@ async def jurado_dashboard(request: Request, filtro: str | None = None):
     conn = get_db()
     cur = conn.cursor()
 
-    query = "SELECT id, team_name, github_username, veredito, analisado_em FROM teams WHERE leader_email_verified = 1"
+    query = "SELECT id, team_name, github_username, veredito, analisado_em, decisao_jurado FROM teams WHERE leader_email_verified = 1"
     params = []
 
     if filtro == "suspeito":
@@ -628,14 +628,20 @@ async def jurado_dashboard(request: Request, filtro: str | None = None):
     elif filtro == "ok":
         query += " AND veredito = ?"
         params.append("ok")
-    elif filtro == "pendente":
-        query += " AND veredito IS NULL"
 
     query += " ORDER BY veredito IS NULL, veredito DESC, team_name"
 
     cur.execute(query, params)
-    equipes = cur.fetchall()
+    equipes_raw = cur.fetchall()
     conn.close()
+
+    equipes = []
+    for e in equipes_raw:
+        e = dict(e)
+        if e["analisado_em"]:
+            data_utc = datetime.fromisoformat(e["analisado_em"])
+            e["analisado_em"] = formatar_data(data_utc.replace(tzinfo=ZoneInfo("UTC")).astimezone(BRASILIA))
+        equipes.append(e)
 
     return templates.TemplateResponse(
         request, "jurado_dashboard.html",
@@ -1060,3 +1066,23 @@ async def vincular_membros(
         url=f"/equipe/{team_id}",
         status_code=303,
     )
+
+@app.post("/jurado/decisao/{team_id}")
+async def registrar_decisao(team_id: int, request: Request, decisao: str = Form(...)):
+    jurado = get_jurado_logado(request)
+    if not jurado:
+        return RedirectResponse(url="/jurado/login")
+
+    if decisao not in ("aprovado", "reprovado"):
+        return RedirectResponse(url="/jurado/dashboard", status_code=303)
+
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE teams SET decisao_jurado = ? WHERE id = ?",
+        (decisao, team_id),
+    )
+    conn.commit()
+    conn.close()
+
+    return RedirectResponse(url="/jurado/dashboard", status_code=303)
