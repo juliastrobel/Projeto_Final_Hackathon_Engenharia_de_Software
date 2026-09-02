@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS teams (
     id INTEGER PRIMARY KEY,
-    team_name TEXT,
+    team_name TEXT UNIQUE,
     leader_name TEXT,
-    leader_email TEXT,
+    leader_email TEXT UNIQUE,
     leader_email_verified BOOLEAN DEFAULT 0,
     verify_token TEXT,
     repo_full_name TEXT,
@@ -30,6 +30,13 @@ CREATE TABLE IF NOT EXISTS judge_login_tokens (
     token TEXT UNIQUE,
     expires_at TEXT,
     used INTEGER DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS judge_sessions (
+    id INTEGER PRIMARY KEY,
+    judge_id INTEGER REFERENCES judges(id),
+    session_token TEXT UNIQUE,
+    created_at TEXT
 );
 
 CREATE TABLE IF NOT EXISTS judge_sessions (
