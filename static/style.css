@@ -1122,3 +1122,8 @@ h1 {
     display: block;
     margin: 0 auto;
 }
+.icone-evento svg {
+    width: 26px;
+    height: 26px;
+    stroke-width: 1.8;
+}
