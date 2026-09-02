@@ -280,11 +280,11 @@ async def auth_callback(code: str, state: str, request: Request):
         )
     
     if user_response.status_code != 200:
-    return {
-        "erro": "Falha ao consultar usuário do GitHub",
-        "status": user_response.status_code,
-        "detalhes": user_response.text,
-    }
+        return {
+            "erro": "Falha ao consultar usuário do GitHub",
+            "status": user_response.status_code,
+            "detalhes": user_response.text,
+        }
 
     user_data = user_response.json()
     github_username = user_data.get("login")
