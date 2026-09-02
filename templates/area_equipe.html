@@ -28,6 +28,29 @@
         {% else %}
         <p class="repo-analisado">GitHub ainda não conectado.</p>
         {% endif %}
+	{% if contributors %}
+<div class="separador"><span>Vincular integrantes aos commits</span></div>
+
+<form method="post" action="/equipe/{{ team.id }}/vincular-membros" class="formulario-inscricao">
+    <input type="hidden" name="token" value="{{ token }}">
+
+    {% for m in membros %}
+    <div class="campo">
+        <label for="github_username_{{ m.id }}">{{ m.member_name }}</label>
+        <select id="github_username_{{ m.id }}" name="github_username_{{ m.id }}">
+            <option value="">-- selecione --</option>
+            {% for c in contributors %}
+            <option value="{{ c }}" {% if m.github_username == c %}selected{% endif %}>
+                {{ c }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    {% endfor %}
+
+    <button type="submit" class="botao-inscrever">Salvar vínculos</button>
+</form>
+{% endif %}
     </main>
 </body>
 </html>
