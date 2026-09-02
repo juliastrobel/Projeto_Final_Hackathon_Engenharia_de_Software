@@ -1092,3 +1092,10 @@ h1 {
     }
 
 }
+
+/* LOGO DO MENU */
+.logo-hackathon {
+    width: 50px;
+    height: auto;
+    display: block;
+}
