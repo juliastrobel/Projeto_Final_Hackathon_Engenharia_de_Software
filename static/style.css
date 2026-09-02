@@ -902,8 +902,10 @@ h1 {
 .pagina-analise {
     min-height: 100vh;
     margin-left: 80px;
-    padding: 60px 40px 100px;
-    max-width: 900px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    allign-items: center;
 }
 
 
