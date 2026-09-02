@@ -13,7 +13,9 @@ CREATE TABLE IF NOT EXISTS teams (
 CREATE TABLE IF NOT EXISTS team_members (
     id INTEGER PRIMARY KEY,
     team_id INTEGER REFERENCES teams(id),
-    member_name TEXT
+    member_name TEXT,
+    github_username TEXT,
+    is_leader BOOLEAN DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS judges (
