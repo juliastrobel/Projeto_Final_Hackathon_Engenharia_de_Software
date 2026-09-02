@@ -28,7 +28,7 @@
                     <th>Equipe</th>
                     <th>Análise automática</th>
                     <th>Analisado em</th>
-                    <th>Decisão da banca</th>
+                    <th>Nota prévia</th>
                     <th>Detalhes</th>
                 </tr>
             </thead>
@@ -47,16 +47,18 @@
                     </td>
                     <td>{{ e.analisado_em or "-" }}</td>
                     <td>
-                        {% if e.decisao_jurado == "aprovado" %}
-                            ✅ Aprovado
-                        {% elif e.decisao_jurado == "reprovado" %}
-                            ❌ Reprovado
-                        {% else %}
-                            <form method="post" action="/jurado/decisao/{{ e.id }}" style="display:inline;">
-                                <button type="submit" name="decisao" value="aprovado" class="botao-adicionar">Aprovar</button>
-                                <button type="submit" name="decisao" value="reprovado" class="botao-adicionar">Reprovar</button>
-                            </form>
-                        {% endif %}
+                        <form method="post" action="/jurado/nota/{{ e.id }}" style="display:flex; gap:8px; align-items:center;">
+                            <input
+                                type="number"
+                                name="nota"
+                                min="0"
+                                max="10"
+                                step="0.5"
+                                value="{{ e.nota_previa if e.nota_previa is not none else '' }}"
+                                style="width:60px;"
+                            >
+                            <button type="submit" class="botao-adicionar">Salvar</button>
+                        </form>
                     </td>
                     <td><a href="/analise/{{ e.id }}">Ver detalhes</a></td>
                 </tr>
