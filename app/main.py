@@ -677,8 +677,8 @@ async def jurado_verify(token: str, request: Request):
     expires_at = created_at + timedelta(hours=8)
 
     cur.execute(
-        "INSERT INTO judge_sessions (judge_id, session_token, created_at) VALUES (?, ?, ?)",
-        (row["judge_id"], session_token, datetime.utcnow().isoformat()),
+        "INSERT INTO judge_sessions (judge_id, session_token, created_at, expires_at) VALUES (?, ?, ?, ?)",
+        (row["judge_id"], session_token, created_at.isoformat(), expires_at.isoformat()),
     )
     conn.commit()
     conn.close()
