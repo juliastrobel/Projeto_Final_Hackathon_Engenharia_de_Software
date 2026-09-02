@@ -781,37 +781,115 @@ def get_equipe_logada(request: Request):
     return team
 
 @app.get("/equipe/{team_id}", response_class=HTMLResponse)
-async def area_equipe(team_id: int, token: str, request: Request):
+async def area_equipe(
+    team_id: int,
+    request: Request,
+    token: str | None = None,
+):
     conn = get_db()
     cur = conn.cursor()
+
     cur.execute(
         "SELECT * FROM teams WHERE id = ?",
         (team_id,),
     )
+
     team = cur.fetchone()
 
-    if not team or team["access_token"] != token:
+    if not team:
         conn.close()
+
         return templates.TemplateResponse(
-            request, "erro.html",
-            {"mensagem": "Link inválido. Verifique se você copiou o link corretamente."},
+            request,
+            "erro.html",
+            {"mensagem": "Equipe não encontrada."},
         )
-    
-    cur.execute("SELECT * FROM team_members WHERE team_id = ?", (team_id,))
+
+    # =====================================================
+    # OPÇÃO 1: acesso pela sessão criada no login GitHub
+    # =====================================================
+
+    equipe_logada = get_equipe_logada(request)
+
+    acesso_por_sessao = (
+        equipe_logada is not None
+        and equipe_logada["id"] == team_id
+    )
+
+    # =====================================================
+    # OPÇÃO 2: acesso pelo link enviado por email
+    # =====================================================
+
+    acesso_por_token = False
+
+    if token:
+        acesso_por_token = secrets.compare_digest(
+            team["access_token"],
+            token,
+        )
+
+    # =====================================================
+    # Se não tiver nenhum dos dois acessos, bloqueia
+    # =====================================================
+
+    if not acesso_por_sessao and not acesso_por_token:
+        conn.close()
+
+        return templates.TemplateResponse(
+            request,
+            "erro.html",
+            {
+                "mensagem": (
+                    "Você não tem permissão para acessar esta equipe."
+                )
+            },
+        )
+
+    # =====================================================
+    # Busca os integrantes
+    # =====================================================
+
+    cur.execute(
+        """
+        SELECT *
+        FROM team_members
+        WHERE team_id = ?
+        """,
+        (team_id,),
+    )
+
     membros = cur.fetchall()
+
     conn.close()
 
+    # =====================================================
+    # Busca os contributors do GitHub
+    # =====================================================
+
     contributors = []
+
     if team["github_username"]:
-        repo_full_name = f"{team['github_username']}/hackathon-ifpr"
-        headers = {"Authorization": f"Bearer {GITHUB_PAT}"} if GITHUB_PAT else {}
+
+        repo_full_name = (
+            f"{team['github_username']}/hackathon-ifpr"
+        )
+
+        headers = (
+            {"Authorization": f"Bearer {GITHUB_PAT}"}
+            if GITHUB_PAT
+            else {}
+        )
 
         async with httpx.AsyncClient() as client:
+
             resp = await client.get(
-                f"https://api.github.com/repos/{repo_full_name}/contributors",
+                f"https://api.github.com/repos/"
+                f"{repo_full_name}/contributors",
                 headers=headers,
             )
+
             if resp.status_code == 200:
+
                 contributors = [
                     {
                         "login": c["login"],
@@ -820,41 +898,111 @@ async def area_equipe(team_id: int, token: str, request: Request):
                     for c in resp.json()
                 ]
 
-
     return templates.TemplateResponse(
-        request, "area_equipe.html",
-        {"team": team, "membros": membros, "contributors": contributors, "token": token},
+        request,
+        "area_equipe.html",
+        {
+            "team": team,
+            "membros": membros,
+            "contributors": contributors,
+            "token": token,
+        },
     )
 
 @app.post("/equipe/{team_id}/vincular-membros")
-async def vincular_membros(team_id: int, request: Request, token: str = Form(...)):
+async def vincular_membros(
+    team_id: int,
+    request: Request,
+    token: str | None = Form(None),
+):
     form = await request.form()
 
     conn = get_db()
     cur = conn.cursor()
-    cur.execute("SELECT access_token FROM teams WHERE id = ?", (team_id,))
+
+    cur.execute(
+        "SELECT * FROM teams WHERE id = ?",
+        (team_id,),
+    )
+
     team = cur.fetchone()
 
-    if not team or team["access_token"] != token:
+    if not team:
         conn.close()
+
         return templates.TemplateResponse(
-            request, "erro.html",
-            {"mensagem": "Link inválido."},
+            request,
+            "erro.html",
+            {"mensagem": "Equipe não encontrada."},
         )
 
-    cur.execute("SELECT id FROM team_members WHERE team_id = ?", (team_id,))
+    # Verifica acesso pela sessão
+    equipe_logada = get_equipe_logada(request)
+
+    acesso_por_sessao = (
+        equipe_logada is not None
+        and equipe_logada["id"] == team_id
+    )
+
+    # Verifica acesso pelo token antigo
+    acesso_por_token = False
+
+    if token:
+        acesso_por_token = secrets.compare_digest(
+            team["access_token"],
+            token,
+        )
+
+    if not acesso_por_sessao and not acesso_por_token:
+        conn.close()
+
+        return templates.TemplateResponse(
+            request,
+            "erro.html",
+            {"mensagem": "Você não tem permissão para alterar esta equipe."},
+        )
+
+    cur.execute(
+        """
+        SELECT id
+        FROM team_members
+        WHERE team_id = ?
+        """,
+        (team_id,),
+    )
+
     membros = cur.fetchall()
 
     for membro in membros:
+
         campo = f"github_username_{membro['id']}"
+
         valor = form.get(campo)
+
         if valor:
+            valor = valor.strip()
+
             cur.execute(
-                "UPDATE team_members SET github_username = ? WHERE id = ?",
+                """
+                UPDATE team_members
+                SET github_username = ?
+                WHERE id = ?
+                """,
                 (valor, membro["id"]),
             )
 
     conn.commit()
     conn.close()
 
-    return RedirectResponse(url=f"/equipe/{team_id}?token={token}", status_code=303)
+    # Se entrou pelo link antigo, mantém o token
+    if token:
+        return RedirectResponse(
+            url=f"/equipe/{team_id}?token={token}",
+            status_code=303,
+        )
+
+    # Se entrou pelo login GitHub, não precisa do token
+    return RedirectResponse(
+        url=f"/equipe/{team_id}",
+        status_code=303,
+    )
