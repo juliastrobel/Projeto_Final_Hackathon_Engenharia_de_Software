@@ -1447,7 +1447,8 @@ h1 {
 
 .hamburguer a:first-child::after {
     content: "ACKATHON";
-
+    text-decoration: underline;
+    text-decoration-color: white;
     color: #F5C518;
 
     font-family: "Courier New", monospace;
