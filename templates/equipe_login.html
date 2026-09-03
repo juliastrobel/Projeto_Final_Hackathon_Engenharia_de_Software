@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login da Equipe</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <aside class="menu-lateral">
+
+        <div class="hamburguer">
+            <a href="/">
+                <img
+                    src="/static/logo-hackathon.png"
+                    alt="Logo Hackathon"
+                    class="logo-hackathon"
+                >
+            </a>
+        </div>
+
+    </aside>
+
+    <main class="pagina-inscricao">
+
+        <h1>Área da Equipe</h1>
+
+        <p class="subtitulo">
+            Hackathon IFPR Pinhais
+        </p>
+
+        {% if erro %}
+
+            <div class="mensagem-erro">
+                {{ erro }}
+            </div>
+
+        {% endif %}
+
+        <form
+            method="post"
+            action="/equipe/login"
+            class="formulario-inscricao"
+        >
+
+            <div class="campo">
+
+                <label for="email">
+                    E-mail do líder cadastrado
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value="{{ email or '' }}"
+                    required
+                    autocomplete="email"
+                >
+
+            </div>
+
+            <button
+                type="submit"
+                class="botao-inscrever"
+            >
+                Continuar com GitHub
+            </button>
+
+        </form>
+
+    </main>
+
+</body>
+</html>
