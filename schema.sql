@@ -51,3 +51,10 @@ CREATE TABLE IF NOT EXISTS judge_sessions (
     expires_at TEXT
 );
 
+CREATE TABLE IF NOT EXISTS avaliacoes (
+    id INTEGER PRIMARY KEY,
+    judge_id INTEGER REFERENCES judges(id),
+    team_id INTEGER REFERENCES teams(id),
+    nota REAL,
+    UNIQUE(judge_id, team_id)
+);
