@@ -313,9 +313,11 @@ async def login(team_id: int, request: Request):
 async def auth_callback(code: str, state: str, request: Request):
 
     equipe_login_state = request.cookies.get("equipe_login_state")
+    equipe_login_team_id = request.cookies.get("equipe_login_team_id")
 
     login_equipe = (
         equipe_login_state is not None
+        and equipe_login_team_id is not None
         and secrets.compare_digest(equipe_login_state, state)
     )
 
@@ -383,17 +385,35 @@ async def auth_callback(code: str, state: str, request: Request):
         conn = get_db()
         cur = conn.cursor()
 
+        try:
+            login_team_id = int(equipe_login_team_id)
+        except (TypeError, ValueError):
+            conn.close()
+            return templates.TemplateResponse(
+                request,
+                "erro.html",
+                {
+                    "mensagem": "Sessão de login inválida.",
+                    "link_voltar": "/equipe/login",
+                },
+            )
+
         cur.execute(
             """
-            SELECT teams.id, teams.team_name, teams.leader_name,
-                   teams.leader_email, teams.github_username
+            SELECT teams.id,
+                   teams.team_name,
+                   teams.leader_name,
+                   teams.leader_email,
+                   teams.github_username
             FROM team_members
-            JOIN teams ON teams.id = team_members.team_id
-            WHERE team_members.github_username = ?
+            JOIN teams
+                ON teams.id = team_members.team_id
+            WHERE teams.id = ?
+              AND team_members.github_username = ?
               AND team_members.is_leader = 1
               AND teams.leader_email_verified = 1
             """,
-            (github_username,),
+            (login_team_id, github_username),
         )
 
         team = cur.fetchone()
@@ -406,13 +426,15 @@ async def auth_callback(code: str, state: str, request: Request):
                 "erro.html",
                 {
                     "mensagem": (
-                        "Este GitHub não está cadastrado como "
-                        "líder de nenhuma equipe."
-                    )
+                        "A conta do GitHub utilizada não corresponde "
+                        "ao líder da equipe vinculada a este e-mail."
+                    ),
+                    "link_voltar": "/equipe/login",
                 },
             )
 
             response.delete_cookie("equipe_login_state")
+            response.delete_cookie("equipe_login_team_id")
 
             return response
 
@@ -453,6 +475,7 @@ async def auth_callback(code: str, state: str, request: Request):
         )
 
         response.delete_cookie("equipe_login_state")
+        response.delete_cookie("equipe_login_team_id")
 
         return response
 
@@ -659,7 +682,65 @@ async def jurado_dashboard(request: Request, filtro: str | None = None):
     )
 
 @app.get("/equipe/login", response_class=HTMLResponse)
-async def equipe_login(request: Request):
+async def equipe_login_form(request: Request):
+    # Se a equipe já estiver autenticada, vai direto para a área dela.
+    equipe = get_equipe_logada(request)
+
+    if equipe:
+        return RedirectResponse(
+            url=f"/equipe/{equipe['id']}",
+            status_code=303,
+        )
+
+    return templates.TemplateResponse(
+        request,
+        "equipe_login.html",
+        {},
+    )
+
+
+@app.post("/equipe/login")
+async def equipe_login_enviar(
+    request: Request,
+    email: str = Form(...),
+):
+    email = email.strip().lower()
+
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        """
+        SELECT id, team_name, leader_email, leader_email_verified
+        FROM teams
+        WHERE LOWER(TRIM(leader_email)) = ?
+        """,
+        (email,),
+    )
+
+    team = cur.fetchone()
+    conn.close()
+
+    if not team:
+        return templates.TemplateResponse(
+            request,
+            "equipe_login.html",
+            {
+                "erro": "Este e-mail não está cadastrado como líder de nenhuma equipe.",
+                "email": email,
+            },
+        )
+
+    if not team["leader_email_verified"]:
+        return templates.TemplateResponse(
+            request,
+            "equipe_login.html",
+            {
+                "erro": "Este e-mail ainda não foi verificado. Verifique seu e-mail antes de entrar.",
+                "email": email,
+            },
+        )
+
     state = secrets.token_urlsafe(32)
 
     client_id = os.getenv("GITHUB_CLIENT_ID", "").strip()
@@ -672,11 +753,23 @@ async def equipe_login(request: Request):
         f"&state={state}"
     )
 
-    response = RedirectResponse(url=github_auth_url)
+    response = RedirectResponse(
+        url=github_auth_url,
+        status_code=303,
+    )
 
     response.set_cookie(
         key="equipe_login_state",
         value=state,
+        httponly=True,
+        max_age=600,
+        samesite="lax",
+    )
+
+    # Guarda temporariamente qual equipe corresponde ao e-mail informado.
+    response.set_cookie(
+        key="equipe_login_team_id",
+        value=str(team["id"]),
         httponly=True,
         max_age=600,
         samesite="lax",
@@ -704,8 +797,12 @@ def get_equipe_logada(request: Request):
         JOIN teams
             ON teams.id = team_sessions.team_id
         WHERE team_sessions.session_token = ?
+          AND team_sessions.expires_at > ?
         """,
-        (session_token,),
+        (
+            session_token,
+            datetime.utcnow().isoformat(),
+        ),
     )
 
     team = cur.fetchone()
