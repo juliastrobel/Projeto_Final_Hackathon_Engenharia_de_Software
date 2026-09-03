@@ -818,7 +818,7 @@ h1 {
 
     z-index: 1;
 
-    transition: height 1.5s ease;
+    transition: height 2.5s ease-in-out;
 }
 
 
