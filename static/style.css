@@ -1549,3 +1549,135 @@ h1 {
 
     text-shadow: 0 0 8px rgba(255, 223, 0, 0.15);
 }
+/* ==============================
+   PÁGINA DE RESULTADOS
+============================== */
+
+.titulo-resultados {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+
+    color: #ffdf00;
+    font-family: Georgia, serif;
+    font-size: 48px;
+    font-weight: normal;
+
+    margin-bottom: 12px;
+}
+
+.titulo-resultados svg {
+    width: 60px;
+    height: 60px;
+    stroke: white;
+    stroke-width: 1.8;
+}
+
+.pagina-analise .subtitulo {
+    text-align: center;
+    color: #b9d9f5;
+    font-size: 20px;
+    margin-bottom: 55px;
+}
+.pagina-analise .tabela-commits {
+    width: 100%;
+    border-collapse: collapse;
+
+    background-color: rgba(255, 255, 255, 0.04);
+
+    border: 2px solid #b9d9f5;
+    border-radius: 24px;
+
+    overflow: hidden;
+}
+
+.pagina-analise .tabela-commits th {
+    padding: 18px;
+
+    color: #ffdf00;
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-weight: normal;
+
+    border-bottom: 2px solid #b9d9f5;
+}
+
+.pagina-analise .tabela-commits td {
+    padding: 18px;
+
+    color: white;
+    text-align: center;
+
+    border-bottom: 1px solid rgba(185, 217, 245, 0.25);
+}
+
+.pagina-analise .tabela-commits tbody tr:last-child td {
+    border-bottom: none;
+}
+.pagina-analise .botao-inscrever {
+    display: block;
+    width: fit-content;
+
+    margin: 35px auto 0;
+    padding: 13px 28px;
+
+    background-color: #ffdf00;
+    color: #101555;
+
+    border-radius: 30px;
+
+    font-family: Arial, sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: 0.2s;
+}
+
+.pagina-analise .botao-inscrever:hover {
+    background-color: #f5c518;
+    transform: translateY(-2px);
+}
+.pagina-analise {
+    width: 100%;
+    max-width: 900px;
+
+    margin: 0 auto;
+    padding: 70px 30px 60px;
+}
+
+@media (max-width: 600px) {
+
+    .pagina-analise {
+        padding: 45px 15px 50px;
+    }
+
+    .titulo-resultados {
+        font-size: 38px;
+        gap: 10px;
+    }
+
+    .titulo-resultados svg {
+        width: 48px;
+        height: 48px;
+    }
+
+    .pagina-analise .subtitulo {
+        font-size: 16px;
+        margin-bottom: 35px;
+    }
+
+    .pagina-analise .tabela-commits th,
+    .pagina-analise .tabela-commits td {
+        padding: 12px 8px;
+        font-size: 13px;
+    }
+
+    .pagina-analise .botao-inscrever {
+        font-size: 15px;
+        padding: 12px 22px;
+    }
+}
+
