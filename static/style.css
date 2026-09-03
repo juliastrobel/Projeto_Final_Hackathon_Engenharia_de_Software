@@ -1484,7 +1484,7 @@ h1 {
 
 .hamburguer a:first-child::after {
     content: "ackathon";
-
+    margin-left: -6px;
     color: #F5C518;
 
     font-family: "JetBrains Mono", Consolas, monospace;
