@@ -1441,7 +1441,7 @@ h1 {
 .hamburguer a:first-child {
     display: flex;
     align-items: center;
-    gap: -4px;
+    gap: 0px;
     width: auto;
     text-decoration: none;
 }
@@ -1450,9 +1450,9 @@ h1 {
     content: "ACKATHON";
     text-decoration: underline;
     text-decoration-color: white;
-    color: #F5C518;
+    color: #FFDF00;
 
-    font-family: "Courier New", monospace;
+    font-family: "JetBrains Mono", monospace;
     font-size: 30px;
     font-weight: bold;
 
@@ -1460,6 +1460,5 @@ h1 {
 
     white-space: nowrap;
     text-decoration: underline;
-    text-underline-offset: 4px;
     text-decoration-thickness: 3px;
 }
