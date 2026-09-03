@@ -60,12 +60,12 @@
                                 step="0.5"
                                 value="{{ e.nota if e.nota is not none else '' }}"
                                 required
-                                style="width:30px;"
+                                style="width:90px;"
                             >
                             <button type="submit" class="botao-adicionar">Salvar</button>
                         </form>
                     </td>
-                    <td><a href="/analise/{{ e.id }}">Ver detalhes</a></td>
+                    <td><a href="/analise/{{ e.id }}"><button class="botao-adicionar">Detalhes</button></a></button></td>
                 </tr>
                 {% endfor %}
             </tbody>
