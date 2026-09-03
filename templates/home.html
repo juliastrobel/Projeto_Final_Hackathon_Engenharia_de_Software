@@ -199,17 +199,31 @@
         }
     });
     */
-    setTimeout(() => {
-        progresso.style.height = alturas[etapaAtual] + "px";
-    }, 300);
+   const cronograma = document.querySelector(".cronograma-home");
 
-    pontos.forEach((ponto, index) => {
-        if (index <= etapaAtual) {
-            setTimeout(() => {
-                ponto.classList.add("ativo");
-            }, 300 + index * 250);
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+
+        if (entry.isIntersecting) {
+
+            progresso.style.height = alturas[etapaAtual] + "px";
+
+            pontos.forEach((ponto, index) => {
+                if (index <= etapaAtual) {
+                    setTimeout(() => {
+                        ponto.classList.add("ativo");
+                    }, index * 450);
+                }
+            });
+
+            observer.unobserve(cronograma);
         }
     });
+}, {
+    threshold: 0.25
+});
+
+observer.observe(cronograma);
 </script>
 </body>
 
