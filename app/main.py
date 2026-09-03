@@ -11,9 +11,12 @@ from datetime import datetime
 from datetime import timedelta
 from zoneinfo import ZoneInfo
 
+
 BRASILIA = ZoneInfo("America/Sao_Paulo")
 
 load_dotenv()
+
+RESULTS_RELEASED = os.getenv("RESULTS_RELEASED", "false").strip().lower() == "true"
 
 BASE_URL = os.getenv("BASE_URL")
 
@@ -1103,4 +1106,31 @@ async def registrar_nota(team_id: int, request: Request, nota: str = Form(...)):
 
     return RedirectResponse(url="/jurado/dashboard", status_code=303)
 
+@app.get("/resultados", response_class=HTMLResponse)
+async def resultados(request: Request):
+    if not RESULTS_RELEASED:
+        return templates.TemplateResponse(
+            request, "resultados_indisponivel.html", {},
+        )
 
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT teams.team_name,
+               AVG(avaliacoes.nota) AS media,
+               COUNT(avaliacoes.nota) AS total_avaliacoes
+        FROM teams
+        JOIN avaliacoes ON avaliacoes.team_id = teams.id
+        WHERE teams.leader_email_verified = 1
+        GROUP BY teams.id
+        ORDER BY media DESC
+        """
+    )
+    ranking = cur.fetchall()
+    conn.close()
+
+    return templates.TemplateResponse(
+        request, "resultados.html",
+        {"ranking": ranking},
+    )
