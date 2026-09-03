@@ -121,14 +121,25 @@ body::after {
 }
 
 .mensagem-erro {
-    background: #ffe5e5;
-    color: #b42318;
-    border: 1px solid #f5a3a3;
-    padding: 12px 16px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    background: #fff5f5;
+    color: #9f1239;
+    border: 1px solid #fda4af;
+
+    padding: 14px 24px;
+    border-radius: 10px;
+
+    margin: 20px auto 24px;
+
     text-align: center;
+
     width: fit-content;
+    max-width: 90%;
+    box-sizing: border-box;
+
+    font-size: 15px;
+    line-height: 1.5;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 
