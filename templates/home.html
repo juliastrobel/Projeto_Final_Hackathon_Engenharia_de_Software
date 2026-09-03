@@ -191,14 +191,14 @@
         new Date(2026, 9, 15)
     ];
 
-    let etapaAtual = 2;
+    let etapaAtual = -1;
 
- /*   datas.forEach((data, index) => {
+    datas.forEach((data, index) => {
         if (hoje >= data) {
             etapaAtual = index;
         }
     });
-    */
+
    const cronograma = document.querySelector(".cronograma-home");
 
 const observer = new IntersectionObserver((entries) => {
@@ -206,7 +206,8 @@ const observer = new IntersectionObserver((entries) => {
 
         if (entry.isIntersecting) {
 
-            progresso.style.height = alturas[etapaAtual] + "px";
+            progresso.style.height =
+    etapaAtual >= 0 ? alturas[etapaAtual] + "px" : "0px";
 
             pontos.forEach((ponto, index) => {
                 if (index <= etapaAtual) {
