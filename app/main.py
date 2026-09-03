@@ -619,17 +619,24 @@ async def jurado_dashboard(request: Request, filtro: str | None = None):
     conn = get_db()
     cur = conn.cursor()
 
-    query = "SELECT id, team_name, github_username, veredito, analisado_em, decisao_jurado FROM teams WHERE leader_email_verified = 1"
-    params = []
+    query = """
+        SELECT teams.id, teams.team_name, teams.github_username,
+               teams.veredito, teams.analisado_em, avaliacoes.nota
+        FROM teams
+        LEFT JOIN avaliacoes
+            ON avaliacoes.team_id = teams.id AND avaliacoes.judge_id = ?
+        WHERE teams.leader_email_verified = 1
+    """
+    params = [jurado["id"]]
 
     if filtro == "suspeito":
-        query += " AND veredito = ?"
+        query += " AND teams.veredito = ?"
         params.append("suspeito")
     elif filtro == "ok":
-        query += " AND veredito = ?"
+        query += " AND teams.veredito = ?"
         params.append("ok")
 
-    query += " ORDER BY veredito IS NULL, veredito DESC, team_name"
+    query += " ORDER BY teams.veredito IS NULL, teams.veredito DESC, teams.team_name"
 
     cur.execute(query, params)
     equipes_raw = cur.fetchall()
@@ -1067,7 +1074,6 @@ async def vincular_membros(
         status_code=303,
     )
 
-
 @app.post("/jurado/nota/{team_id}")
 async def registrar_nota(team_id: int, request: Request, nota: str = Form(...)):
     jurado = get_jurado_logado(request)
@@ -1085,10 +1091,16 @@ async def registrar_nota(team_id: int, request: Request, nota: str = Form(...)):
     conn = get_db()
     cur = conn.cursor()
     cur.execute(
-        "UPDATE teams SET nota_previa = ? WHERE id = ?",
-        (nota_valor, team_id),
+        """
+        INSERT INTO avaliacoes (judge_id, team_id, nota)
+        VALUES (?, ?, ?)
+        ON CONFLICT(judge_id, team_id) DO UPDATE SET nota = excluded.nota
+        """,
+        (jurado["id"], team_id, nota_valor),
     )
     conn.commit()
     conn.close()
 
     return RedirectResponse(url="/jurado/dashboard", status_code=303)
+
+
