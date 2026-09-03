@@ -385,11 +385,12 @@ h1 {
     cursor: pointer;
 
     transition: 0.2s;
+    width: fit-content;
 }
 
 
 .botao-adicionar:hover {
-    background-color: #ffdf00;
+    background-color: #F5C518;
 
     color: #101555;
 }
