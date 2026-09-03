@@ -1,8 +1,13 @@
+/* ========================================
+   RESET E BASE
+======================================== */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
 html,
 body {
     width: 100%;
@@ -10,11 +15,23 @@ body {
     overflow-x: hidden;
 }
 
+body {
+    min-height: 100vh;
+    background-color: #101555;
+    color: white;
+    font-family: Arial, sans-serif;
+    padding-top: 80px;
+}
+
+
+/* ========================================
+   FUNDO DECORATIVO ({ })
+======================================== */
+
 body::before,
 body::after {
     position: fixed;
     top: 50%;
-
     transform: translateY(-50%);
 
     color: rgba(255, 223, 0, 0.12);
@@ -24,7 +41,6 @@ body::after {
     font-weight: bold;
 
     pointer-events: none;
-
     z-index: 0;
 }
 
@@ -38,135 +54,13 @@ body::after {
     right: 40px;
 }
 
-.conteudo-home {
-    position: relative;
-    z-index: 1;
-}
-
-@media (max-width: 1100px) {
-    body::before,
-    body::after {
-        display: none;
-    }
-}
 
 /* ========================================
-   FORMULÁRIO DE NOTA (DASHBOARD JURADO)
+   MENU SUPERIOR
 ======================================== */
 
-.form-nota {
-    display: flex;
-
-    align-items: center;
-
-    gap: 10px;
-}
-
-
-.input-nota {
-    width: 300px;
-
-    padding: 8px 10px;
-
-    border: 2px solid #b9d9f5;
-
-    border-radius: 10px;
-
-    outline: none;
-
-    background-color: transparent;
-
-    color: white;
-
-    font-size: 15px;
-
-    text-align: center;
-
-    transition: 0.2s;
-}
-
-
-.input-nota:focus {
-    border-color: #ffdf00;
-
-    box-shadow: 0 0 0 3px rgba(255, 223, 0, 0.15);
-}
-
-
-.botao-salvar-nota {
-    padding: 8px 16px;
-
-    border: 2px solid #ffdf00;
-
-    border-radius: 20px;
-
-    background-color: transparent;
-
-    color: #ffdf00;
-
-    font-size: 14px;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-
-    white-space: nowrap;
-}
-
-
-.botao-salvar-nota:hover {
-    background-color: #ffdf00;
-
-    color: #101555;
-}
-
-.mensagem-erro {
-    background: #fff5f5;
-    color: #9f1239;
-    border: 1px solid #fda4af;
-
-    padding: 14px 24px;
-    border-radius: 10px;
-
-    margin: 20px auto 24px;
-
-    text-align: center;
-
-    width: fit-content;
-    max-width: 90%;
-    box-sizing: border-box;
-
-    font-size: 15px;
-    line-height: 1.5;
-
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-
-body {
-        min-height: 100vh;
-
-    background-color: #101555;
-    color: white;
-
-    font-family: Arial, sans-serif;
-
-    /* espaço reservado para o menu fixo */
-    padding-top: 80px;
-
-    color: white;
-    min-height: 100vh;
-    background-color: #101555;
-    font-family: Arial, sans-serif;
-}
-
-
-/* ========================================
-   MENU LATERAL
-======================================== */
 .menu-lateral {
     position: fixed;
-
     top: 0;
     left: 0;
     right: 0;
@@ -177,1118 +71,12 @@ body {
     display: flex;
     flex-direction: row;
     align-items: center;
-
     padding: 0 20px;
 
     background-color: #181F6B;
-
     z-index: 1000;
 }
 
-
-.hamburguer {
-    margin-top: 12px;
-
-    text-align: center;
-
-    color: #101555;
-
-    font-size: 38px;
-
-    cursor: pointer;
-}
-
-
-/* ========================================
-   PÁGINA DE INSCRIÇÃO
-======================================== */
-
-.pagina-inscricao {
-    
-    min-height: 100vh;
-
-    margin-left: 65px;
-
-    padding: 60px 20px 100px;
-}
-
-
-/* ========================================
-   TÍTULO
-======================================== */
-
-h1 {
-    text-align: center;
-
-    color: #f5c518;
-
-    font-family: Georgia, serif;
-
-    font-size: 50px;
-
-    font-weight: normal;
-}
-
-
-.subtitulo {
-    margin-top: 8px;
-    margin-bottom: 50px;
-
-    text-align: center;
-
-    color: #b9d9f5;
-
-    font-size: 20px;
-}
-
-
-/* ========================================
-   FORMULÁRIO
-======================================== */
-
-.formulario-inscricao {
-    width: 100%;
-
-    max-width: 650px;
-
-    margin: 0 auto;
-
-    padding: 40px;
-
-    border: 2px solid #b9d9f5;
-
-    border-radius: 25px;
-
-    background-color: rgba(255, 255, 255, 0.03);
-}
-
-
-/* ========================================
-   CAMPOS
-======================================== */
-
-.campo {
-    display: flex;
-
-    flex-direction: column;
-
-    margin-bottom: 25px;
-}
-
-
-.campo label {
-    margin-bottom: 8px;
-
-    color: white;
-
-    font-size: 18px;
-}
-
-
-.campo input {
-    width: 100%;
-
-    padding: 14px 16px;
-
-    border: 2px solid #b9d9f5;
-
-    border-radius: 12px;
-
-    outline: none;
-
-    background-color: transparent;
-
-    color: white;
-
-    font-size: 16px;
-
-    transition: 0.2s;
-}
-
-
-.campo input::placeholder {
-    color: #aeb8ce;
-}
-
-
-.campo input:focus {
-    border-color: #ffdf00;
-
-    box-shadow: 0 0 0 3px rgba(255, 223, 0, 0.15);
-}
-
-
-/* ========================================
-   SEPARADORES
-======================================== */
-
-.separador {
-    display: flex;
-
-    align-items: center;
-
-    gap: 15px;
-
-    margin: 35px 0;
-}
-
-
-.separador::before,
-.separador::after {
-    content: "";
-
-    flex: 1;
-
-    height: 1px;
-
-    background-color: #b9d9f5;
-}
-
-
-.separador span {
-    color: #ffdf00;
-
-    font-family: Georgia, serif;
-
-    font-size: 20px;
-
-    white-space: nowrap;
-}
-
-
-/* ========================================
-   AVISO SOBRE INTEGRANTES
-======================================== */
-
-.aviso-integrantes {
-    margin-top: -20px;
-    margin-bottom: 25px;
-
-    text-align: center;
-
-    color: #b9d9f5;
-
-    font-size: 14px;
-}
-
-
-/* ========================================
-   BOTÃO ADICIONAR INTEGRANTE
-======================================== */
-
-.botao-adicionar {
-    display: block;
-
-    margin: 5px auto 20px;
-
-    padding: 11px 22px;
-
-    border: 2px solid #ffdf00;
-
-    border-radius: 25px;
-
-    background-color: transparent;
-
-    color: #ffdf00;
-
-    font-size: 16px;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-    width: fit-content;
-}
-
-
-.botao-adicionar:hover {
-    background-color: #F5C518;
-
-    color: #101555;
-}
-
-
-/* ========================================
-   CAMPO COM BOTÃO DE REMOVER
-======================================== */
-
-.campo-com-remover {
-    display: flex;
-
-    align-items: center;
-
-    gap: 10px;
-}
-
-
-.campo-com-remover input {
-    flex: 1;
-}
-
-
-/* ========================================
-   BOTÃO REMOVER
-======================================== */
-
-.botao-remover {
-    width: 46px;
-    height: 46px;
-
-    flex-shrink: 0;
-
-    border: 2px solid #b9d9f5;
-
-    border-radius: 50%;
-
-    background-color: transparent;
-
-    color: white;
-
-    font-size: 25px;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-
-.botao-remover:hover {
-    border-color: #ffdf00;
-
-    color: #ffdf00;
-}
-
-
-/* ========================================
-   BOTÃO DE INSCRIÇÃO
-======================================== */
-
-.botao-inscrever {
-    display: block;
-
-    width: 100%;
-
-    margin-top: 35px;
-
-    padding: 15px;
-
-    border: none;
-
-    border-radius: 30px;
-
-    background-color: #ffdf00;
-
-    color: #101555;
-
-    font-family: Georgia, serif;
-
-    font-size: 20px;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-
-.botao-inscrever:hover {
-    background-color: #f5c518;
-
-    transform: translateY(-2px);
-}
-
-
-/* ========================================
-   RESPONSIVIDADE
-======================================== */
-
-@media (max-width: 700px) {
-
-    .menu-lateral {
-        width: 50px;
-    }
-
-
-    .pagina-inscricao {
-        margin-left: 50px;
-
-        padding: 40px 15px 70px;
-    }
-
-
-    h1 {
-        font-size: 35px;
-    }
-
-
-    .subtitulo {
-        margin-bottom: 30px;
-
-        font-size: 17px;
-    }
-
-
-    .formulario-inscricao {
-        padding: 25px 20px;
-
-        border-radius: 18px;
-    }
-
-
-    .separador span {
-        font-size: 17px;
-    }
-
-}
-/* ========================================
-   PÁGINA INICIAL
-======================================== */
-
-.conteudo-home {
-    min-height: 100vh;
-    margin-left: 65px;
-    padding: 60px 30px 100px;
-}
-
-
-/* ========================================
-   TÍTULO
-======================================== */
-
-.titulo-home {
-    border: 1px white
-    margin-bottom: 0px;
-
-    text-align: center;
-
-}
-.logo-home {
-    
-    width: clamp(300px, 60vw, 850px);
-    max-width: 90%;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-}
-
-/* ========================================
-   ÁREAS PRINCIPAIS
-======================================== */
-
-.areas-home {
-    display: grid;
-
-    grid-template-columns: repeat(2, 250px);
-
-    justify-content: center;
-
-    gap: 65px 80px;
-
-    margin-bottom: 100px;
-}
-
-
-.card-home {
-    display: flex;
-
-    width: 250px;
-    min-height: 230px;
-    padding: 25px 20px;
-
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    background-color: rgba(255, 255, 255, 0.04);
-    border: 2px solid #b9d9f5;
-    border-radius: 24px;
-    transition: transform 0.25s ease, border-color 0.25s ease,
-            box-shadow 0.25s ease;
-}
-.card-home:hover {
-    transform: translateY(-5px);
-    border-color: #FFDF00;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
-}
-/* ========================================
-   BOTÕES
-======================================== */
-
-.botao-home {
-    display: block;
-
-    width: 85%;
-
-    margin-top: 25px auto 0;
-    padding: 12px 16px;
-
-    border-radius: 28px;
-
-    background-color: #ffdf00;
-
-    color: #101555;
-
-    text-align: center;
-    text-decoration: none;
-
-    font-family: Arial, sans-serif;
-    font-size: 17px;
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-
-.botao-home:hover {
-    background-color: #f5c518;
-
-    transform: translateY(-2px);
-}
-
-
-/* ========================================
-   ÍCONE ÁREA DE EQUIPES
-======================================== */
-
-.icone-equipe {
-    color: white;
-
-    font-size: 55px;
-
-    letter-spacing: 5px;
-
-    text-align: center;
-}
-
-
-/* ========================================
-   GRÁFICO - PAINEL DE RESULTADOS
-======================================== */
-
-.grafico-home {
-    display: flex;
-
-    width: 170px;
-    height: 130px;
-
-    align-items: flex-end;
-    justify-content: center;
-
-    gap: 12px;
-
-    border-bottom: 5px solid white;
-}
-
-
-.barra-grafico {
-    display: block;
-
-    width: 32px;
-
-    border: 5px solid white;
-    border-bottom: none;
-
-    border-radius: 3px 3px 0 0;
-}
-
-
-.barra-1 {
-    height: 80px;
-}
-
-
-.barra-2 {
-    height: 115px;
-}
-
-
-.barra-3 {
-    height: 60px;
-}
-
-
-/* ========================================
-   ÍCONE ÁREA DA BANCA
-======================================== */
-
-.icone-banca {
-    color: white;
-
-    text-align: center;
-}
-
-
-.pessoas-banca {
-    font-size: 45px;
-
-    letter-spacing: 2px;
-}
-
-
-.mesa-banca {
-    width: 180px;
-    height: 50px;
-
-    margin-top: -5px;
-
-    border: 5px solid white;
-}
-
-
-/* ========================================
-   ÍCONE INSCRIÇÕES
-======================================== */
-
-.icone-inscricao {
-    color: white;
-
-    font-size: 80px;
-
-    line-height: 1;
-
-    text-align: center;
-}
-
-
-/* ========================================
-   CRONOGRAMA
-======================================== */
-.separador-cronograma {
-    width: 700px;
-    max-width: 80%;
-    margin: 0 auto 40px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-}
-
-.separador-cronograma span {
-    height: 2px;
-    flex: 1;
-    background-color: #b9d9f5;
-}
-
-.separador-cronograma h2 {
-    margin: 0;
-
-    color: #ffdf00;
-    font-family: Georgia, serif;
-    font-size: 32px;
-    font-weight: normal;
-
-    white-space: nowrap;
-}
-.cronograma-home {
-    position: relative;
-
-    width: 700px;
-    height: 600px;
-
-    margin: 0 auto;
-}
-
-
-/* LINHA CENTRAL */
-
-.linha-tempo {
-    position: absolute;
-
-    top: 0;
-    left: 50%;
-
-    width: 5px;
-    height: 500px;
-
-    background-color: #b9d9f5;
-
-    transform: translateX(-50%);
-}
-.progresso-timeline {
-    position: absolute;
-
-    top: 0;
-    left: 0;
-
-    width: 5px;
-    height: 0;
-
-    background-color: #ffdf00;
-
-    z-index: 1;
-
-    transition: height 2.5s ease-in-out;
-}
-
-
-
-/* ========================================
-   PONTOS DA LINHA DO TEMPO
-======================================== */
-
-.ponto {
-    position: absolute;
-
-    left: 50%;
-
-    width: 16px;
-    height: 16px;
-
-    border-radius: 50%;
-
-    background-color: #b9d9f5;
-
-    transform: translate(-50%, -50%);
-        z-index: 2;
-
-    transition: background-color 0.3s ease;
-}
-.ponto.ativo {
-    background-color: #ffdf00;
-}
-
-.ponto-1 {
-    top: 0;
-}
-
-
-.ponto-2 {
-    top: 120px;
-
-}
-
-
-.ponto-3 {
-    top: 240px;
-}
-
-
-.ponto-4 {
-    top: 360px;
-}
-
-
-.ponto-5 {
-    top: 500px;
-}
-
-
-/* ========================================
-   EVENTOS DO CRONOGRAMA
-======================================== */
-
-.evento {
-    position: absolute;
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 15px;
-}
-
-
-.evento-esquerda {
-    right: 50%;
-
-    margin-right: 25px;
-
-    text-align: right;
-}
-
-
-.evento-direita {
-    left: 50%;
-
-    margin-left: 25px;
-
-    text-align: left;
-}
-
-
-/* ========================================
-   TEXTO DOS EVENTOS
-======================================== */
-
-.texto-evento {
-    display: flex;
-
-    flex-direction: column;
-}
-
-
-.texto-evento strong {
-    color: white;
-
-    font-size: 24px;
-    font-weight: normal;
-
-    white-space: nowrap;
-}
-
-
-.texto-evento span {
-    margin-top: 4px;
-
-    color: #ffdf00;
-
-    font-size: 15px;
-}
-
-
-/* ========================================
-   ÍCONES DOS EVENTOS
-======================================== */
-
-.icone-evento {
-    display: flex;
-
-    width: 40px;
-    height: 40px;
-
-    flex-shrink: 0;
-
-    align-items: center;
-    justify-content: center;
-
-    border: 2px solid white;
-
-    border-radius: 50%;
-
-    color: white;
-
-    font-size: 17px;
-}
-
-
-/* ========================================
-   POSIÇÃO DOS EVENTOS
-======================================== */
-
-.evento-1 {
-    top: -20px;
-}
-
-
-.evento-2 {
-    top: 100px;
-}
-
-
-.evento-3 {
-    top: 220px;
-}
-
-
-.evento-4 {
-    top: 340px;
-}
-
-
-.evento-5 {
-    top: 480px;
-}
-
-
-/* ========================================
-   RESPONSIVIDADE DA HOMEPAGE
-======================================== */
-
-@media (max-width: 750px) {
-
-    .conteudo-home {
-        margin-left: 50px;
-
-        padding: 40px 15px 70px;
-    }
-
-
-    .titulo-home {
-        margin-bottom: 60px;
-
-        font-size: 36px;
-    }
-
-
-    .areas-home {
-        grid-template-columns: 250px;
-
-        gap: 50px;
-
-        margin-bottom: 100px;
-    }
-
-
-    .cronograma-home {
-        width: 100%;
-
-        max-width: 600px;
-    }
-
-
-    .texto-evento strong {
-        font-size: 18px;
-    }
-
-
-    .texto-evento span {
-        font-size: 13px;
-    }
-
-}
-
-/* ========================================
-   PÁGINA DE CONFIRMAÇÃO / ERRO
-======================================== */
-
-.pagina-confirmacao {
-    min-height: 100vh;
-
-    margin-left: 65px;
-
-    padding: 100px 20px;
-
-    text-align: center;
-}
-
-
-.pagina-confirmacao p {
-    max-width: 600px;
-
-    margin: 0 auto 20px;
-
-    color: #b9d9f5;
-
-    font-size: 18px;
-    line-height: 1.5;
-}
-
-
-.pagina-confirmacao .botao-inscrever {
-    display: inline-block;
-
-    width: auto;
-
-    margin-top: 25px;
-    padding: 14px 30px;
-
-    text-decoration: none;
-}
-
-
-/* ========================================
-   PÁGINA DE ANÁLISE
-======================================== */
-
-.pagina-analise {
-    min-height: 100vh;
-    margin-left: 80px;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    allign-items: center;
-}
-.pagina-analise > * {
-    width: 100%;
-    max-width: 900px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.repo-analisado {
-    margin-bottom: 25px;
-
-    text-align: center;
-
-    color: #b9d9f5;
-
-    font-size: 16px;
-}
-
-
-.repo-analisado a {
-    color: #ffdf00;
-
-    text-decoration: none;
-}
-
-
-.repo-analisado a:hover {
-    text-decoration: underline;
-}
-
-
-/* ========================================
-   BADGE DE VEREDITO
-======================================== */
-
-.badge-veredito {
-    display: block;
-
-    width: fit-content;
-
-    margin: 0 auto 30px;
-
-    padding: 10px 24px;
-
-    border-radius: 30px;
-
-    font-size: 18px;
-    font-weight: bold;
-
-    text-align: center;
-}
-
-
-.badge-ok {
-    border: 2px solid #4caf50;
-
-    background-color: rgba(76, 175, 80, 0.1);
-
-    color: #4caf50;
-}
-
-
-.badge-suspeito {
-    border: 2px solid #ffdf00;
-
-    background-color: rgba(255, 223, 0, 0.1);
-
-    color: #ffdf00;
-}
-
-
-/* ========================================
-   LISTA DE SUSPEITAS
-======================================== */
-
-.lista-suspeitas {
-    margin: 30px auto;
-    padding: 20px 25px;
-
-    max-width: 700px;
-
-    border: 2px solid #ffdf00;
-    border-radius: 15px;
-
-    background-color: rgba(255, 223, 0, 0.05);
-}
-
-
-.lista-suspeitas h3 {
-    margin-bottom: 12px;
-
-    color: #ffdf00;
-
-    font-family: Georgia, serif;
-    font-size: 20px;
-    font-weight: normal;
-}
-
-
-.lista-suspeitas ul {
-    padding-left: 20px;
-
-    color: #b9d9f5;
-
-    font-size: 15px;
-    line-height: 1.6;
-}
-
-
-/* ========================================
-   TABELA DE COMMITS
-======================================== */
-
-.tabela-commits {
-    width: 100%;
-
-    margin-top: 15px;
-
-    border-collapse: collapse;
-}
-
-
-.tabela-commits th {
-    padding: 12px 15px;
-
-    border-bottom: 2px solid #b9d9f5;
-
-    text-align: left;
-
-    color: #ffdf00;
-
-    font-family: Georgia, serif;
-    font-size: 15px;
-    font-weight: normal;
-}
-
-
-.tabela-commits td {
-    padding: 12px 15px;
-
-    border-bottom: 1px solid rgba(185, 217, 245, 0.2);
-
-    color: white;
-
-    font-size: 14px;
-}
-
-
-.tabela-commits code {
-    padding: 2px 6px;
-
-    border-radius: 4px;
-
-    background-color: rgba(255, 255, 255, 0.08);
-
-    color: #b9d9f5;
-
-    font-size: 13px;
-}
-
-
-.linha-suspeita {
-    background-color: rgba(255, 223, 0, 0.06);
-}
-
-
-/* ========================================
-   RESPONSIVIDADE - ANÁLISE E CONFIRMAÇÃO
-======================================== */
-
-@media (max-width: 700px) {
-
-    .pagina-analise,
-    .pagina-confirmacao {
-        margin-left: 50px;
-
-        padding: 40px 15px 70px;
-    }
-
-
-    .tabela-commits th,
-    .tabela-commits td {
-        padding: 8px 10px;
-
-        font-size: 13px;
-    }
-
-}
-
-/* LOGO DO MENU */
-.logo-hackathon {
-    width: 65px;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-}
-.icone-home svg {
-    width: 70px;
-    height: 70px;
-    stroke-width: 1.8;
-}
 .hamburguer {
     display: flex;
     justify-content: center;
@@ -1302,218 +90,6 @@ h1 {
     align-items: center;
     width: 100%;
 }
-
-.icone-evento svg {
-    width: 26px;
-    height: 26px;
-    stroke-width: 1.8;
-}
-/* TABLET */
-@media (max-width: 900px) {
-    .menu-lateral {
-        width: 70px;
-    }
-
-    .logo-hackathon {
-        width: 56px;
-    }
-}
-/* CELULAR */
-@media (max-width: 600px) {
-
-    .menu-lateral {
-        width: 100%;
-        height: 65px;
-    }
-
-    .logo-hackathon {
-        width: 60px;
-    }
-
-    .conteudo-home {
-        width: 100%;
-        margin-left: 0;
-        padding: 25px 10px 60px;
-    }
-
-    .areas-home {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 25px 10px;
-
-        width: 100%;
-        max-width: none;
-        margin: 0 auto 70px;
-    }
-
-    .card-home {
-        width: 100%;
-        min-width: 0;
-        min-height: 150px;
-        justify-content: center;
-    }
-
-    .botao-home {
-        width: 100%;
-        min-width: 0;
-        padding: 10px 4px;
-        margin: 25px auto 0;
-        font-size: 13px;
-        white-space: normal;
-    }
-
-    .icone-home svg {
-        width: 48px;
-        height: 48px;
-    }
-}
-
-.pagina-inscricao,
-.conteudo-home,
-.pagina-confirmacao,
-.pagina-analise {
-    margin-left: 0;
-    width: 100%;
-}
-
-/* ========================================
-   CORREÇÃO FINAL - MENU SUPERIOR
-======================================== */
-
-.menu-lateral {
-    width: 100%;
-    height: 80px;
-}
-
-/* nenhuma página precisa mais compensar sidebar */
-.pagina-inscricao,
-.conteudo-home,
-.pagina-confirmacao,
-.pagina-analise {
-    margin-left: 0;
-    width: 100%;
-}
-
-
-/* TABLET E CELULAR */
-@media (max-width: 900px) {
-
-    .menu-lateral {
-        width: 100%;
-    }
-
-    .pagina-inscricao,
-    .conteudo-home,
-    .pagina-confirmacao,
-    .pagina-analise {
-        margin-left: 0;
-        width: 100%;
-    }
-}
-
-
-@media (max-width: 700px) {
-
-    .menu-lateral {
-        width: 100%;
-        height: 65px;
-    }
-
-    body {
-        padding-top: 65px;
-    }
-
-    .pagina-inscricao,
-    .conteudo-home,
-    .pagina-confirmacao,
-    .pagina-analise {
-        margin-left: 0;
-        width: 100%;
-    }
-}
-
-
-@media (max-width: 600px) {
-
-    .menu-lateral {
-        width: 100%;
-    }
-
-    .conteudo-home {
-        width: 100%;
-        margin-left: 0;
-    }
-}
-
-.logo-hackathon {
-    width: 80px;
-    height: auto;
-    display: block;
-    margin: 0;
-}
-
-.hamburguer a:first-child {
-    display: flex;
-    align-items: center;
-    gap: 0px;
-    width: auto;
-    text-decoration: none;
-}
-
-.hamburguer a:first-child::after {
-    content: "ACKATHON";
-    align-items: center;
-    justify-content: center;
-    text-decoration: underline;
-    text-decoration-color: white;
-    color: #FFDF00;
-
-    font-family: "JetBrains Mono", monospace;
-    font-size: 40px;
-    font-weight: bold;
-
-    letter-spacing: 2px;
-
-    white-space: nowrap;
-    text-decoration: underline;
-}
-
-.logo-hackathon {
-    width: 80px;
-    height: auto;
-    display: block;
-    margin: 0;
-}
-
-.hamburguer a:first-child {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-
-    width: auto;
-
-    text-decoration: none;
-}
-
-.hamburguer a:first-child::after {
-    content: "ackathon";
-    margin-left: -6px;
-    color: #F5C518;
-
-    font-family: "JetBrains Mono", Consolas, monospace;
-    font-size: 36px;
-    font-weight: 600;
-
-    letter-spacing: 0;
-
-    white-space: nowrap;
-
-    text-decoration: none;
-
-    text-shadow: 0 0 8px rgba(255, 223, 0, 0.18);
-}
-
-/* ----------- */
 
 .logo-hackathon {
     width: 62px;
@@ -1534,24 +110,661 @@ h1 {
 
     color: #F5C518;
 
-    font-family:
-        "DejaVu Sans Mono",
-        "JetBrains Mono",
-        Consolas,
-        monospace;
-
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
     font-size: 31px;
     font-weight: 700;
-
     letter-spacing: -1.5px;
     line-height: 1;
     white-space: nowrap;
 
     text-shadow: 0 0 8px rgba(255, 223, 0, 0.15);
 }
-/* ==============================
-   PÁGINA DE RESULTADOS
-============================== */
+
+
+/* ========================================
+   LAYOUT GENÉRICO DE PÁGINA
+======================================== */
+
+.pagina-inscricao {
+    min-height: 100vh;
+    width: 100%;
+    margin-left: 0;
+    padding: 60px 20px 100px;
+}
+
+.conteudo-home {
+    position: relative;
+    z-index: 1;
+
+    min-height: 100vh;
+    width: 100%;
+    margin-left: 0;
+    padding: 60px 30px 100px;
+}
+
+.pagina-confirmacao {
+    min-height: 100vh;
+    width: 100%;
+    margin-left: 0;
+    padding: 100px 20px;
+    text-align: center;
+}
+
+.pagina-confirmacao p {
+    max-width: 600px;
+    margin: 0 auto 20px;
+
+    color: #b9d9f5;
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+.pagina-confirmacao .botao-inscrever {
+    display: inline-block;
+    width: auto;
+    margin-top: 25px;
+    padding: 14px 30px;
+    text-decoration: none;
+}
+
+.pagina-analise {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 70px 30px 60px;
+}
+
+.pagina-analise > * {
+    width: 100%;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* ========================================
+   TÍTULO E SUBTÍTULO PADRÃO
+======================================== */
+
+h1 {
+    text-align: center;
+    color: #f5c518;
+
+    font-family: Georgia, serif;
+    font-size: 50px;
+    font-weight: normal;
+}
+
+.subtitulo {
+    margin-top: 8px;
+    margin-bottom: 50px;
+
+    text-align: center;
+    color: #b9d9f5;
+    font-size: 20px;
+}
+
+.pagina-analise .subtitulo {
+    margin-bottom: 55px;
+}
+
+
+/* ========================================
+   FORMULÁRIO
+======================================== */
+
+.formulario-inscricao {
+    width: 100%;
+    max-width: 650px;
+    margin: 0 auto;
+    padding: 40px;
+
+    border: 2px solid #b9d9f5;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 25px;
+}
+
+.campo label {
+    margin-bottom: 8px;
+    color: white;
+    font-size: 18px;
+}
+
+.campo input {
+    width: 100%;
+    padding: 14px 16px;
+
+    border: 2px solid #b9d9f5;
+    border-radius: 12px;
+    outline: none;
+
+    background-color: transparent;
+    color: white;
+    font-size: 16px;
+
+    transition: 0.2s;
+}
+
+.campo input::placeholder {
+    color: #aeb8ce;
+}
+
+.campo input:focus {
+    border-color: #ffdf00;
+    box-shadow: 0 0 0 3px rgba(255, 223, 0, 0.15);
+}
+
+.separador {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 35px 0;
+}
+
+.separador::before,
+.separador::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: #b9d9f5;
+}
+
+.separador span {
+    color: #ffdf00;
+    font-family: Georgia, serif;
+    font-size: 20px;
+    white-space: nowrap;
+}
+
+.aviso-integrantes {
+    margin-top: -20px;
+    margin-bottom: 25px;
+
+    text-align: center;
+    color: #b9d9f5;
+    font-size: 14px;
+}
+
+.botao-adicionar {
+    display: block;
+    width: fit-content;
+    margin: 5px auto 20px;
+    padding: 11px 22px;
+
+    border: 2px solid #ffdf00;
+    border-radius: 25px;
+    background-color: transparent;
+    color: #ffdf00;
+    font-size: 16px;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.botao-adicionar:hover {
+    background-color: #f5c518;
+    color: #101555;
+}
+
+.campo-com-remover {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.campo-com-remover input {
+    flex: 1;
+}
+
+.botao-remover {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+
+    border: 2px solid #b9d9f5;
+    border-radius: 50%;
+    background-color: transparent;
+    color: white;
+    font-size: 25px;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.botao-remover:hover {
+    border-color: #ffdf00;
+    color: #ffdf00;
+}
+
+.botao-inscrever {
+    display: block;
+    width: 100%;
+    margin-top: 35px;
+    padding: 15px;
+
+    border: none;
+    border-radius: 30px;
+    background-color: #ffdf00;
+    color: #101555;
+
+    font-family: Georgia, serif;
+    font-size: 20px;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.botao-inscrever:hover {
+    background-color: #f5c518;
+    transform: translateY(-2px);
+}
+
+.mensagem-erro {
+    background: #fff5f5;
+    color: #9f1239;
+    border: 1px solid #fda4af;
+
+    padding: 14px 24px;
+    border-radius: 10px;
+    margin: 20px auto 24px;
+
+    text-align: center;
+    width: fit-content;
+    max-width: 90%;
+
+    font-size: 15px;
+    line-height: 1.5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+
+/* ========================================
+   HOMEPAGE
+======================================== */
+
+.titulo-home {
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.logo-home {
+    width: clamp(300px, 60vw, 850px);
+    max-width: 90%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+.areas-home {
+    display: grid;
+    grid-template-columns: repeat(2, 250px);
+    justify-content: center;
+    gap: 65px 80px;
+    margin-bottom: 100px;
+}
+
+.card-home {
+    display: flex;
+    width: 250px;
+    min-height: 230px;
+    padding: 25px 20px;
+
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 2px solid #b9d9f5;
+    border-radius: 24px;
+
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card-home:hover {
+    transform: translateY(-5px);
+    border-color: #ffdf00;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
+}
+
+.botao-home {
+    display: block;
+    width: 85%;
+    padding: 12px 16px;
+
+    border-radius: 28px;
+    background-color: #ffdf00;
+    color: #101555;
+
+    text-align: center;
+    text-decoration: none;
+
+    font-family: Arial, sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.botao-home:hover {
+    background-color: #f5c518;
+    transform: translateY(-2px);
+}
+
+.icone-home svg {
+    width: 70px;
+    height: 70px;
+    stroke-width: 1.8;
+}
+
+
+/* ========================================
+   CRONOGRAMA
+======================================== */
+
+.separador-cronograma {
+    width: 700px;
+    max-width: 80%;
+    margin: 0 auto 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.separador-cronograma span {
+    height: 2px;
+    flex: 1;
+    background-color: #b9d9f5;
+}
+
+.separador-cronograma h2 {
+    margin: 0;
+    color: #ffdf00;
+    font-family: Georgia, serif;
+    font-size: 32px;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+.cronograma-home {
+    position: relative;
+    width: 700px;
+    height: 600px;
+    margin: 0 auto;
+}
+
+.linha-tempo {
+    position: absolute;
+    top: 0;
+    left: 50%;
+
+    width: 5px;
+    height: 500px;
+
+    background-color: #b9d9f5;
+    transform: translateX(-50%);
+}
+
+.progresso-timeline {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 5px;
+    height: 0;
+
+    background-color: #ffdf00;
+    z-index: 1;
+
+    transition: height 2.5s ease-in-out;
+}
+
+.ponto {
+    position: absolute;
+    left: 50%;
+
+    width: 16px;
+    height: 16px;
+
+    border-radius: 50%;
+    background-color: #b9d9f5;
+
+    transform: translate(-50%, -50%);
+    z-index: 2;
+
+    transition: background-color 0.3s ease;
+}
+
+.ponto.ativo {
+    background-color: #ffdf00;
+}
+
+.ponto-1 { top: 0; }
+.ponto-2 { top: 120px; }
+.ponto-3 { top: 240px; }
+.ponto-4 { top: 360px; }
+.ponto-5 { top: 500px; }
+
+.evento {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.evento-esquerda {
+    right: 50%;
+    margin-right: 25px;
+    text-align: right;
+}
+
+.evento-direita {
+    left: 50%;
+    margin-left: 25px;
+    text-align: left;
+}
+
+.texto-evento {
+    display: flex;
+    flex-direction: column;
+}
+
+.texto-evento strong {
+    color: white;
+    font-size: 24px;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
+.texto-evento span {
+    margin-top: 4px;
+    color: #ffdf00;
+    font-size: 15px;
+}
+
+.icone-evento {
+    display: flex;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid white;
+    border-radius: 50%;
+    color: white;
+    font-size: 17px;
+}
+
+.icone-evento svg {
+    width: 26px;
+    height: 26px;
+    stroke-width: 1.8;
+}
+
+.evento-1 { top: -20px; }
+.evento-2 { top: 100px; }
+.evento-3 { top: 220px; }
+.evento-4 { top: 340px; }
+.evento-5 { top: 480px; }
+
+
+/* ========================================
+   ANÁLISE (badge, suspeitas, tabela)
+======================================== */
+
+.repo-analisado {
+    margin-bottom: 25px;
+    text-align: center;
+    color: #b9d9f5;
+    font-size: 16px;
+}
+
+.repo-analisado a {
+    color: #ffdf00;
+    text-decoration: none;
+}
+
+.repo-analisado a:hover {
+    text-decoration: underline;
+}
+
+.badge-veredito {
+    display: block;
+    width: fit-content;
+    margin: 0 auto 30px;
+    padding: 10px 24px;
+
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.badge-ok {
+    border: 2px solid #4caf50;
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #4caf50;
+}
+
+.badge-suspeito {
+    border: 2px solid #ffdf00;
+    background-color: rgba(255, 223, 0, 0.1);
+    color: #ffdf00;
+}
+
+.lista-suspeitas {
+    margin: 30px auto;
+    padding: 20px 25px;
+    max-width: 700px;
+
+    border: 2px solid #ffdf00;
+    border-radius: 15px;
+    background-color: rgba(255, 223, 0, 0.05);
+}
+
+.lista-suspeitas h3 {
+    margin-bottom: 12px;
+    color: #ffdf00;
+    font-family: Georgia, serif;
+    font-size: 20px;
+    font-weight: normal;
+}
+
+.lista-suspeitas ul {
+    padding-left: 20px;
+    color: #b9d9f5;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.tabela-commits {
+    width: 100%;
+    margin-top: 15px;
+    border-collapse: collapse;
+}
+
+.pagina-analise .tabela-commits {
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 2px solid #b9d9f5;
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+.tabela-commits th {
+    padding: 18px;
+    border-bottom: 2px solid #b9d9f5;
+    text-align: left;
+
+    color: #ffdf00;
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-weight: normal;
+}
+
+.tabela-commits td {
+    padding: 18px;
+    border-bottom: 1px solid rgba(185, 217, 245, 0.25);
+    color: white;
+    text-align: center;
+}
+
+.pagina-analise .tabela-commits tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.tabela-commits code {
+    padding: 2px 6px;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #b9d9f5;
+    font-size: 13px;
+}
+
+.linha-suspeita {
+    background-color: rgba(255, 223, 0, 0.06);
+}
+
+.pagina-analise .botao-inscrever {
+    display: block;
+    width: fit-content;
+    margin: 35px auto 0;
+    padding: 13px 28px;
+
+    background-color: #ffdf00;
+    color: #101555;
+    border-radius: 30px;
+
+    font-family: Arial, sans-serif;
+    font-size: 17px;
+    font-weight: 600;
+    text-decoration: none;
+
+    transition: 0.2s;
+}
+
+.pagina-analise .botao-inscrever:hover {
+    background-color: #f5c518;
+    transform: translateY(-2px);
+}
+
+
+/* ========================================
+   RESULTADOS
+======================================== */
 
 .titulo-resultados {
     display: flex;
@@ -1563,7 +776,6 @@ h1 {
     font-family: Georgia, serif;
     font-size: 48px;
     font-weight: normal;
-
     margin-bottom: 12px;
 }
 
@@ -1574,94 +786,178 @@ h1 {
     stroke-width: 1.8;
 }
 
-.pagina-analise .subtitulo {
-    text-align: center;
-    color: #b9d9f5;
-    font-size: 20px;
-    margin-bottom: 55px;
-}
-.pagina-analise .tabela-commits {
-    width: 100%;
-    border-collapse: collapse;
 
-    background-color: rgba(255, 255, 255, 0.04);
+/* ========================================
+   DASHBOARD DO JURADO (NOTA)
+======================================== */
+
+.form-nota {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-nota {
+    width: 300px;
+    padding: 8px 10px;
 
     border: 2px solid #b9d9f5;
-    border-radius: 24px;
+    border-radius: 10px;
+    outline: none;
 
-    overflow: hidden;
-}
-
-.pagina-analise .tabela-commits th {
-    padding: 18px;
-
-    color: #ffdf00;
-    font-family: Georgia, serif;
-    font-size: 18px;
-    font-weight: normal;
-
-    border-bottom: 2px solid #b9d9f5;
-}
-
-.pagina-analise .tabela-commits td {
-    padding: 18px;
-
+    background-color: transparent;
     color: white;
+    font-size: 15px;
     text-align: center;
-
-    border-bottom: 1px solid rgba(185, 217, 245, 0.25);
-}
-
-.pagina-analise .tabela-commits tbody tr:last-child td {
-    border-bottom: none;
-}
-.pagina-analise .botao-inscrever {
-    display: block;
-    width: fit-content;
-
-    margin: 35px auto 0;
-    padding: 13px 28px;
-
-    background-color: #ffdf00;
-    color: #101555;
-
-    border-radius: 30px;
-
-    font-family: Arial, sans-serif;
-    font-size: 17px;
-    font-weight: 600;
-
-    text-decoration: none;
 
     transition: 0.2s;
 }
 
-.pagina-analise .botao-inscrever:hover {
-    background-color: #f5c518;
-    transform: translateY(-2px);
+.input-nota:focus {
+    border-color: #ffdf00;
+    box-shadow: 0 0 0 3px rgba(255, 223, 0, 0.15);
 }
-.pagina-analise {
-    width: 100%;
-    max-width: 900px;
 
-    margin: 0 auto;
-    padding: 70px 30px 60px;
+.botao-salvar-nota {
+    padding: 8px 16px;
+
+    border: 2px solid #ffdf00;
+    border-radius: 20px;
+    background-color: transparent;
+    color: #ffdf00;
+    font-size: 14px;
+
+    cursor: pointer;
+    transition: 0.2s;
+    white-space: nowrap;
+}
+
+.botao-salvar-nota:hover {
+    background-color: #ffdf00;
+    color: #101555;
+}
+
+
+/* ========================================
+   RESPONSIVIDADE
+======================================== */
+
+@media (max-width: 1100px) {
+    body::before,
+    body::after {
+        display: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .logo-hackathon {
+        width: 56px;
+    }
+}
+
+@media (max-width: 750px) {
+    .titulo-home {
+        margin-bottom: 60px;
+    }
+
+    .areas-home {
+        grid-template-columns: 250px;
+        gap: 50px;
+        margin-bottom: 100px;
+    }
+
+    .cronograma-home {
+        width: 100%;
+        max-width: 600px;
+    }
+
+    .texto-evento strong {
+        font-size: 18px;
+    }
+
+    .texto-evento span {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 700px) {
+    .menu-lateral {
+        height: 65px;
+    }
+
+    body {
+        padding-top: 65px;
+    }
+
+    h1 {
+        font-size: 35px;
+    }
+
+    .subtitulo {
+        margin-bottom: 30px;
+        font-size: 17px;
+    }
+
+    .formulario-inscricao {
+        padding: 25px 20px;
+        border-radius: 18px;
+    }
+
+    .separador span {
+        font-size: 17px;
+    }
+
+    .pagina-analise,
+    .pagina-confirmacao {
+        padding: 40px 15px 70px;
+    }
 }
 
 @media (max-width: 600px) {
+    .conteudo-home {
+        width: 100%;
+        margin-left: 0;
+        padding: 25px 10px 60px;
+    }
+
+    .areas-home {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 25px 10px;
+        width: 100%;
+        max-width: none;
+        margin: 0 auto 70px;
+    }
+
+    .card-home {
+        width: 100%;
+        min-width: 0;
+        min-height: 150px;
+        justify-content: center;
+    }
+
+    .botao-home {
+        width: 100%;
+        min-width: 0;
+        padding: 10px 4px;
+        font-size: 13px;
+        white-space: normal;
+    }
+
+    .icone-home svg {
+        width: 48px;
+        height: 48px;
+    }
+
+    .menu-lateral {
+        width: 100%;
+    }
+
+    .logo-hackathon {
+        width: 60px;
+    }
 
     .pagina-analise {
         padding: 40px 10px 50px;
-    }
-
-    .titulo-resultados {
-        font-size: 46px;
-        gap: 12px;
-    }
-
-    .titulo-resultados svg {
-        width: 56px;
-        height: 56px;
     }
 
     .pagina-analise .subtitulo {
@@ -1679,29 +975,14 @@ h1 {
         font-size: 16px;
         padding: 13px 24px;
     }
-}
-/* LINHAS AO LADO DO TÍTULO */
-.titulo-resultados {
-    position: relative;
-    width: 100%;
-}
 
-.titulo-resultados::before,
-.titulo-resultados::after {
-    content: "";
-    position: absolute;
-    top: 72%;
+    .titulo-resultados {
+        font-size: 46px;
+        gap: 12px;
+    }
 
-    width: 28%;
-    height: 2px;
-
-    background-color: #b9d9f5;
-}
-
-.titulo-resultados::before {
-    left: 0;
-}
-
-.titulo-resultados::after {
-    right: 0;
+    .titulo-resultados svg {
+        width: 56px;
+        height: 56px;
+    }
 }
