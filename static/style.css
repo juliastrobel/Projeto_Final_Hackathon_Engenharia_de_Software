@@ -10,6 +10,46 @@ body {
     overflow-x: hidden;
 }
 
+body::before,
+body::after {
+    position: fixed;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: rgba(255, 223, 0, 0.12);
+
+    font-family: "Courier New", monospace;
+    font-size: 260px;
+    font-weight: bold;
+
+    pointer-events: none;
+
+    z-index: 0;
+}
+
+body::before {
+    content: "{";
+    left: 40px;
+}
+
+body::after {
+    content: "}";
+    right: 40px;
+}
+
+.conteudo-home {
+    position: relative;
+    z-index: 1;
+}
+
+@media (max-width: 1100px) {
+    body::before,
+    body::after {
+        display: none;
+    }
+}
+
 /* ========================================
    FORMULÁRIO DE NOTA (DASHBOARD JURADO)
 ======================================== */
