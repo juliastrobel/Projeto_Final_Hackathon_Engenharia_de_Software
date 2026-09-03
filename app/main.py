@@ -491,7 +491,7 @@ async def auth_callback(code: str, state: str, request: Request):
 
 @app.get("/", response_class=HTMLResponse)
 async def homepage(request: Request):
-    return templates.TemplateResponse(request, "home.html", {})
+    return templates.TemplateResponse(request, "home.html", {"cronograma": CRONOGRAMA},)
 
 
 @app.get("/jurado/login", response_class=HTMLResponse)
@@ -1134,3 +1134,17 @@ async def resultados(request: Request):
         request, "resultados.html",
         {"ranking": ranking},
     )
+
+def formatar_periodo(inicio_str: str, fim_str: str) -> str:
+    inicio = datetime.fromisoformat(inicio_str)
+    fim = datetime.fromisoformat(fim_str)
+    return f"{inicio.strftime('%d/%m')} - {fim.strftime('%d/%m')}"
+
+
+CRONOGRAMA = {
+    "inscricoes": formatar_periodo(os.getenv("INSCRICOES_INICIO"), os.getenv("INSCRICOES_FIM")),
+    "validacao": formatar_periodo(os.getenv("VALIDACAO_INICIO"), os.getenv("VALIDACAO_FIM")),
+    "upload": formatar_periodo(os.getenv("UPLOAD_INICIO"), os.getenv("UPLOAD_FIM")),
+    "avaliacao": formatar_periodo(os.getenv("AVALIACAO_INICIO"), os.getenv("AVALIACAO_FIM")),
+    "resultados": datetime.fromisoformat(os.getenv("RESULTADOS_DATA")).strftime("%d/%m"),
+}
