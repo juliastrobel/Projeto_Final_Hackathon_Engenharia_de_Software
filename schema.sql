@@ -9,8 +9,7 @@ CREATE TABLE IF NOT EXISTS teams (
     github_username TEXT,
     access_token TEXT,
     veredito TEXT,
-    analisado_em TEXT,
-    nota_previa REAL
+    analisado_em TEXT
 );
 
 CREATE TABLE IF NOT EXISTS team_members (
