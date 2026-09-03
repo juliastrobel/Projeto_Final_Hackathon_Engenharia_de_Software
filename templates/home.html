@@ -182,14 +182,8 @@
     const alturas = [0, 120, 240, 360, 500];
 
     const hoje = new Date();
-
-    const datas = [
-        new Date(2026, 8, 23),
-        new Date(2026, 8, 26),
-        new Date(2026, 8, 30),
-        new Date(2026, 9, 5),
-        new Date(2026, 9, 15)
-    ];
+    
+    const datas = {{ cronograma_marcos | tojson }}.map(d => new Date(d + "T00:00:00"));
 
     let etapaAtual = -1;
 
