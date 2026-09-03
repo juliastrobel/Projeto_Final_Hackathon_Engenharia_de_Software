@@ -2,23 +2,30 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resultados - Hackathon IFPR</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <aside class="menu-lateral"><div class="hamburguer"><a href="/">
-        <img src="/static/logo-hackathon.png"
-             alt="Logo Hackathon"
-             class="logo-hackathon">
-    </a></div></aside>
-
+    <aside class="menu-lateral">
+        <div class="hamburguer">
+            <a href="/">
+                <img
+                    src="/static/logo-hackathon.png"
+                    alt="Logo Hackathon"
+                    class="logo-hackathon"
+                >
+            </a>
+        </div>
+    </aside>
     <main class="pagina-inscricao">
-        <form class="formulario-inscricao">
         <h1 class="titulo-resultados">
-    <i data-lucide="chart-no-axes-column-increasing"></i>
-    Resultados
-</h1>
-        <p class="subtitulo">Ranking final - Hackathon IFPR Pinhais</p>
+            <i data-lucide="chart-no-axes-column-increasing"></i>
+            Resultados
+        </h1>
+        <p class="subtitulo">
+            Ranking final - Hackathon IFPR Pinhais
+        </p>
 
         <table class="tabela-commits">
             <thead>
@@ -40,12 +47,11 @@
         </table>
 
         <a href="/" class="botao-inscrever">Voltar à página inicial</a>
-        </form>
     </main>
-    <script src="https://unpkg.com/lucide@latest"></script>
 
-<script>
-    lucide.createIcons();
-</script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>
