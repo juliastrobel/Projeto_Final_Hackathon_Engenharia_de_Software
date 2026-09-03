@@ -1244,3 +1244,11 @@ CRONOGRAMA = {
     "avaliacao": formatar_periodo(os.getenv("AVALIACAO_INICIO"), os.getenv("AVALIACAO_FIM")),
     "resultados": datetime.fromisoformat(os.getenv("RESULTADOS_DATA")).strftime("%d/%m"),
 }
+
+CRONOGRAMA_MARCOS = [
+    os.getenv("INSCRICOES_INICIO"),
+    os.getenv("VALIDACAO_INICIO"),
+    os.getenv("UPLOAD_INICIO"),
+    os.getenv("AVALIACAO_INICIO"),
+    os.getenv("RESULTADOS_DATA"),
+]
