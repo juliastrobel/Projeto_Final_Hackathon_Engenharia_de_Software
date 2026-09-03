@@ -1310,16 +1310,17 @@ h1 {
 @media (max-width: 600px) {
 
     .menu-lateral {
-        width: 58px;
+        width: 100%;
+        height: 65px;
     }
 
     .logo-hackathon {
-        width: 46px;
+        width: 60px;
     }
 
     .conteudo-home {
-        width: calc(100% - 58px);
-        margin-left: 58px;
+        width: 100%;
+        margin-left: 0;
         padding: 25px 10px 60px;
     }
 
