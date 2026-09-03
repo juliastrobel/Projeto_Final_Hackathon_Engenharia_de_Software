@@ -1432,7 +1432,7 @@ h1 {
 }
 
 .logo-hackathon {
-    width: 78px;
+    width: 80px;
     height: auto;
     display: block;
     margin: 0;
@@ -1448,17 +1448,18 @@ h1 {
 
 .hamburguer a:first-child::after {
     content: "ACKATHON";
+    align-items: center;
+    justify-content: center;
     text-decoration: underline;
     text-decoration-color: white;
     color: #FFDF00;
 
     font-family: "JetBrains Mono", monospace;
-    font-size: 30px;
+    font-size: 40px;
     font-weight: bold;
 
     letter-spacing: 2px;
 
     white-space: nowrap;
     text-decoration: underline;
-    text-decoration-thickness: 3px;
 }
