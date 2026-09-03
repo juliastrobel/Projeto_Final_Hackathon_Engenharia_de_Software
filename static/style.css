@@ -548,8 +548,14 @@ h1 {
     background-color: rgba(255, 255, 255, 0.04);
     border: 2px solid #b9d9f5;
     border-radius: 24px;
+    transition: transform 0.25s ease, border-color 0.25s ease,
+            box-shadow 0.25s ease;
 }
-
+.card-home:hover {
+    transform: translateY(-5px);
+    border-color: #FFDF00;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
+}
 /* ========================================
    BOTÕES
 ======================================== */
