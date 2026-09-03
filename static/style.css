@@ -805,23 +805,22 @@ h1 {
 
     transform: translateX(-50%);
 }
-
-
-/* PARTE AMARELA DA LINHA */
-
-.linha-tempo::before {
-    content: "";
-
+.progresso-timeline {
     position: absolute;
 
     top: 0;
     left: 0;
 
     width: 5px;
-    height: 120px;
+    height: 0;
 
     background-color: #ffdf00;
+
+    z-index: 1;
+
+    transition: height 1.5s ease;
 }
+
 
 
 /* ========================================
@@ -841,20 +840,22 @@ h1 {
     background-color: #b9d9f5;
 
     transform: translate(-50%, -50%);
-}
+        z-index: 2;
 
+    transition: background-color 0.3s ease;
+}
+.ponto.ativo {
+    background-color: #ffdf00;
+}
 
 .ponto-1 {
     top: 0;
-
-    background-color: #ffdf00;
 }
 
 
 .ponto-2 {
     top: 120px;
 
-    background-color: #ffdf00;
 }
 
 
