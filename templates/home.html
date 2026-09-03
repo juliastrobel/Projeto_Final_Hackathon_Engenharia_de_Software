@@ -175,6 +175,41 @@
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
     lucide.createIcons();
+
+    const progresso = document.querySelector(".progresso-timeline");
+    const pontos = document.querySelectorAll(".ponto");
+
+    const alturas = [0, 120, 240, 360, 500];
+
+    const hoje = new Date();
+
+    const datas = [
+        new Date(2026, 8, 23),
+        new Date(2026, 8, 26),
+        new Date(2026, 8, 30),
+        new Date(2026, 9, 5),
+        new Date(2026, 9, 15)
+    ];
+
+    let etapaAtual = 2;
+
+ /*   datas.forEach((data, index) => {
+        if (hoje >= data) {
+            etapaAtual = index;
+        }
+    });
+    */
+    setTimeout(() => {
+        progresso.style.height = alturas[etapaAtual] + "px";
+    }, 300);
+
+    pontos.forEach((ponto, index) => {
+        if (index <= etapaAtual) {
+            setTimeout(() => {
+                ponto.classList.add("ativo");
+            }, 300 + index * 250);
+        }
+    });
 </script>
 </body>
 
