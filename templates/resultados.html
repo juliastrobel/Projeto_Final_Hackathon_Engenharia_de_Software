@@ -19,44 +19,37 @@
         </div>
     </aside>
     <main class="pagina-inscricao">
-        <form
-            method="post"
-            action="/"
-            class="formulario-inscricao"
-        >
-        <h1 class="titulo-resultados">
-            Resultados
-        </h1>
-        <p class="subtitulo">
-            Ranking final - Hackathon IFPR Pinhais
-        </p>
+        <div class="formulario-inscricao">
+            <h1 class="titulo-resultados">
+                Resultados
+            </h1>
+            <p class="subtitulo">
+                Ranking final - Hackathon IFPR Pinhais
+            </p>
 
-        <table class="tabela-commits">
-            <thead>
-                <tr>
-                    <th>Posição</th>
-                    <th>Equipe</th>
-                    <th>Nota média</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for r in ranking %}
-                <tr class="{{ 'linha-suspeita' if loop.index == 1 else '' }}">
-                    <td>{{ loop.index }}º</td>
-                    <td>{{ r.team_name }}</td>
-                    <td>{{ "%.1f"|format(r.media) }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <button
-                type="submit"
-                class="botao-inscrever"
-            >
+            <table class="tabela-commits">
+                <thead>
+                    <tr>
+                        <th>Posição</th>
+                        <th>Equipe</th>
+                        <th>Nota média</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in ranking %}
+                    <tr class="{{ 'linha-suspeita' if loop.index == 1 else '' }}">
+                        <td>{{ loop.index }}º</td>
+                        <td>{{ r.team_name }}</td>
+                        <td>{{ "%.1f"|format(r.media) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <a href="/" class="botao-inscrever" style="display:block; text-decoration:none; text-align:center;">
                 Voltar à página inicial
-            </button>
-
-        </form>
+            </a>
+        </div>
     </main>
 
     <script src="https://unpkg.com/lucide@latest"></script>
