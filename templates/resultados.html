@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados - Hackathon IFPR</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <aside class="menu-lateral"><div class="hamburguer">☰</div></aside>
+
+    <main class="pagina-analise">
+        <h1>🏆 Resultados</h1>
+        <p class="subtitulo">Ranking final - Hackathon IFPR Pinhais</p>
+
+        <table class="tabela-commits">
+            <thead>
+                <tr>
+                    <th>Posição</th>
+                    <th>Equipe</th>
+                    <th>Nota média</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in ranking %}
+                <tr class="{{ 'linha-suspeita' if loop.index == 1 else '' }}">
+                    <td>{{ loop.index }}º</td>
+                    <td>{{ r.team_name }}</td>
+                    <td>{{ "%.1f"|format(r.media) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="/" class="botao-inscrever">Voltar à página inicial</a>
+    </main>
+</body>
+</html>
