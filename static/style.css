@@ -538,15 +538,17 @@ h1 {
     display: flex;
 
     width: 250px;
-    min-height: 210px;
+    min-height: 230px;
+    padding: 25px 20px;
 
     flex-direction: column;
-
     align-items: center;
+    justify-content: center;
 
-    justify-content: flex-end;
+    background-color: rgba(255, 255, 255, 0.04);
+    border: 2px solid #b9d9f5;
+    border-radius: 24px;
 }
-
 
 /* ========================================
    BOTÕES
