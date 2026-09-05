@@ -23,6 +23,27 @@ body {
     padding-top: 80px;
 }
 
+/* ========================================
+   SCROLLBAR CUSTOMIZADA
+======================================== */
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #101555;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #ffdf00;
+    border-radius: 10px;
+    border: 3px solid #101555;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #f5c518;
+}
 
 /* ========================================
    FUNDO DECORATIVO ({ })
@@ -52,6 +73,11 @@ body::before {
 body::after {
     content: "} ";
     right: 40px;
+}
+
+html {
+    scrollbar-width: thin;
+    scrollbar-color: #ffdf00 #101555;
 }
 
 
