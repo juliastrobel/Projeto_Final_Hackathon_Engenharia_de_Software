@@ -399,8 +399,8 @@ h1 {
 }
 
 .logo-home {
-    width: clamp(300px, 60vw, 850px);
-    max-width: 90%;
+    width: clamp(350px, 70vw, 950px);
+    max-width: 100%;
     height: auto;
     display: block;
     margin: 0 auto;
