@@ -46,12 +46,12 @@ body::after {
 
 body::before {
     content: "{";
-    left: 40px;
+    left: 50px;
 }
 
 body::after {
     content: "}";
-    right: 40px;
+    right: 50px;
 }
 
 
@@ -75,6 +75,7 @@ body::after {
 
     background-color: #181F6B;
     z-index: 1000;
+    border-bottom: 5px solid #b9d9f5;
 }
 
 .hamburguer {
@@ -92,7 +93,7 @@ body::after {
 }
 
 .logo-hackathon {
-    width: 90px;
+    width: 150px;
     height: auto;
     display: block;
 }
