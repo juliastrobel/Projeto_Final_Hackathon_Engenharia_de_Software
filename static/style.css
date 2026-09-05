@@ -67,12 +67,12 @@ body::after {
 
 body::before {
     content: "    {";
-    left: 40px;
+    left: 75px;
 }
 
 body::after {
     content: "}    ";
-    right: 40px;
+    right: 75px;
 }
 
 html {
