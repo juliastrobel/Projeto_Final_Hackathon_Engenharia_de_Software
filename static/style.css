@@ -92,7 +92,7 @@ body::after {
 }
 
 .logo-hackathon {
-    width: 80px;
+    width: 90px;
     height: auto;
     display: block;
 }
@@ -851,7 +851,7 @@ h1 {
 
 @media (max-width: 900px) {
     .logo-hackathon {
-        width: 56px;
+        width: 70px;
     }
 }
 
@@ -953,7 +953,7 @@ h1 {
     }
 
     .logo-hackathon {
-        width: 72px;
+        width: 80px;
     }
 
     .pagina-analise {
