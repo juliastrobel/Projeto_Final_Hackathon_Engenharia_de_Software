@@ -66,12 +66,12 @@ body::after {
 }
 
 body::before {
-    content: " {";
+    content: "    {";
     left: 40px;
 }
 
 body::after {
-    content: "} ";
+    content: "}    ";
     right: 40px;
 }
 
