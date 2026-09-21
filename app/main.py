@@ -72,6 +72,18 @@ async def receber_inscricao(
     leader_email: str = Form(...),
     member_names: list[str] = Form(...),
 ):
+
+    team_name = team_name.strip()
+    leader_name = leader_name.strip()
+    leader_email = leader_email.strip()
+
+    if not team_name or not leader_name or not leader_email:
+        return templates.TemplateResponse(
+            request,
+            "inscricao.html",
+            {"erro": "Todos os campos obrigatórios devem ser preenchidos."},
+        )
+
     nomes_validos = [nome.strip() for nome in member_names if nome.strip()]
 
     total_integrantes = 1 + len(nomes_validos)
