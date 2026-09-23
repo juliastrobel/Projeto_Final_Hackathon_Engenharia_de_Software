@@ -27,7 +27,7 @@ body {
 ======================================== */
 
 ::-webkit-scrollbar {
-    width: 12px;
+    width: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -35,13 +35,13 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #ffdf00;
-    border-radius: 10px;
+    background-color: #F5C518;
+    border-radius: 8px;
     border: 3px solid #101555;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #f5c518;
+    background-color: #b9d9f5;
 }
 
 /* ========================================
