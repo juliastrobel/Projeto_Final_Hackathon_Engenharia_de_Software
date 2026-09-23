@@ -130,7 +130,7 @@ html {
 }
 
 .hamburguer a:first-child::after {
-    content: "ACKATHON";
+    content: "ackathon";
     margin-left: -12px;
 
     color: #F5C518;
