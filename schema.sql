@@ -57,3 +57,13 @@ CREATE TABLE IF NOT EXISTS avaliacoes (
     nota REAL,
     UNIQUE(judge_id, team_id)
 );
+
+CREATE TABLE IF NOT EXISTS pendentes (
+    id INTEGER PRIMARY KEY,
+    team_name TEXT NOT NULL,
+    leader_name TEXT NOT NULL,
+    leader_email TEXT NOT NULL,
+    member_names TEXT NOT NULL,
+    verify_token TEXT UNIQUE NOT NULL,
+    created_at TEXT NOT NULL
+);
