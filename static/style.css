@@ -58,7 +58,7 @@ body::after {
     color: rgba(255, 223, 0, 0.12);
 
     font-family: "Courier New", monospace;
-    font-size: 260px;
+    font-size: 300px;
     font-weight: bold;
 
     pointer-events: none;
