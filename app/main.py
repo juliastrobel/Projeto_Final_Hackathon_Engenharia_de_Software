@@ -2,6 +2,7 @@ import httpx
 import os
 import secrets
 import sqlite3
+import json
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -143,48 +144,36 @@ async def receber_inscricao(
         )
 
     verify_token = secrets.token_urlsafe(32)
-    access_token = secrets.token_urlsafe(32)
-
-    cur.execute(
-        """
-        INSERT INTO teams
-        (team_name, leader_name, leader_email, leader_email_verified, verify_token, access_token)
-        VALUES (?, ?, ?, 0, ?, ?)
-        """,
-        (team_name, leader_name, leader_email, verify_token, access_token),
-    )
-
-    team_id = cur.lastrowid
     
     cur.execute(
     """
-    INSERT INTO team_members
-    (team_id, member_name, is_leader)
-    VALUES (?, ?, 1)
+    INSERT INTO pendentes
+    (team_name, leader_name, leader_email, member_names, verify_token, created_at)
+    VALUES (?, ?, ?, ?, ?, ?)
     """,
-    (team_id, leader_name),
-    )
-    
-    for nome in nomes_validos:
-        cur.execute(
-            """
-            INSERT INTO team_members
-            (team_id, member_name, is_leader)
-            VALUES (?, ?, 0)
-            """,
-            (team_id, nome),
-        )
+    (
+        team_name,
+        leader_name,
+        leader_email,
+        json.dumps(nomes_validos, ensure_ascii=False),
+        verify_token,
+        datetime.utcnow().isoformat(),
+    ),
+)
 
-    conn.commit()
-    conn.close()
+conn.commit()
+conn.close()
 
-    enviar_email_verificacao(leader_email, verify_token)
-    
-    return templates.TemplateResponse(
-        request,
-        "verificacao.html",
-        {"team_name": team_name, "leader_email": leader_email},
-    )
+enviar_email_verificacao(leader_email, verify_token)
+
+return templates.TemplateResponse(
+    request,
+    "verificacao.html",
+    {
+        "team_name": team_name,
+        "leader_email": leader_email,
+    },
+)
 
 def enviar_email_verificacao(email: str, token: str):
     api_key = os.getenv("BREVO_API_KEY")
@@ -259,33 +248,108 @@ def enviar_email_area_equipe(email: str, link: str):
 
 @app.get("/verify")
 async def verificar_email(token: str, request: Request):
+
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute(
-        "SELECT id FROM teams WHERE verify_token = ?",
+        """
+        SELECT id,
+               team_name,
+               leader_name,
+               leader_email,
+               member_names
+        FROM pendentes
+        WHERE verify_token = ?
+        """,
         (token,),
     )
 
-    row = cur.fetchone()
+    pendente = cur.fetchone()
 
-    if not row:
+    if not pendente:
         conn.close()
+
         return templates.TemplateResponse(
-            request, "erro.html",
-            {"mensagem": "Link de verificação inválido.",  "link_voltar": "/"},
+            request,
+            "erro.html",
+            {
+                "mensagem": "Link de verificação inválido ou já utilizado.",
+                "link_voltar": "/",
+            },
         )
-        
+
+    # Gera os tokens definitivos da equipe
+    access_token = secrets.token_urlsafe(32)
+
+    # Cria a equipe oficialmente
     cur.execute(
-        "UPDATE teams SET leader_email_verified = 1 WHERE id = ?",
-        (row["id"],),
+        """
+        INSERT INTO teams
+        (
+            team_name,
+            leader_name,
+            leader_email,
+            leader_email_verified,
+            verify_token,
+            access_token
+        )
+        VALUES (?, ?, ?, 1, NULL, ?)
+        """,
+        (
+            pendente["team_name"],
+            pendente["leader_name"],
+            pendente["leader_email"],
+            access_token,
+        ),
+    )
+
+    team_id = cur.lastrowid
+
+    # Recupera os integrantes
+    nomes_validos = json.loads(pendente["member_names"])
+
+    # Adiciona o líder
+    cur.execute(
+        """
+        INSERT INTO team_members
+        (team_id, member_name, is_leader)
+        VALUES (?, ?, 1)
+        """,
+        (
+            team_id,
+            pendente["leader_name"],
+        ),
+    )
+
+    # Adiciona os demais integrantes
+    for nome in nomes_validos:
+        cur.execute(
+            """
+            INSERT INTO team_members
+            (team_id, member_name, is_leader)
+            VALUES (?, ?, 0)
+            """,
+            (
+                team_id,
+                nome,
+            ),
+        )
+
+    # Remove a inscrição pendente
+    cur.execute(
+        """
+        DELETE FROM pendentes
+        WHERE id = ?
+        """,
+        (pendente["id"],),
     )
 
     conn.commit()
     conn.close()
 
     return RedirectResponse(
-        url=f"/login?team_id={row['id']}"
+        url=f"/login?team_id={team_id}"
     )
 
 
