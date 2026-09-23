@@ -19,7 +19,7 @@ body {
     min-height: 100vh;
     background-color: #101555;
     color: white;
-    font-family: Arial, sans-serif;
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
     padding-top: 80px;
 }
 
@@ -57,7 +57,7 @@ body::after {
 
     color: rgba(255, 223, 0, 0.12);
 
-    font-family: "Courier New", monospace;
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
     font-size: 500px;
     font-weight: bold;
 
@@ -221,7 +221,7 @@ h1 {
     text-align: center;
     color: #f5c518;
 
-    font-family: Georgia, serif;
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
     font-size: 50px;
     font-weight: normal;
 }
@@ -308,7 +308,7 @@ h1 {
 
 .separador span {
     color: #ffdf00;
-    font-family: Georgia, serif;
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
     font-size: 20px;
     white-space: nowrap;
 }
@@ -384,7 +384,7 @@ h1 {
     background-color: #ffdf00;
     color: #101555;
 
-    font-family: Georgia, serif;
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
     font-size: 20px;
 
     cursor: pointer;
@@ -475,7 +475,7 @@ h1 {
     text-align: center;
     text-decoration: none;
 
-    font-family: Arial, sans-serif;
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
     font-size: 17px;
     font-weight: 600;
 
@@ -519,7 +519,7 @@ h1 {
 .separador-cronograma h2 {
     margin: 0;
     color: #ffdf00;
-    font-family: Georgia, serif;
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
     font-size: 32px;
     font-weight: normal;
     white-space: nowrap;
@@ -706,7 +706,7 @@ h1 {
 .lista-suspeitas h3 {
     margin-bottom: 12px;
     color: #ffdf00;
-    font-family: Georgia, serif;
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
     font-size: 20px;
     font-weight: normal;
 }
@@ -737,7 +737,7 @@ h1 {
     text-align: left;
 
     color: #ffdf00;
-    font-family: Georgia, serif;
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
     font-size: 18px;
     font-weight: normal;
 }
@@ -775,7 +775,7 @@ h1 {
     color: #101555;
     border-radius: 30px;
 
-    font-family: Arial, sans-serif;
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
     font-size: 17px;
     font-weight: 600;
     text-decoration: none;
@@ -800,7 +800,7 @@ h1 {
     gap: 12px;
 
     color: #ffdf00;
-    font-family: Georgia, serif;
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
     font-size: 48px;
     font-weight: normal;
     margin-bottom: 12px;
