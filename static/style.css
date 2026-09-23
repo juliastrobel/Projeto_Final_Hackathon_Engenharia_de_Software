@@ -91,7 +91,7 @@ html {
     right: 0;
 
     width: 100%;
-    height: 75px;
+    height: 100px;
 
     display: flex;
     flex-direction: row;
@@ -118,7 +118,7 @@ html {
 }
 
 .logo-hackathon {
-    width: 100px;
+    width: 120px;
     height: auto;
     display: block;
 }
@@ -137,7 +137,7 @@ html {
     color: #F5C518;
 
     font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
-    font-size: 40px;
+    font-size: 50px;
     font-weight: 700;
     letter-spacing: -1.5px;
     line-height: 1;
