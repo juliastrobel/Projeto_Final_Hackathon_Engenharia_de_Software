@@ -285,7 +285,7 @@ h1 {
 }
 
 .campo input:focus {
-    border-color: #ffdf00;
+    border-color: #f5c518;
     box-shadow: 0 0 0 3px rgba(255, 223, 0, 0.15);
 }
 
@@ -305,7 +305,7 @@ h1 {
 }
 
 .separador span {
-    color: #ffdf00;
+    color: #f5c518;
     font-family: Georgia, serif;
     font-size: 20px;
     white-space: nowrap;
@@ -326,10 +326,10 @@ h1 {
     margin: 5px auto 20px;
     padding: 11px 22px;
 
-    border: 2px solid #ffdf00;
+    border: 2px solid #f5c518;
     border-radius: 25px;
     background-color: transparent;
-    color: #ffdf00;
+    color: #f5c518;
     font-size: 16px;
 
     cursor: pointer;
@@ -367,8 +367,8 @@ h1 {
 }
 
 .botao-remover:hover {
-    border-color: #ffdf00;
-    color: #ffdf00;
+    border-color: #f5c518;
+    color: #f5c518;
 }
 
 .botao-inscrever {
@@ -379,10 +379,9 @@ h1 {
 
     border: none;
     border-radius: 30px;
-    background-color: #ffdf00;
+    background-color: #f5c518;
     color: #101555;
-
-    font-family: Georgia, serif;
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
     font-size: 20px;
 
     cursor: pointer;
@@ -390,7 +389,7 @@ h1 {
 }
 
 .botao-inscrever:hover {
-    background-color: #f5c518;
+    background-color: #ffdf00;
     transform: translateY(-1px);
 }
 
