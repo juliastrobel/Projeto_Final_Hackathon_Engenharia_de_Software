@@ -117,12 +117,13 @@ html {
 }
 
 .logo-hackathon {
-    width: 120px;
+    width: clamp(75px, 8vw, 120px);
     height: auto;
     display: block;
 }
 
 .hamburguer a:first-child {
+   --logo-width: clamp(75px, 8vw, 120px);
     display: flex;
     align-items: center;
     gap: 0;
@@ -131,12 +132,12 @@ html {
 
 .hamburguer a:first-child::after {
     content: "ackathon";
-    margin-left: -12px;
+    margin-left: -10px;
 
     color: #F5C518;
 
     font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
-    font-size: 50px;
+    font-size: clamp(42px, 4.5vw, 68px);
     font-weight: 700;
     letter-spacing: -1.5px;
     line-height: 1;
