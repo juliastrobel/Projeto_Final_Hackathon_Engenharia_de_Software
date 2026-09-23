@@ -35,13 +35,13 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #F5C518;
+    background-color:  #b9d9f5;
     border-radius: 8px;
     border: 3px solid #101555;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #b9d9f5;
+    background-color: #F5C518;
 }
 
 /* ========================================
