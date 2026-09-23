@@ -419,7 +419,7 @@ h1 {
 
 .titulo-home {
     text-align: center;
-    margin-bottom: 0;
+    margin-bottom: 0 auto;
 }
 
 .logo-home {
