@@ -58,7 +58,7 @@ body::after {
     color: rgba(255, 223, 0, 0.12);
 
     font-family: "Courier New", monospace;
-    font-size: 300px;
+    font-size: 500px;
     font-weight: bold;
 
     pointer-events: none;
@@ -67,12 +67,12 @@ body::after {
 
 body::before {
     content: "    {";
-    left: 75px;
+    left: 100px;
 }
 
 body::after {
     content: "}    ";
-    right: 75px;
+    right: 100px;
 }
 
 html {
