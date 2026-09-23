@@ -130,8 +130,8 @@ html {
 }
 
 .hamburguer a:first-child::after {
-    content: "ackathon";
-    margin-left: -10px;
+    content: "ACKATHON";
+    margin-left: -12px;
 
     color: #F5C518;
 
@@ -218,10 +218,9 @@ html {
 h1 {
     text-align: center;
     color: #f5c518;
-
-    font-family: Georgia, serif;
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
     font-size: 50px;
-    font-weight: normal;
+    font-weight: bold;
 }
 
 .subtitulo {
