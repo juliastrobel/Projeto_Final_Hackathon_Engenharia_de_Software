@@ -35,7 +35,7 @@ body {
 
     cursor: pointer;
     transition: 0.2s;
-    display: flex;
+    display: block;
     align-items: center;
     justify-content: center;
     gap: 8px;
