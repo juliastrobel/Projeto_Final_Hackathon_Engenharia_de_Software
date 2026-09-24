@@ -1382,7 +1382,9 @@ def agendar_congelamento():
 
     scheduler.start()
 
-agendar_congelamento()
+@app.on_event("startup")
+async def iniciar_agendamento():
+    agendar_congelamento()
 
 async def congelar_equipe(team_id: int):
     conn = get_db()
