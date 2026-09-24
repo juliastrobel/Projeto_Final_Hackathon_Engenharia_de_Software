@@ -81,9 +81,7 @@ body {
 }
 
 .botao-github:hover {
-   border: 1px solid rgba(245, 197, 24, 0.25);
     background-color: #ffdf00;
-    transform: translateY(-1px);
 }
 
 .botao-github svg {
