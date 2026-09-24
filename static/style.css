@@ -22,6 +22,37 @@ body {
     padding-top: 80px;
 }
 
+/* ========================================
+   FEATURES
+======================================== */
+
+.gif-hackathon {
+    display: block;
+
+    width: 280px;
+    max-width: 80%;
+
+    margin: 35px auto;
+
+    border-radius: 20px;
+
+    border: 1px solid rgba(255, 223, 0, 0.25);
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.25);
+
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.gif-hackathon:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 14px 35px rgba(0, 0, 0, 0.35);
+}
+
 .botao-github {
     text-align: center;
     border: none;
