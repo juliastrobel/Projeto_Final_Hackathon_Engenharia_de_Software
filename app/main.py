@@ -288,145 +288,93 @@ def enviar_email_area_equipe(email: str, link: str):
 
 @app.get("/verify")
 async def verificar_email(token: str, request: Request):
-
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute(
-        """
-        SELECT id,
-               team_name,
-               leader_name,
-               leader_email,
-               member_names
-        FROM pendentes
-        WHERE verify_token = ?
-        """,
+        "SELECT id FROM pendentes WHERE verify_token = ?",
         (token,),
     )
-
     pendente = cur.fetchone()
 
     if not pendente:
         conn.close()
-
         return templates.TemplateResponse(
-            request,
-            "erro.html",
-            {
-                "mensagem": "Link de verificação inválido ou já utilizado.",
-                "link_voltar": "/",
-            },
+            request, "erro.html",
+            {"mensagem": "Link de verificação inválido ou já utilizado.", "link_voltar": "/"},
         )
 
-    # Gera os tokens definitivos da equipe
-    access_token = secrets.token_urlsafe(32)
-
-    # Cria a equipe oficialmente
     cur.execute(
-        """
-        INSERT INTO teams
-        (
-            team_name,
-            leader_name,
-            leader_email,
-            leader_email_verified,
-            verify_token,
-            access_token
-        )
-        VALUES (?, ?, ?, 1, NULL, ?)
-        """,
-        (
-            pendente["team_name"],
-            pendente["leader_name"],
-            pendente["leader_email"],
-            access_token,
-        ),
-    )
-
-    team_id = cur.lastrowid
-
-    # Recupera os integrantes
-    nomes_validos = json.loads(pendente["member_names"])
-
-    # Adiciona o líder
-    cur.execute(
-        """
-        INSERT INTO team_members
-        (team_id, member_name, is_leader)
-        VALUES (?, ?, 1)
-        """,
-        (
-            team_id,
-            pendente["leader_name"],
-        ),
-    )
-
-    # Adiciona os demais integrantes
-    for nome in nomes_validos:
-        cur.execute(
-            """
-            INSERT INTO team_members
-            (team_id, member_name, is_leader)
-            VALUES (?, ?, 0)
-            """,
-            (
-                team_id,
-                nome,
-            ),
-        )
-
-    # Remove a inscrição pendente
-    cur.execute(
-        """
-        DELETE FROM pendentes
-        WHERE id = ?
-        """,
+        "UPDATE pendentes SET email_verified = 1 WHERE id = ?",
         (pendente["id"],),
     )
-
     conn.commit()
     conn.close()
 
-    return RedirectResponse(
-        url=f"/login?team_id={team_id}"
-    )
+    return RedirectResponse(url=f"/login?pendente_id={pendente['id']}")
 
 
 @app.get("/login")
-async def login(team_id: int, request: Request):
+async def login(pendente_id: int, request: Request):
     conn = get_db()
     cur = conn.cursor()
 
     cur.execute(
-        "SELECT leader_email_verified FROM teams WHERE id = ?",
-        (team_id,),
+        "SELECT email_verified FROM pendentes WHERE id = ?",
+        (pendente_id,),
     )
-
     row = cur.fetchone()
     conn.close()
 
-    if not row or not row["leader_email_verified"]:
+    if not row or not row["email_verified"]:
         return templates.TemplateResponse(
             request, "erro.html",
             {"mensagem": "Verifique seu email antes de conectar o GitHub.", "link_voltar": "/"},
         )
 
     client_id = os.getenv("GITHUB_CLIENT_ID")
-
     redirect_uri = f"{BASE_URL}/auth/callback"
 
     github_auth_url = (
         "https://github.com/login/oauth/authorize"
         f"?client_id={client_id}"
         f"&redirect_uri={redirect_uri}"
-        f"&state={team_id}"
+        f"&state={pendente_id}"
     )
 
     return RedirectResponse(url=github_auth_url)
 
 @app.get("/auth/callback")
-async def auth_callback(code: str, state: str, request: Request):
+async def auth_callback(
+    request: Request,
+    code: str | None = None,
+    state: str | None = None,
+    error: str | None = None,
+):
+    if error:
+        # Se veio de um fluxo de primeira conexão (pendente), reoferece o link
+        try:
+            pendente_id = int(state)
+            return templates.TemplateResponse(
+                request, "erro.html",
+                {
+                    "mensagem": "Você cancelou a autorização do GitHub. "
+                                "Sua inscrição continua pendente — clique no link "
+                                "de verificação do seu e-mail novamente para tentar de novo.",
+                    "link_voltar": "/",
+                },
+            )
+        except (TypeError, ValueError):
+            return templates.TemplateResponse(
+                request, "erro.html",
+                {"mensagem": "Autorização do GitHub cancelada.", "link_voltar": "/"},
+            )
+
+    if not code or not state:
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": "Requisição inválida.", "link_voltar": "/"},
+        )
 
     equipe_login_state = request.cookies.get("equipe_login_state")
     equipe_login_team_id = request.cookies.get("equipe_login_team_id")
@@ -437,11 +385,11 @@ async def auth_callback(code: str, state: str, request: Request):
         and secrets.compare_digest(equipe_login_state, state)
     )
 
-    team_id = None
-    
+    pendente_id = None
+
     if not login_equipe:
         try:
-            team_id = int(state)
+            pendente_id = int(state)
         except ValueError:
             return templates.TemplateResponse(
                 request, "erro.html",
@@ -597,36 +545,71 @@ async def auth_callback(code: str, state: str, request: Request):
 
     conn = get_db()
     cur = conn.cursor()
+
     cur.execute(
-        "UPDATE teams SET github_username = ? WHERE id = ?",
-        (github_username, team_id),
+        "SELECT * FROM pendentes WHERE id = ? AND email_verified = 1",
+        (pendente_id,),
     )
+    pendente = cur.fetchone()
+
+    if not pendente:
+        conn.close()
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {
+                "mensagem": "Inscrição pendente não encontrada ou e-mail ainda não verificado.",
+                "link_voltar": "/",
+            },
+        )
+
+    access_token_equipe = secrets.token_urlsafe(32)
+
     cur.execute(
-    """
-    UPDATE team_members
-    SET github_username = ?
-    WHERE team_id = ? AND is_leader = 1
-    """,
-    (github_username, team_id),
+        """
+        INSERT INTO teams
+        (team_name, leader_name, leader_email, leader_email_verified,
+         verify_token, access_token, github_username)
+        VALUES (?, ?, ?, 1, NULL, ?, ?)
+        """,
+        (
+            pendente["team_name"],
+            pendente["leader_name"],
+            pendente["leader_email"],
+            access_token_equipe,
+            github_username,
+        ),
     )
-    cur.execute("SELECT team_name, leader_email, access_token FROM teams WHERE id = ?", (team_id,))
-    team_row = cur.fetchone()
+    team_id_novo = cur.lastrowid
+
+    nomes_validos = json.loads(pendente["member_names"])
+
+    cur.execute(
+        "INSERT INTO team_members (team_id, member_name, is_leader, github_username) VALUES (?, ?, 1, ?)",
+        (team_id_novo, pendente["leader_name"], github_username),
+    )
+
+    for nome in nomes_validos:
+        cur.execute(
+            "INSERT INTO team_members (team_id, member_name, is_leader) VALUES (?, ?, 0)",
+            (team_id_novo, nome),
+        )
+
+    cur.execute("DELETE FROM pendentes WHERE id = ?", (pendente["id"],))
+
     conn.commit()
     conn.close()
 
-    link_area_equipe = f"{BASE_URL}/equipe/{team_id}?token={team_row['access_token']}"
-    enviar_email_area_equipe(team_row["leader_email"], link_area_equipe)
+    link_area_equipe = f"{BASE_URL}/equipe/{team_id_novo}?token={access_token_equipe}"
+    enviar_email_area_equipe(pendente["leader_email"], link_area_equipe)
 
     return templates.TemplateResponse(
-        request,
-        "sucesso.html",
+        request, "sucesso.html",
         {
-            "team_name": team_row["team_name"],
+            "team_name": pendente["team_name"],
             "github_username": github_username,
             "link_area_equipe": link_area_equipe,
         },
     )
-
 
 @app.get("/", response_class=HTMLResponse)
 async def homepage(request: Request):
