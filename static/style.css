@@ -136,7 +136,7 @@ html {
     right: 0;
 
     width: 100%;
-    height: clamp(70px, 8vw, 100px);
+    height: clamp(60px, 7vw, 90px);
 
     display: flex;
     flex-direction: row;
