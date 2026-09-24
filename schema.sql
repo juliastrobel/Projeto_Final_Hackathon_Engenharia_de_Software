@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS teams (
 
 CREATE TABLE IF NOT EXISTS team_members (
     id INTEGER PRIMARY KEY,
-    team_id INTEGER REFERENCES teams(id),
+    team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
     member_name TEXT,
     github_username TEXT,
     is_leader BOOLEAN DEFAULT 0
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS team_members (
 
 CREATE TABLE IF NOT EXISTS team_sessions (
     id INTEGER PRIMARY KEY,
-    team_id INTEGER REFERENCES teams(id),
+    team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
     session_token TEXT UNIQUE,
     created_at TEXT,
     expires_at TEXT
@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS judge_sessions (
 CREATE TABLE IF NOT EXISTS avaliacoes (
     id INTEGER PRIMARY KEY,
     judge_id INTEGER REFERENCES judges(id),
-    team_id INTEGER REFERENCES teams(id),
+    team_id INTEGER REFERENCES teams(id) ON DELETE CASCADE,
     nota REAL,
     UNIQUE(judge_id, team_id)
 );
