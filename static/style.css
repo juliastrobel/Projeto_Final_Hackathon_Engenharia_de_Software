@@ -434,6 +434,10 @@ h1 {
     transition: 0.2s;
 }
 
+.botao-inscrever svg {
+  margin-top: 5px;
+}
+
 .botao-inscrever:hover {
     background-color: #ffdf00;
     transform: translateY(-1px);
