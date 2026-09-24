@@ -19,14 +19,14 @@ O sistema cobre todo o ciclo do evento: inscrição de equipes, verificação au
 ![Jinja](https://img.shields.io/badge/Jinja2-B41717?style=for-the-badge&logo=jinja&logoColor=white)
 ![HTTPX](https://img.shields.io/badge/HTTPX-00599C?style=for-the-badge&logo=python&logoColor=white)
 
-#### Banco de Dados
-![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
-
 #### Frontend
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Lucide Icons](https://img.shields.io/badge/Lucide_Icons-F56565?style=for-the-badge&logo=lucide&logoColor=white)
+
+#### Banco de Dados
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
 
 #### Serviços & Integrações
 ![Brevo](https://img.shields.io/badge/Brevo-0080FF?style=for-the-badge&logo=brevo&logoColor=white)
