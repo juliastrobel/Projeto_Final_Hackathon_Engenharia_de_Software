@@ -31,21 +31,6 @@ EVENT_END = datetime.fromisoformat(
     os.getenv("EVENT_END")
 ).replace(tzinfo=BRASILIA)
 
-scheduler = AsyncIOScheduler(timezone=BRASILIA)
-
-def agendar_congelamento():
-    agora = datetime.now(BRASILIA)
-
-    if agora >= EVENT_END:
-        # o prazo já passou — congela imediatamente (recuperação pós-reinício)
-        scheduler.add_job(congelar_todas_as_equipes)
-    else:
-        scheduler.add_job(congelar_todas_as_equipes, "date", run_date=EVENT_END)
-
-    scheduler.start()
-
-agendar_congelamento()
-
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -1372,6 +1357,33 @@ CRONOGRAMA_MARCOS = [
     os.getenv("RESULTADOS_DATA"),
 ]
 
+scheduler = AsyncIOScheduler(timezone=BRASILIA)
+
+async def congelar_todas_as_equipes():
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT id FROM teams WHERE leader_email_verified = 1 AND github_username IS NOT NULL AND frozen_sha IS NULL"
+    )
+    equipes = cur.fetchall()
+    conn.close()
+
+    for e in equipes:
+        await congelar_equipe(e["id"])
+
+def agendar_congelamento():
+    agora = datetime.now(BRASILIA)
+
+    if agora >= EVENT_END:
+        # o prazo já passou — congela imediatamente (recuperação pós-reinício)
+        scheduler.add_job(congelar_todas_as_equipes)
+    else:
+        scheduler.add_job(congelar_todas_as_equipes, "date", run_date=EVENT_END)
+
+    scheduler.start()
+
+agendar_congelamento()
+
 async def congelar_equipe(team_id: int):
     conn = get_db()
     cur = conn.cursor()
@@ -1419,16 +1431,3 @@ async def congelar_equipe(team_id: int):
     )
     conn.commit()
     conn.close()
-
-
-async def congelar_todas_as_equipes():
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute(
-        "SELECT id FROM teams WHERE leader_email_verified = 1 AND github_username IS NOT NULL AND frozen_sha IS NULL"
-    )
-    equipes = cur.fetchall()
-    conn.close()
-
-    for e in equipes:
-        await congelar_equipe(e["id"])
