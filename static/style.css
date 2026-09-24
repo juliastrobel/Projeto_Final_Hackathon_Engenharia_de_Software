@@ -23,6 +23,7 @@ body {
 }
 
 .botao-github {
+   text-align: center;
    border: none;
    margin-top: 35px;
     padding: 15px;
