@@ -162,36 +162,37 @@
 
         {% endif %}
 
-        {% if contributors %}
+    {% if contributors %}
 
-            <div class="separador">
-                <span>Contribuidores encontrados no GitHub</span>
-            </div>
+    <div class="separador">
+        <span>Contribuidores encontrados no GitHub</span>
+    </div>
 
-            <div class="lista-integrantes">
+    <div class="lista-integrantes">
 
-                {% for c in contributors %}
+        {% for c in contributors %}
 
-                    <div class="campo">
+            <div class="campo integrante-github">
 
-                        <strong>{{ c.login }}</strong>
+                <strong>{{ c.login }}</strong>
 
-                        <p class="repo-analisado">
-                            {{ c.contributions }}
-                            {% if c.contributions == 1 %}
-                                contribuição
-                            {% else %}
-                                contribuições
-                            {% endif %}
-                        </p>
-
-                    </div>
-
-                {% endfor %}
+                <span class="contribuicoes">
+                    {{ c.contributions }}
+                    {% if c.contributions == 1 %}
+                        contribuição
+                    {% else %}
+                        contribuições
+                    {% endif %}
+                </span>
 
             </div>
 
-        {% endif %}
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
                 <a href="/equipe/logout"
            class="botao-inscrever"
            style="display:inline-block; width:auto; text-decoration:none;">
