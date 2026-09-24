@@ -207,12 +207,12 @@ html {
     right: 0;
 
     width: 100%;
-    height: clamp(60px, 7vw, 90px);
+    height: clamp(50px, 6vw, 75px);
 
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 0 20px;
+    padding: 0 0px;
 
     background-color: #181F6B;
     z-index: 1000;
