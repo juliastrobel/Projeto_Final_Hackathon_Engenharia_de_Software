@@ -97,13 +97,13 @@ body {
 body::before,
 body::after {
     position: fixed;
-    top: 60%;
+    top: 50%;
     transform: translateY(-50%);
 
     color: rgba(255, 223, 0, 0.12);
 
     font-family: "Courier New", monospace;
-    font-size: 500px;
+    font-size: 420px;
     /*font-weight: bold;*/
 
     pointer-events: none;
