@@ -20,7 +20,7 @@
 
 </aside>
     <main class="pagina-analise">
-        <h1>🔍 Análise: {{ equipe }}</h1>
+        <h1>Análise: {{ equipe }}</h1>
 
         <p class="repo-analisado">
             Repositório:
@@ -41,16 +41,25 @@
 
         <p>Criado em: {{ criado_em.strftime("%d/%m/%Y às %H:%M") }}</p>
 
-        {% if suspeitas %}
-        <div class="lista-suspeitas">
-            <h3>Pontos de atenção:</h3>
-            <ul>
-                {% for s in suspeitas %}
-                <li>{{ s }}</li>
-                {% endfor %}
-            </ul>
-        </div>
+		{% if suspeitas %}
+<details class="lista-suspeitas">
+    <summary>
+        ⚠️ {{ suspeitas|length }}
+        {% if suspeitas|length == 1 %}
+            ponto de atenção encontrado
+        {% else %}
+            pontos de atenção encontrados
         {% endif %}
+    </summary>
+
+    <ul>
+        {% for s in suspeitas %}
+        <li>{{ s }}</li>
+        {% endfor %}
+    </ul>
+</details>
+{% endif %}
+		
 
         <h3>Commits ({{ commits|length }})</h3>
         <table class="tabela-commits">
