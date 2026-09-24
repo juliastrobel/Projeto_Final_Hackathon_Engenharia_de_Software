@@ -47,18 +47,18 @@ body {
 .gif-hackathon::before,
 .gif-hackathon::after {
        font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
-    font-size: 200px;
+    font-size: 0px;
     font-weight: bold;
     color: #b9d9f5;
     line-height: 1;
 }
 
 .gif-hackathon::before {
-    content: "{";
+    content: "";
 }
 
 .gif-hackathon::after {
-    content: "}";
+    content: "";
 }
 
 .botao-github {
