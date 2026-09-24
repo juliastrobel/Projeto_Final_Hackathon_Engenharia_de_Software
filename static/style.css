@@ -265,7 +265,7 @@ html {
 .pagina-confirmacao .botao-inscrever {
     display: inline-block;
     width: auto;
-    margin-top: 25px;
+    margin-top: 0px;
     padding: 14px 30px;
     text-decoration: none;
 }
