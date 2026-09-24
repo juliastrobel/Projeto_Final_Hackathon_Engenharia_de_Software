@@ -29,28 +29,56 @@ body {
 .gif-hackathon {
     display: block;
 
-    width: 280px;
+    width: 320px;
     max-width: 80%;
 
-    margin: 35px auto;
+    margin: 40px auto;
 
-    border-radius: 20px;
+    border-radius: 14px;
 
-    border: 1px solid rgba(255, 223, 0, 0.25);
+    /* aparência de vidro/tela */
+    padding: 5px;
+
+    background: rgba(16, 21, 85, 0.55);
+
+    border: 1px solid rgba(180, 200, 255, 0.35);
 
     box-shadow:
-        0 8px 25px rgba(0, 0, 0, 0.25);
+        0 12px 35px rgba(0, 0, 0, 0.45),
+        inset 0 0 20px rgba(100, 140, 255, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.04);
+
+    opacity: 0.92;
+
+    filter:
+        contrast(1.05)
+        saturate(0.9);
 
     transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
+        transform 0.35s ease,
+        opacity 0.35s ease,
+        filter 0.35s ease,
+        box-shadow 0.35s ease,
+        border-color 0.35s ease;
 }
 
 .gif-hackathon:hover {
-    transform: translateY(-4px);
+    transform:
+        translateY(-6px)
+        scale(1.025);
+
+    opacity: 1;
+
+    filter:
+        contrast(1.12)
+        saturate(1.15);
+
+    border-color: rgba(255, 223, 0, 0.65);
 
     box-shadow:
-        0 14px 35px rgba(0, 0, 0, 0.35);
+        0 18px 45px rgba(0, 0, 0, 0.55),
+        0 0 25px rgba(255, 223, 0, 0.15),
+        inset 0 0 25px rgba(80, 130, 255, 0.18);
 }
 
 .botao-github {
