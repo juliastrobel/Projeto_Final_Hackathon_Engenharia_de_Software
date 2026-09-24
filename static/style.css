@@ -22,6 +22,34 @@ body {
     padding-top: 80px;
 }
 
+.botao-github {
+   border: none;
+    border-radius: 30px;
+    background-color: #f5c518;
+    color: #101555;
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
+    font-size: 20px;
+
+    cursor: pointer;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.botao-github:hover {
+    background-color: #ffdf00;
+    transform: translateY(-1px);
+}
+
+.botao-github svg {
+    width: 24px;
+    height: 24px;
+    display: block;
+    flex-shrink: 0;
+}
+
 /* ========================================
    LISTA - COMMITS
 ======================================== */
