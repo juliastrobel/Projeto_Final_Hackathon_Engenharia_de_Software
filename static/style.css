@@ -512,7 +512,7 @@ h1 {
     padding: 12px 16px;
 
     border-radius: 28px;
-    background-color: #ffdf00;
+    background-color: #f5c518;
     color: #101555;
 
     text-align: center;
@@ -527,8 +527,8 @@ h1 {
 }
 
 .botao-home:hover {
-    background-color: #f5c518;
-    transform: translateY(-2px);
+    background-color: #ffdf00;
+    transform: translateY(-1px);
 }
 
 .icone-home svg {
