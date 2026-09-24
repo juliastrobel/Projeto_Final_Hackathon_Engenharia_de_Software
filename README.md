@@ -1,6 +1,6 @@
 ![HACKATHON](./static/email.png)
 
-# Hackathon IFPR Pinhais — Sistema de Apoio
+# Hackathon IFPR Pinhais — Projeto Final Eng. Software
 
 Sistema de apoio ao 1º Hackathon do curso de Ciência da Computação do IFPR Campus Pinhais, desenvolvido como projeto integrador da disciplina **Engenharia de Software I**.
 
