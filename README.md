@@ -39,8 +39,8 @@ O sistema cobre todo o ciclo do evento: inscrição de equipes, verificação au
 
 ```bash
 # clonar o repositório
-git clone <url-do-repositorio>
-cd <pasta-do-projeto>
+git clone https://github.com/juliastrobel/Projeto_Final_Hackathon_Engenharia_de_Software.git
+cd Projeto_Final_Hackathon_Engenharia_de_Software
 
 # criar e ativar o ambiente virtual
 python3 -m venv venv
