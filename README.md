@@ -36,8 +36,8 @@ Acesse `http://localhost:8000` no navegador.
 
 ## Equipe
 
-- **Backend, banco de dados e infraestrutura**: Isaque Cortina Pires
-- **Frontend e identidade visual**: Julia Pinheiro Strobel
+- **regra de negócio, APIs, banco de dados e servidor.**: Isaque Cortina Pires
+- **design visual, telas, navegação e consumo das APIs**: Julia Pinheiro Strobel
 
 ---
 
