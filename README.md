@@ -1,6 +1,7 @@
 [![LOGO](./static/email.png)](https://hackathon-ifpr.up.railway.app/)
 
-# [Hackathon IFPR Pinhais — Projeto Final Eng. Software](https://hackathon-ifpr.up.railway.app/)
+# Hackathon IFPR Pinhais
+## [Projeto Final Eng. Software](https://hackathon-ifpr.up.railway.app/)
 
 Sistema de apoio ao 1º Hackathon do curso de Ciência da Computação do IFPR Campus Pinhais, desenvolvido como projeto integrador da disciplina **Engenharia de Software I**.
 
