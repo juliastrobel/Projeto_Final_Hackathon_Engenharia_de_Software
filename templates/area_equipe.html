@@ -30,12 +30,6 @@
             ({{ team.leader_email }})
         </p>
 
-        <a href="/equipe/logout"
-           class="botao-inscrever"
-           style="display:inline-block; width:auto; text-decoration:none;">
-            Sair
-        </a>
-
         {% if team.github_username %}
 
             <div class="separador">
@@ -198,6 +192,11 @@
             </div>
 
         {% endif %}
+                <a href="/equipe/logout"
+           class="botao-inscrever"
+           style="display:inline-block; width:auto; text-decoration:none;">
+            Sair
+        </a>
 
     </main>
 
