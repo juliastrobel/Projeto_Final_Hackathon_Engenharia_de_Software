@@ -65,5 +65,6 @@ CREATE TABLE IF NOT EXISTS pendentes (
     leader_email TEXT NOT NULL,
     member_names TEXT NOT NULL,
     verify_token TEXT UNIQUE NOT NULL,
+    email_verified INTEGER DEFAULT 0,
     created_at TEXT NOT NULL
 );
