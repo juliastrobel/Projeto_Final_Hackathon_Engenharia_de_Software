@@ -207,7 +207,7 @@ html {
     right: 0;
 
     width: 100%;
-    height: clamp(70px, 5vw, 75px);
+    height: clamp(72px, 6vw, 88px);
 
     display: flex;
     flex-direction: row;
@@ -254,7 +254,7 @@ html {
     color: #F5C518;
 
     font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
-    font-size: clamp(33px, 4vw, 42px);
+    font-size: clamp(42px, 5vw, 56px);
     font-weight: 700;
     letter-spacing: -3px;
     line-height: 1;
