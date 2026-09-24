@@ -814,7 +814,7 @@ h1 {
     margin: 35px auto 0;
     padding: 13px 28px;
 
-    background-color: #ffdf00;
+    background-color: #f5c518;
     color: #101555;
     border-radius: 30px;
 
@@ -827,8 +827,8 @@ h1 {
 }
 
 .pagina-analise .botao-inscrever:hover {
-    background-color: #f5c518;
-    transform: translateY(-2px);
+    background-color: #ffdf00;
+    transform: translateY(-1px);
 }
 
 
