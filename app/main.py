@@ -179,6 +179,7 @@ def enviar_email_verificacao(email: str, token: str):
     sender_email = os.getenv("BREVO_SENDER_EMAIL")
 
     link = f"{BASE_URL}/verify?token={token}"
+    logo_url = f"{BASE_URL}/static/logo_hackathon_amarela.png"
 
     response = httpx.post(
         "https://api.brevo.com/v3/smtp/email",
@@ -199,17 +200,57 @@ def enviar_email_verificacao(email: str, token: str):
             ],
             "subject": "Confirme seu email - Hackathon",
             "htmlContent": f"""
-                <p>Confirme sua inscrição clicando no link abaixo:</p>
+                <div style="
+                    font-family: Arial, sans-serif;
+                    max-width: 600px;
+                    margin: 0 auto;
+                    padding: 30px 20px;
+                    text-align: center;
+                ">
 
-                <p>
-                    <a href="{link}">
-                        Confirmar inscrição no Hackathon IFPR 2026
-                    </a>
-                </p>
+                    <img
+                        src="{logo_url}"
+                        alt="Hackathon IFPR"
+                        style="
+                            width: 260px;
+                            max-width: 100%;
+                            height: auto;
+                            margin-bottom: 30px;
+                        "
+                    >
 
-                <p>
-                    Se não foi você que fez essa inscrição, favor ignorar este e-mail.
-                </p>
+                    <h2>
+                        Confirme seu e-mail
+                    </h2>
+
+                    <p>
+                        Confirme sua inscrição no Hackathon IFPR
+                        clicando no botão abaixo:
+                    </p>
+
+                    <p style="margin: 30px 0;">
+                        <a
+                            href="{link}"
+                            style="
+                                display: inline-block;
+                                background-color: #111;
+                                color: #fff;
+                                padding: 14px 24px;
+                                text-decoration: none;
+                                border-radius: 8px;
+                                font-weight: bold;
+                            "
+                        >
+                            Confirmar inscrição
+                        </a>
+                    </p>
+
+                    <p style="font-size: 14px; color: #666;">
+                        Se você não foi responsável por esta inscrição,
+                        pode ignorar este e-mail.
+                    </p>
+
+                </div>
             """,
         },
         timeout=30,
