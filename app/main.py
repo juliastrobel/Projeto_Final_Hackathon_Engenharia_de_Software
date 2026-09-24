@@ -179,7 +179,7 @@ def enviar_email_verificacao(email: str, token: str):
     sender_email = os.getenv("BREVO_SENDER_EMAIL")
 
     link = f"{BASE_URL}/verify?token={token}"
-    logo_url = f"{BASE_URL}/static/logo_hackathon_amarela.png"
+    logo_url = f"{BASE_URL}/static/email.png"
 
     response = httpx.post(
         "https://api.brevo.com/v3/smtp/email",
