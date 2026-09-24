@@ -34,7 +34,7 @@ body {
 
     width: fit-content;
     max-width: 80%;
-    margin: 0px auto auto 0px;
+    margin: 0px auto 0px auto;
 }
 
 .gif-hackathon img {
