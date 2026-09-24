@@ -64,7 +64,6 @@ templates = Jinja2Templates(directory="templates")
 async def form_inscricao(request: Request):
     return templates.TemplateResponse(request, "inscricao.html", {})
 
-
 @app.post("/inscricao")
 async def receber_inscricao(
     request: Request,
@@ -144,36 +143,36 @@ async def receber_inscricao(
         )
 
     verify_token = secrets.token_urlsafe(32)
-    
+
     cur.execute(
-    """
-    INSERT INTO pendentes
-    (team_name, leader_name, leader_email, member_names, verify_token, created_at)
-    VALUES (?, ?, ?, ?, ?, ?)
-    """,
-    (
-        team_name,
-        leader_name,
-        leader_email,
-        json.dumps(nomes_validos, ensure_ascii=False),
-        verify_token,
-        datetime.utcnow().isoformat(),
-    ),
-)
+        """
+        INSERT INTO pendentes
+        (team_name, leader_name, leader_email, member_names, verify_token, created_at)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """,
+        (
+            team_name,
+            leader_name,
+            leader_email,
+            json.dumps(nomes_validos, ensure_ascii=False),
+            verify_token,
+            datetime.utcnow().isoformat(),
+        ),
+    )
 
-conn.commit()
-conn.close()
+    conn.commit()
+    conn.close()
 
-enviar_email_verificacao(leader_email, verify_token)
+    enviar_email_verificacao(leader_email, verify_token)
 
-return templates.TemplateResponse(
-    request,
-    "verificacao.html",
-    {
-        "team_name": team_name,
-        "leader_email": leader_email,
-    },
-)
+    return templates.TemplateResponse(
+        request,
+        "verificacao.html",
+        {
+            "team_name": team_name,
+            "leader_email": leader_email,
+        },
+    )
 
 def enviar_email_verificacao(email: str, token: str):
     api_key = os.getenv("BREVO_API_KEY")
