@@ -23,6 +23,52 @@ body {
 }
 
 /* ========================================
+   LISTA - COMMITS
+======================================== */
+
+.lista-suspeitas {
+    margin: 20px 0;
+    border: 1px solid rgba(255, 223, 0, 0.35);
+    border-radius: 10px;
+    background: rgba(255, 223, 0, 0.05);
+    overflow: hidden;
+}
+
+.lista-suspeitas summary {
+    cursor: pointer;
+    padding: 14px 18px;
+    font-weight: bold;
+    color: #ffdf00;
+    list-style: none;
+    user-select: none;
+}
+
+.lista-suspeitas summary::-webkit-details-marker {
+    display: none;
+}
+
+.lista-suspeitas summary::after {
+    content: "▼";
+    float: right;
+    font-size: 12px;
+    transition: transform 0.2s ease;
+}
+
+.lista-suspeitas[open] summary::after {
+    transform: rotate(180deg);
+}
+
+.lista-suspeitas ul {
+    margin: 0;
+    padding: 0 18px 18px 40px;
+}
+
+.lista-suspeitas li {
+    margin: 8px 0;
+    line-height: 1.5;
+}
+
+/* ========================================
    SCROLLBAR CUSTOMIZADA
 ======================================== */
 
