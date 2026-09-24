@@ -166,14 +166,14 @@ conn.close()
 
 enviar_email_verificacao(leader_email, verify_token)
 
-    return templates.TemplateResponse(
-        request,
-        "verificacao.html",
-        {
-            "team_name": team_name,
-            "leader_email": leader_email,
-        },
-    )
+return templates.TemplateResponse(
+    request,
+    "verificacao.html",
+    {
+        "team_name": team_name,
+        "leader_email": leader_email,
+    },
+)
 
 def enviar_email_verificacao(email: str, token: str):
     api_key = os.getenv("BREVO_API_KEY")
