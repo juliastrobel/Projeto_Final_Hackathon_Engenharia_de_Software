@@ -30,38 +30,33 @@ body {
     display: block;
     width: 300px;
     max-width: 80%;
-    margin: 0px;
+    margin: 35px auto;
 
-    border-radius: 6px; /* cantos mais retos = mais "terminal", menos "app bonitinho" */
-    outline: 1px solid rgba(80, 250, 140, 0.25);
+    border-radius: 16px;
+    outline: 1px solid rgba(255, 255, 255, 0.08);
     outline-offset: -1px;
 
     box-shadow: 
-        0 0 0 1px rgba(0, 0, 0, 0.4),
-        0 8px 24px rgba(0, 0, 0, 0.35),
-        0 0 18px rgba(80, 250, 140, 0.08); /* glow verde bem fraco, quase imperceptível */
+        0 4px 12px rgba(0, 0, 0, 0.15),
+        0 12px 32px rgba(0, 0, 0, 0.12);
 
-    filter: saturate(0.92) contrast(1.03);
+    filter: saturate(0.95);
 
     transition: 
-        transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-        box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1),
-        outline-color 0.4s ease,
+        transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
         filter 0.3s ease;
 
-    position: relative;
+    will-change: transform;
 }
 
 .gif-hackathon:hover {
-    transform: translateY(-4px);
-    filter: saturate(1) contrast(1.05);
-
-    outline-color: rgba(80, 250, 140, 0.5);
+    transform: translateY(-6px) scale(1.015);
+    filter: saturate(1.05);
 
     box-shadow: 
-        0 0 0 1px rgba(0, 0, 0, 0.4),
-        0 14px 32px rgba(0, 0, 0, 0.4),
-        0 0 28px rgba(80, 250, 140, 0.18);
+        0 8px 20px rgba(0, 0, 0, 0.2),
+        0 24px 48px rgba(0, 0, 0, 0.18);
 }
 
 .botao-github {
