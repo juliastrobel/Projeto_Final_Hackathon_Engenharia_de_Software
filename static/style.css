@@ -30,11 +30,11 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 2px;
 
     width: fit-content;
     max-width: 80%;
-    margin: 35px auto;
+    margin: 0px auto auto 0px;
 }
 
 .gif-hackathon img {
@@ -46,10 +46,10 @@ body {
 
 .gif-hackathon::before,
 .gif-hackathon::after {
-    font-family: 'Courier New', monospace;
-    font-size: 48px;
+       font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
+    font-size: 100px;
     font-weight: bold;
-    color: rgba(80, 250, 140, 0.6);
+    color: #f5c518;
     line-height: 1;
 }
 
