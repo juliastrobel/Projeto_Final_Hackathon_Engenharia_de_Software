@@ -13,21 +13,6 @@ from datetime import timedelta
 from zoneinfo import ZoneInfo
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-scheduler = AsyncIOScheduler(timezone=BRASILIA)
-
-def agendar_congelamento():
-    agora = datetime.now(BRASILIA)
-
-    if agora >= EVENT_END:
-        # o prazo já passou — congela imediatamente (recuperação pós-reinício)
-        scheduler.add_job(congelar_todas_as_equipes)
-    else:
-        scheduler.add_job(congelar_todas_as_equipes, "date", run_date=EVENT_END)
-
-    scheduler.start()
-
-agendar_congelamento()
-
 BRASILIA = ZoneInfo("America/Sao_Paulo")
 
 load_dotenv()
@@ -45,6 +30,21 @@ EVENT_START = datetime.fromisoformat(
 EVENT_END = datetime.fromisoformat(
     os.getenv("EVENT_END")
 ).replace(tzinfo=BRASILIA)
+
+scheduler = AsyncIOScheduler(timezone=BRASILIA)
+
+def agendar_congelamento():
+    agora = datetime.now(BRASILIA)
+
+    if agora >= EVENT_END:
+        # o prazo já passou — congela imediatamente (recuperação pós-reinício)
+        scheduler.add_job(congelar_todas_as_equipes)
+    else:
+        scheduler.add_job(congelar_todas_as_equipes, "date", run_date=EVENT_END)
+
+    scheduler.start()
+
+agendar_congelamento()
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
