@@ -32,19 +32,21 @@ body {
     max-width: 80%;
     margin: 35px auto;
 
-    border-radius: 16px;
-    outline: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px; /* um pouco mais reto que 16px, menos "app fofo" */
+    outline: 1px solid rgba(80, 250, 140, 0.15);
     outline-offset: -1px;
 
     box-shadow: 
-        0 4px 12px rgba(0, 0, 0, 0.15),
-        0 12px 32px rgba(0, 0, 0, 0.12);
+        0 4px 12px rgba(0, 0, 0, 0.25),
+        0 12px 32px rgba(0, 0, 0, 0.2),
+        0 0 16px rgba(80, 250, 140, 0.06); /* glow verde bem discreto */
 
-    filter: saturate(0.95);
+    filter: saturate(0.9) contrast(1.02);
 
     transition: 
         transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
         box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+        outline-color 0.4s ease,
         filter 0.3s ease;
 
     will-change: transform;
@@ -52,11 +54,14 @@ body {
 
 .gif-hackathon:hover {
     transform: translateY(-6px) scale(1.015);
-    filter: saturate(1.05);
+    filter: saturate(1) contrast(1.04);
+
+    outline-color: rgba(80, 250, 140, 0.35);
 
     box-shadow: 
-        0 8px 20px rgba(0, 0, 0, 0.2),
-        0 24px 48px rgba(0, 0, 0, 0.18);
+        0 8px 20px rgba(0, 0, 0, 0.3),
+        0 24px 48px rgba(0, 0, 0, 0.25),
+        0 0 26px rgba(80, 250, 140, 0.14);
 }
 
 .botao-github {
