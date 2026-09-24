@@ -11,7 +11,22 @@ from fastapi.staticfiles import StaticFiles
 from datetime import datetime
 from datetime import timedelta
 from zoneinfo import ZoneInfo
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
+scheduler = AsyncIOScheduler(timezone=BRASILIA)
+
+def agendar_congelamento():
+    agora = datetime.now(BRASILIA)
+
+    if agora >= EVENT_END:
+        # o prazo já passou — congela imediatamente (recuperação pós-reinício)
+        scheduler.add_job(congelar_todas_as_equipes)
+    else:
+        scheduler.add_job(congelar_todas_as_equipes, "date", run_date=EVENT_END)
+
+    scheduler.start()
+
+agendar_congelamento()
 
 BRASILIA = ZoneInfo("America/Sao_Paulo")
 
@@ -947,7 +962,7 @@ async def analisar_e_salvar(team_id: int):
     conn = get_db()
     cur = conn.cursor()
     cur.execute(
-        "SELECT github_username, team_name FROM teams WHERE id = ?",
+        "SELECT github_username, team_name, frozen_sha FROM teams WHERE id = ?",
         (team_id,),
     )
     row = cur.fetchone()
@@ -959,6 +974,11 @@ async def analisar_e_salvar(team_id: int):
     username = row["github_username"]
     repo_full_name = f"{username}/hackathon-ifpr"
     headers = {"Authorization": f"Bearer {GITHUB_PAT}"} if GITHUB_PAT else {}
+
+    params_commits = {"per_page": 100}
+    if row["frozen_sha"]:
+        params_commits["sha"] = row["frozen_sha"]  # ponto de partida = commit congelado
+
 
     async with httpx.AsyncClient() as client:
         repo_response = await client.get(
@@ -1351,3 +1371,64 @@ CRONOGRAMA_MARCOS = [
     os.getenv("AVALIACAO_INICIO"),
     os.getenv("RESULTADOS_DATA"),
 ]
+
+async def congelar_equipe(team_id: int):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT github_username, frozen_sha FROM teams WHERE id = ?",
+        (team_id,),
+    )
+    row = cur.fetchone()
+    conn.close()
+
+    if not row or not row["github_username"] or row["frozen_sha"]:
+        return  # sem GitHub conectado, ou já congelada antes
+
+    username = row["github_username"]
+    repo_full_name = f"{username}/hackathon-ifpr"
+    headers = {"Authorization": f"Bearer {GITHUB_PAT}"} if GITHUB_PAT else {}
+
+    async with httpx.AsyncClient() as client:
+        commits_response = await client.get(
+            f"https://api.github.com/repos/{repo_full_name}/commits",
+            params={"per_page": 100},
+            headers=headers,
+        )
+
+        if commits_response.status_code != 200:
+            return
+
+        commits_data = commits_response.json()
+
+    sha_valido = None
+    for c in commits_data:
+        data_commit = datetime.fromisoformat(
+            c["commit"]["author"]["date"].replace("Z", "+00:00")
+        ).astimezone(BRASILIA)
+
+        if data_commit <= EVENT_END:
+            sha_valido = c["sha"]
+            break  # a API já retorna do mais recente para o mais antigo
+
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "UPDATE teams SET frozen_sha = ?, frozen_at = ? WHERE id = ?",
+        (sha_valido, datetime.utcnow().isoformat(), team_id),
+    )
+    conn.commit()
+    conn.close()
+
+
+async def congelar_todas_as_equipes():
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT id FROM teams WHERE leader_email_verified = 1 AND github_username IS NOT NULL AND frozen_sha IS NULL"
+    )
+    equipes = cur.fetchall()
+    conn.close()
+
+    for e in equipes:
+        await congelar_equipe(e["id"])
