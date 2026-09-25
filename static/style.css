@@ -22,6 +22,20 @@ body {
     padding-top: 80px;
 }
 
+p a {
+   text-decoration: none;
+   color: #b9d9f5;
+}
+
+
+p {
+   text-align: center;
+    color: white;
+    font-size: 24px;
+    font-weight: normal;
+    white-space: nowrap;
+}
+
 /* ========================================
    BOTÃO GITHUB (ÁREA DA EQUIPE)
 ======================================== */
