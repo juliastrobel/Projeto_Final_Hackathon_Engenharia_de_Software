@@ -23,6 +23,80 @@ body {
 }
 
 /* ========================================
+   BOTÃO GITHUB (ÁREA DA EQUIPE)
+======================================== */
+
+.botao-github {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    width: fit-content;
+    margin: 15px auto 25px;
+    padding: 12px 24px;
+
+    border: 2px solid #b9d9f5;
+    border-radius: 25px;
+    background-color: transparent;
+
+    color: white;
+    text-decoration: none;
+
+    font-family: Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.botao-github:hover {
+    background-color: #b9d9f5;
+    color: #101555;
+}
+
+.botao-github svg {
+    flex-shrink: 0;
+}
+
+
+/* ========================================
+   LISTA DE INTEGRANTES / CONTRIBUIDORES
+======================================== */
+
+.lista-integrantes {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    margin-bottom: 10px;
+}
+
+.integrante-github {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 14px 18px;
+
+    border: 2px solid #b9d9f5;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.integrante-github strong {
+    color: white;
+    font-size: 16px;
+}
+
+.contribuicoes {
+    color: #ffdf00;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* ========================================
    COUNTDOWN TIMER
 ======================================== */
 
