@@ -1194,6 +1194,80 @@ async def vincular_membros(
     conn = get_db()
     cur = conn.cursor()
 
+    cur.execute("SELECT * FROM teams WHERE id = ?", (team_id,))
+    team = cur.fetchone()
+
+    if not team:
+        conn.close()
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": "Equipe não encontrada."},
+        )
+
+    equipe_logada = get_equipe_logada(request)
+    acesso_por_sessao = equipe_logada is not None and equipe_logada["id"] == team_id
+
+    acesso_por_token = False
+    if token:
+        acesso_por_token = secrets.compare_digest(team["access_token"], token)
+
+    if not acesso_por_sessao and not acesso_por_token:
+        conn.close()
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {"mensagem": "Você não tem permissão para alterar esta equipe."},
+        )
+
+    cur.execute("SELECT id FROM team_members WHERE team_id = ?", (team_id,))
+    membros = cur.fetchall()
+
+    valores_enviados = []
+    for membro in membros:
+        campo = f"github_username_{membro['id']}"
+        valor = form.get(campo)
+        if valor:
+            valores_enviados.append(valor.strip())
+
+    if len(valores_enviados) != len(set(valores_enviados)):
+        conn.close()
+        return templates.TemplateResponse(
+            request, "erro.html",
+            {
+                "mensagem": "Você vinculou o mesmo GitHub a mais de um integrante. "
+                            "Cada integrante deve ter um GitHub diferente.",
+                "link_voltar": f"/equipe/{team_id}",
+            },
+        )
+
+    for membro in membros:
+        campo = f"github_username_{membro['id']}"
+        valor = form.get(campo)
+        if valor:
+            cur.execute(
+                "UPDATE team_members SET github_username = ? WHERE id = ?",
+                (valor.strip(), membro["id"]),
+            )
+
+    conn.commit()
+    conn.close()
+
+    if token:
+        return RedirectResponse(url=f"/equipe/{team_id}?token={token}", status_code=303)
+
+    return RedirectResponse(url=f"/equipe/{team_id}", status_code=303)
+
+"""
+@app.post("/equipe/{team_id}/vincular-membros")
+async def vincular_membros(
+    team_id: int,
+    request: Request,
+    token: str | None = Form(None),
+):
+    form = await request.form()
+
+    conn = get_db()
+    cur = conn.cursor()
+
     cur.execute(
         "SELECT * FROM teams WHERE id = ?",
         (team_id,),
@@ -1280,6 +1354,7 @@ async def vincular_membros(
         url=f"/equipe/{team_id}",
         status_code=303,
     )
+"""
 
 @app.post("/jurado/nota/{team_id}")
 async def registrar_nota(team_id: int, request: Request, nota: str = Form(...)):
