@@ -623,6 +623,13 @@ async def jurado_login_form(request: Request):
 
 @app.post("/jurado/login")
 async def jurado_login_enviar(request: Request, email: str = Form(...)):
+    email = email.strip()
+
+    if not email:
+        return templates.TemplateResponse(
+            request, "jurado_login.html",
+            {"erro": "Digite um e-mail."},
+        )
     conn = get_db()
     cur = conn.cursor()
     cur.execute("SELECT id, name FROM judges WHERE email = ?", (email,))
