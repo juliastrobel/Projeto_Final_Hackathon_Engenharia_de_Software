@@ -8,119 +8,126 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-	<aside class="menu-lateral">
-
-    <div class="hamburguer">
-        <a href="/">
-            <img src="/static/logo-hackathon.png"
-                 alt="Hackathon IFPR Pinhais"
-                 class="logo-hackathon">
-        </a>
-    </div>
-
-</aside>
-    <main class="pagina-analise">
-        <h1>Análise: {{ equipe }}</h1>
-
-        <p class="repo-analisado">
-            Repositório:
-            <a href="https://github.com/{{ repositorio }}" target="_blank">
-                {{ repositorio }}
+    <aside class="menu-lateral">
+        <div class="hamburguer">
+            <a href="/">
+                <img src="/static/logo-hackathon.png"
+                     alt="Hackathon IFPR Pinhais"
+                     class="logo-hackathon">
             </a>
-        </p>
-
-        {% if veredito == "ok" %}
-        <div class="badge-veredito badge-ok">
-            ✅ Dentro da janela do evento
         </div>
-        {% else %}
-        <div class="badge-veredito badge-suspeito">
-            ⚠️ Suspeito
+    </aside>
+
+    <main class="pagina-inscricao">
+        <h1>Análise: {{ equipe }}</h1>
+        <p class="subtitulo">Hackathon IFPR Pinhais</p>
+
+        <div class="formulario-inscricao">
+
+            <p class="repo-analisado">
+                Repositório:
+                <a href="https://github.com/{{ repositorio }}" target="_blank">
+                    {{ repositorio }}
+                </a>
+            </p>
+
+            {% if veredito == "ok" %}
+            <div class="badge-veredito badge-ok">
+                ✅ Dentro da janela do evento
+            </div>
+            {% else %}
+            <div class="badge-veredito badge-suspeito">
+                ⚠️ Suspeito
+            </div>
+            {% endif %}
+
+            <p style="text-align:center; color:#b9d9f5;">
+                Criado em: {{ criado_em.strftime("%d/%m/%Y às %H:%M") }}
+            </p>
+
+            {% if suspeitas %}
+            <details class="lista-suspeitas">
+                <summary>
+                    ⚠️ {{ suspeitas|length }}
+                    {% if suspeitas|length == 1 %}
+                        ponto de atenção encontrado
+                    {% else %}
+                        pontos de atenção encontrados
+                    {% endif %}
+                </summary>
+                <ul>
+                    {% for s in suspeitas %}
+                    <li>{{ s }}</li>
+                    {% endfor %}
+                </ul>
+            </details>
+            {% endif %}
+
+            <div class="separador">
+                <span>Commits ({{ commits|length }})</span>
+            </div>
+
+            <table class="tabela-commits">
+                <thead>
+                    <tr>
+                        <th>SHA</th>
+                        <th>Autor</th>
+                        <th>Data</th>
+                        <th>Mensagem</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in commits %}
+                    <tr class="{{ 'linha-suspeita' if c.fora_da_janela else '' }}">
+                        <td><code>{{ c.sha }}</code></td>
+                        <td>{{ c.autor }}</td>
+                        <td>{{ c.data }}</td>
+                        <td>{{ c.mensagem }}</td>
+                        <td>{{ "⚠️" if c.fora_da_janela else "✅" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <a href="{{ link_voltar }}" class="botao-inscrever">Voltar</a>
         </div>
-        {% endif %}
-
-        <p>Criado em: {{ criado_em.strftime("%d/%m/%Y às %H:%M") }}</p>
-
-		{% if suspeitas %}
-<details class="lista-suspeitas">
-    <summary>
-        ⚠️ {{ suspeitas|length }}
-        {% if suspeitas|length == 1 %}
-            ponto de atenção encontrado
-        {% else %}
-            pontos de atenção encontrados
-        {% endif %}
-    </summary>
-
-    <ul>
-        {% for s in suspeitas %}
-        <li>{{ s }}</li>
-        {% endfor %}
-    </ul>
-</details>
-{% endif %}
-		
-
-        <h3>Commits ({{ commits|length }})</h3>
-        <table class="tabela-commits">
-            <thead>
-                <tr>
-                    <th>SHA</th>
-                    <th>Autor</th>
-                    <th>Data</th>
-                    <th>Mensagem</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for c in commits %}
-                <tr class="{{ 'linha-suspeita' if c.fora_da_janela else '' }}">
-                    <td><code>{{ c.sha }}</code></td>
-                    <td>{{ c.autor }}</td>
-                    <td>{{ c.data }}</td>
-                    <td>{{ c.mensagem }}</td>
-                    <td>{{ "⚠️" if c.fora_da_janela else "✅" }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        <a href="{{ link_voltar }}" class="botao-inscrever">Voltar</a>
     </main>
-    
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-<script>
-    const datas = {{ datas_commits | tojson }};
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script>
+        const datas = {{ datas_commits | tojson }};
 
-    const ctx = document.getElementById('graficoCommits');
-    new Chart(ctx, {
-        type: 'scatter',
-        data: {
-            datasets: [{
-                label: 'Commits ao longo do tempo',
-                data: datas.map((d, i) => ({ x: new Date(d), y: i + 1 })),
-                backgroundColor: '#ffdf00',
-            }]
-        },
-        options: {
-            scales: {
-                x: {
-                    type: 'time',
-                    time: { unit: 'day' },
-                    ticks: { color: 'white' },
-                    grid: { color: 'rgba(255,255,255,0.1)' }
+        const ctx = document.getElementById('graficoCommits');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Commits ao longo do tempo',
+                        data: datas.map((d, i) => ({ x: new Date(d), y: i + 1 })),
+                        backgroundColor: '#ffdf00',
+                    }]
                 },
-                y: {
-                    ticks: { color: 'white' },
-                    grid: { color: 'rgba(255,255,255,0.1)' }
+                options: {
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: { unit: 'day' },
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        y: {
+                            ticks: { color: 'white' },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        }
+                    },
+                    plugins: {
+                        legend: { labels: { color: 'white' } }
+                    }
                 }
-            },
-            plugins: {
-                legend: { labels: { color: 'white' } }
-            }
+            });
         }
-    });
-</script>
+    </script>
 </body>
 </html>
