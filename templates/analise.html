@@ -24,12 +24,18 @@
 
         <div class="formulario-inscricao">
 
-            <p class="repo-analisado">
-                Repositório:
-                <a href="https://github.com/{{ repositorio }}" target="_blank">
-                    {{ repositorio }}
-                </a>
-            </p>
+			<p class="repo-analisado">
+    Repositório:
+    {% if frozen_sha %}
+        <a href="https://github.com/{{ repositorio }}/tree/{{ frozen_sha }}" target="_blank" rel="noopener noreferrer">
+            {{ repositorio }} (versão congelada)
+        </a>
+    {% else %}
+        <a href="https://github.com/{{ repositorio }}" target="_blank" rel="noopener noreferrer">
+            {{ repositorio }}
+        </a>
+    {% endif %}
+</p>
 
             {% if veredito == "ok" %}
             <div class="badge-veredito badge-ok">
