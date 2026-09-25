@@ -23,6 +23,43 @@ body {
 }
 
 /* ========================================
+   COUNTDOWN TIMER
+======================================== */
+
+.countdown-container {
+    margin: 20px auto 30px;
+    text-align: center;
+}
+
+.countdown-label {
+    color: #b9d9f5;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.countdown-timer {
+    display: inline-block;
+    padding: 12px 24px;
+
+    border: 2px solid #ffdf00;
+    border-radius: 20px;
+    background-color: rgba(255, 223, 0, 0.05);
+
+    color: #ffdf00;
+    font-family: "DejaVu Sans Mono", "JetBrains Mono", Consolas, monospace;
+    font-size: 22px;
+    font-weight: bold;
+
+    letter-spacing: 1px;
+}
+
+.countdown-timer.countdown-encerrado {
+    border-color: #4caf50;
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #4caf50;
+}
+
+/* ========================================
    FEATURES
 ======================================== */
 
