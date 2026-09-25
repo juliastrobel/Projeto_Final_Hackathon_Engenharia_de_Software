@@ -32,7 +32,7 @@ p a {
 p {
    text-align: center;
     color: #b9d9f5;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: normal;
 }
 
@@ -115,13 +115,13 @@ p {
 ======================================== */
 
 .countdown-container {
-    margin: 20px auto 30px;
+    margin: 0px auto 0px auto;
     text-align: center;
 }
 
 .countdown-label {
     color: #b9d9f5;
-    font-size: 15px;
+    font-size: 20px;
     margin-bottom: 8px;
 }
 
