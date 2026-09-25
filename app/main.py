@@ -1030,6 +1030,20 @@ async def analisar_e_salvar(team_id: int):
             "fora_da_janela": fora_da_janela,
         })
 
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT member_name FROM team_members WHERE team_id = ? AND is_leader = 0 AND (github_username IS NULL OR github_username = '')",
+        (team_id,),
+    )
+    membros_sem_github = cur.fetchall()
+    conn.close()
+
+    for m in membros_sem_github:
+        suspeitas.append(
+            f"Integrante '{m['member_name']}' ainda não foi vinculado a um usuário do GitHub"
+        )
+
     veredito = "suspeito" if suspeitas else "ok"
     analisado_em = datetime.utcnow()
 
