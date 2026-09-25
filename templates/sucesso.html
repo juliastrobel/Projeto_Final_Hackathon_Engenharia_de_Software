@@ -4,7 +4,7 @@
 	<link rel="icon" href="/static/icon.png" type="image/png">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscrição confirmada</title>
+    <title>Inscrição confirmada!</title>
 	<link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -26,8 +26,11 @@
             <h1>Tudo certo, {{ team_name }}!</h1>
 
             <p>
-                Parabens! A sua inscrição foi confirmada e sua conta do GitHub
-                (<strong>{{ github_username }}</strong>) foi vinculada com sucesso!
+                Sua conta do GitHub
+                (<strong>{{ github_username }}</strong>) foi vinculada com sucesso!<br>
+				O repositório do projeto deve se chamar
+                <strong>hackathon-ifpr</strong> e estar
+                <strong>público</strong> na sua conta do GitH
             </p>
 			<div class="gif-hackathon">
 			<img
@@ -36,12 +39,6 @@
     class="gif-hackathon"
 >
 			</div>
-				<br><br>
-            <p>
-                Lembre-se: o repositório do projeto deve se chamar
-                <strong>hackathon-ifpr</strong> e estar
-                <strong>público</strong> na sua conta do GitHub.
-            </p>
 			<!---
             <p class="boa-sorte">
                 Boa sorte no Hackathon! 🚀
