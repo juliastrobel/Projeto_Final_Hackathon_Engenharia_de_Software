@@ -180,12 +180,12 @@ body::after {
 }
 
 body::before {
-    content: "   {";
+    content: " {";
     left: 100px;
 }
 
 body::after {
-    content: "}   ";
+    content: "} ";
     right: 100px;
 }
 
