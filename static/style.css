@@ -487,6 +487,8 @@ h1 {
 }
 
 .botao-inscrever {
+   text-align: center;
+    text-decoration: none;
     display: block;
     width: 100%;
     margin-top: 35px;
