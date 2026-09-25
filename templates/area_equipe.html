@@ -114,17 +114,16 @@
                                 <label for="github_username_{{ m.id }}">
                                     {{ m.member_name }}
                                 </label>
-
                                 <select id="github_username_{{ m.id }}"
-                                        name="github_username_{{ m.id }}">
-                                    <option value="">-- selecione o GitHub --</option>
-                                    {% for c in contributors %}
-                                        <option value="{{ c.login }}"
-                                                {% if m.github_username == c.login %}selected{% endif %}>
-                                            {{ c.login }}
-                                        </option>
-                                    {% endfor %}
-                                </select>
+        name="github_username_{{ m.id }}">
+    <option value="">-- selecione o GitHub --</option>
+    {% for c in contributors %}
+        <option value="{{ c.login }}"
+                {% if m.github_username == c.login %}selected{% endif %}>
+            {{ c.login }}
+        </option>
+    {% endfor %}
+</select>
                             </div>
                         {% endif %}
                     {% endfor %}
