@@ -26,6 +26,12 @@ body {
    FEATURES
 ======================================== */
 
+.tabela-scroll {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .gif-hackathon {
     display: flex;
     align-items: center;
