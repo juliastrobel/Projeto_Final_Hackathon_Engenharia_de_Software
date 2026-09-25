@@ -625,7 +625,8 @@ h1 {
     width: 100%;
     margin-top: 35px;
     padding: 15px;
-
+   width: fit-content;
+  margin: 35px auto;
     border: none;
     border-radius: 30px;
     background-color: #f5c518;
@@ -965,9 +966,10 @@ h1 {
 }
 
 .tabela-commits {
-    width: 100%;
+    width: auto;
     margin-top: 15px;
     border-collapse: collapse;
+   margin: auto;
 }
 
 .pagina-analise .tabela-commits {
