@@ -19,194 +19,139 @@
         </div>
     </aside>
 
-    <main class="pagina-analise">
+    <main class="pagina-inscricao">
 
         <h1>{{ team.team_name }}</h1>
-
         <p class="subtitulo">Área da equipe</p>
 
-        <p class="repo-analisado">
-            Líder: {{ team.leader_name }}
-            ({{ team.leader_email }})
-        </p>
+        <div class="formulario-inscricao">
 
-        {% if team.github_username %}
+            <p class="repo-analisado">
+                Líder: {{ team.leader_name }} ({{ team.leader_email }})
+            </p>
 
             <div class="separador">
                 <span>GitHub da equipe</span>
             </div>
 
-            <p class="repo-analisado">
-                GitHub conectado:
-                <a href="https://github.com/{{ team.github_username }}/hackathon-ifpr"
-                   target="_blank"
-                   rel="noopener noreferrer">
-                    {{ team.github_username }}/hackathon-ifpr
+            {% if team.github_username %}
+
+                <p class="repo-analisado">
+                    GitHub conectado:
+                    <a href="https://github.com/{{ team.github_username }}/hackathon-ifpr"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                        {{ team.github_username }}/hackathon-ifpr
+                    </a>
+                </p>
+
+                <a href="/analise/{{ team.id }}" class="botao-github">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         viewBox="0 0 24 24"
+                         width="20"
+                         height="20"
+                         fill="currentColor">
+                        <path d="M12.5.75C6.146.75 1 5.896 1 12.25c0 5.081 3.293 9.388 7.863 10.91.575.101.78-.247.78-.55 0-.273-.01-1.002-.015-1.967-3.199.692-3.873-1.54-3.873-1.54-.523-1.327-1.277-1.68-1.277-1.68-1.044-.714.078-.7.078-.7 1.154.08 1.762 1.184 1.762 1.184 1.026 1.758 2.688 1.25 3.344.956.104-.742.402-1.25.731-1.537-2.554-.29-5.24-1.277-5.24-5.686 0-1.256.447-2.283 1.182-3.087-.117-.29-.512-1.46.113-3.04 0 0 .966-.31 3.164 1.18a11.003 11.003 0 0 1 5.756 0c2.196-1.49 3.16-1.18 3.16-1.18.627 1.58.232 2.75.115 3.04.737.804 1.18 1.83 1.18 3.087 0 4.42-2.69 5.393-5.251 5.677.413.355.78 1.055.78 2.128 0 1.536-.014 2.774-.014 3.152 0 .306.203.657.787.542C19.709 21.634 23 17.329 23 12.25 23 5.896 17.854.75 12.5.75Z"/>
+                    </svg>
+                    Verificar dados do repositório
                 </a>
-            </p>
 
- <a href="/analise/{{ team.id }}"
-<button class="botao-github">
-    Veririficar dados do repositório
+            {% else %}
 
-    <svg xmlns="http://w3.org"
-         viewBox="0 0 24 24"
-         width="24"
-         height="24"
-         fill="currentColor">
-        <path d="M12.5.75C6.146.75 1 5.896 1 12.25c0 5.081 3.293 9.388 7.863 10.91.575.101.78-.247.78-.55 0-.273-.01-1.002-.015-1.967-3.199.692-3.873-1.54-3.873-1.54-.523-1.327-1.277-1.68-1.277-1.68-1.044-.714.078-.7.078-.7 1.154.08 1.762 1.184 1.762 1.184 1.026 1.758 2.688 1.25 3.344.956.104-.742.402-1.25.731-1.537-2.554-.29-5.24-1.277-5.24-5.686 0-1.256.447-2.283 1.182-3.087-.117-.29-.512-1.46.113-3.04 0 0 .966-.31 3.164 1.18a11.003 11.003 0 0 1 5.756 0c2.196-1.49 3.16-1.18 3.16-1.18.627 1.58.232 2.75.115 3.04.737.804 1.18 1.83 1.18 3.087 0 4.42-2.69 5.393-5.251 5.677.413.355.78 1.055.78 2.128 0 1.536-.014 2.774-.014 3.152 0 .306.203.657.787.542C19.709 21.634 23 17.329 23 12.25 23 5.896 17.854.75 12.5.75Z"/>
-    </svg>
-</button>
-     </a>
+                <p class="repo-analisado">
+                    GitHub ainda não conectado.
+                </p>
 
-        
-        {% else %}
+            {% endif %}
 
             <div class="separador">
-                <span>GitHub da equipe</span>
+                <span>Integrantes da equipe</span>
             </div>
 
-            <p class="repo-analisado">
-                GitHub ainda não conectado.
-            </p>
+            <div class="lista-integrantes">
+                {% for m in membros %}
+                    <div class="campo">
+                        <label>
+                            {% if m.is_leader %}♛{% endif %}
+                            {{ m.member_name }}
+                            {% if m.is_leader %}<small>(Líder)</small>{% endif %}
+                        </label>
 
-        {% endif %}
-
-        <div class="separador">
-            <span>Integrantes da equipe</span>
-        </div>
-
-        <div class="lista-integrantes">
-
-            {% for m in membros %}
-
-                <div class="campo">
-
-                    <label>
-                        {% if m.is_leader %}
-                            ♛
+                        {% if m.github_username %}
+                            <p class="repo-analisado">
+                                GitHub: <strong>{{ m.github_username }}</strong>
+                            </p>
+                        {% else %}
+                            <p class="repo-analisado">
+                                GitHub ainda não vinculado.
+                            </p>
                         {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
 
-                        {{ m.member_name }}
+            {% if contributors %}
 
-                        {% if m.is_leader %}
-                            <small>(Líder)</small>
-                        {% endif %}
-                    </label>
-
-                    {% if m.github_username %}
-                        <p class="repo-analisado">
-                            GitHub:
-                            <strong>{{ m.github_username }}</strong>
-                        </p>
-                    {% else %}
-                        <p class="repo-analisado">
-                            GitHub ainda não vinculado.
-                        </p>
-                    {% endif %}
-
+                <div class="separador">
+                    <span>Vincular integrantes ao GitHub</span>
                 </div>
 
-            {% endfor %}
+                <form method="post"
+                      action="/equipe/{{ team.id }}/vincular-membros">
+
+                    {% if token %}
+                        <input type="hidden" name="token" value="{{ token }}">
+                    {% endif %}
+
+                    {% for m in membros %}
+                        {% if not m.is_leader %}
+                            <div class="campo">
+                                <label for="github_username_{{ m.id }}">
+                                    {{ m.member_name }}
+                                </label>
+
+                                <select id="github_username_{{ m.id }}"
+                                        name="github_username_{{ m.id }}">
+                                    <option value="">-- selecione o GitHub --</option>
+                                    {% for c in contributors %}
+                                        <option value="{{ c.login }}"
+                                                {% if m.github_username == c.login %}selected{% endif %}>
+                                            {{ c.login }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    <button type="submit" class="botao-inscrever">
+                        Salvar vínculos
+                    </button>
+                </form>
+
+                <div class="separador">
+                    <span>Contribuidores encontrados no GitHub</span>
+                </div>
+
+                <div class="lista-integrantes">
+                    {% for c in contributors %}
+                        <div class="campo integrante-github">
+                            <strong>{{ c.login }}</strong>
+                            <span class="contribuicoes">
+                                {{ c.contributions }}
+                                {% if c.contributions == 1 %}contribuição{% else %}contribuições{% endif %}
+                            </span>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            {% endif %}
+
+            <a href="/equipe/logout" class="botao-inscrever" style="display:inline-block; width:auto; text-decoration:none;">
+                Sair
+            </a>
 
         </div>
-
-        {% if contributors %}
-
-            <div class="separador">
-                <span>Vincular integrantes aos GitHub</span>
-            </div>
-
-            <form method="post"
-                  action="/equipe/{{ team.id }}/vincular-membros"
-                  class="formulario-inscricao">
-
-                {% if token %}
-                    <input type="hidden"
-                           name="token"
-                           value="{{ token }}">
-                {% endif %}
-
-                {% for m in membros %}
-
-                    {% if not m.is_leader %}
-
-                        <div class="campo">
-
-                            <label for="github_username_{{ m.id }}">
-                                {{ m.member_name }}
-                            </label>
-
-                            <select id="github_username_{{ m.id }}"
-                                    name="github_username_{{ m.id }}">
-
-                                <option value="">
-                                    -- selecione o GitHub --
-                                </option>
-
-                                {% for c in contributors %}
-
-                                    <option value="{{ c.login }}"
-                                            {% if m.github_username == c.login %}
-                                                selected
-                                            {% endif %}>
-                                        {{ c.login }}
-                                    </option>
-
-                                {% endfor %}
-
-                            </select>
-
-                        </div>
-
-                    {% endif %}
-
-                {% endfor %}
-
-                <button type="submit" class="botao-inscrever">
-                    Salvar vínculos
-                </button>
-
-            </form>
-
-        {% endif %}
-
-    {% if contributors %}
-
-    <div class="separador">
-        <span>Contribuidores encontrados no GitHub</span>
-    </div>
-
-    <div class="lista-integrantes">
-
-        {% for c in contributors %}
-
-            <div class="campo integrante-github">
-
-                <strong>{{ c.login }}</strong>
-
-                <span class="contribuicoes">
-                    {{ c.contributions }}
-                    {% if c.contributions == 1 %}
-                        contribuição
-                    {% else %}
-                        contribuições
-                    {% endif %}
-                </span>
-
-            </div>
-
-        {% endfor %}
-
-    </div>
-
-    {% endif %}
-
-                <a href="/equipe/logout"
-           class="botao-inscrever"
-           style="display:inline-block; width:auto; text-decoration:none;">
-            Sair
-        </a>
 
     </main>
 
