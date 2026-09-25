@@ -16,16 +16,16 @@
 
     <main class="pagina-analise">
         <h1>Olá, {{ jurado.name }}</h1>
-        <p class="subtitulo">Equipes inscritas</p>
+        <p class="subtitulo">Seu último registro será a nota definitiva</p>
 
-        <form method="post" action="/jurado/atualizar-analises" style="text-align:center; margin-bottom: 20px;">
-            <button type="submit" class="botao-adicionar">🔄 Atualizar análises automáticas</button>
+        <form method="post" action="/jurado/atualizar-analises" style="text-align:center; margin-bottom: 10px;">
+            <button type="submit" class="botao-adicionar">Atualizar as análises automáticas</button>
         </form>
 
         <div style="text-align:center; margin-bottom: 20px;">
-            <a href="/jurado/dashboard" class="botao-adicionar">Todas</a>
-            <a href="/jurado/dashboard?filtro=ok" class="botao-adicionar">✅ Ok (automático)</a>
-            <a href="/jurado/dashboard?filtro=suspeito" class="botao-adicionar">⚠️ Suspeitas (automático)</a>
+            <a href="/jurado/dashboard" class="botao-adicionar">Todas as Análises</a>
+            <a href="/jurado/dashboard?filtro=ok" class="botao-adicionar">✅ Confiável</a>
+            <a href="/jurado/dashboard?filtro=suspeito" class="botao-adicionar">⚠️ Suspeitas</a>
         </div>
 
         <table class="tabela-commits">
