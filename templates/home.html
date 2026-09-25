@@ -171,8 +171,39 @@
 
 
         </section>
-
+        <div class="countdown-container">
+    <p class="countdown-label">Tempo restante até o encerramento</p>
+    <div id="countdown" class="countdown-timer">--:--:--:--</div>
+</div>
     </main>
+    <script>
+    const eventEnd = new Date("{{ event_end }}");
+
+    function atualizarCountdown() {
+        const agora = new Date();
+        const diferenca = eventEnd - agora;
+
+        const elemento = document.getElementById("countdown");
+
+        if (diferenca <= 0) {
+            elemento.textContent = "Prazo encerrado";
+            elemento.classList.add("countdown-encerrado");
+            clearInterval(intervalo);
+            return;
+        }
+
+        const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
+        const horas = Math.floor((diferenca % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutos = Math.floor((diferenca % (1000 * 60 * 60)) / (1000 * 60));
+        const segundos = Math.floor((diferenca % (1000 * 60)) / 1000);
+
+        elemento.textContent =
+            `${dias}d ${String(horas).padStart(2, "0")}h ${String(minutos).padStart(2, "0")}m ${String(segundos).padStart(2, "0")}s`;
+    }
+
+    atualizarCountdown();
+    const intervalo = setInterval(atualizarCountdown, 1000);
+</script>
 <script src="https://unpkg.com/lucide@latest"></script>
 <script>
     lucide.createIcons();
