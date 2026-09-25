@@ -1001,11 +1001,13 @@ async def analisar_e_salvar(team_id: int):
     ).astimezone(BRASILIA)
 
     suspeitas = []
+    """
     if repo_created_at < EVENT_START:
         suspeitas.append(
             f"Repositório criado em {formatar_data(repo_created_at)}, "
             f"antes do início do evento ({formatar_data(EVENT_START)})"
         )
+    """
 
     commits_resumo = []
     for c in commits_data:
