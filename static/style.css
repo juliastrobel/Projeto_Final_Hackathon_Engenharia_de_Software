@@ -24,16 +24,16 @@ body {
 
 p a {
    text-decoration: none;
-   color: #b9d9f5;
+   color: #f5c518;
+   font-weight: normal;
 }
 
 
 p {
    text-align: center;
-    color: white;
+    color: #b9d9f5;
     font-size: 24px;
     font-weight: normal;
-    white-space: nowrap;
 }
 
 /* ========================================
