@@ -1064,6 +1064,7 @@ async def analisar_e_salvar(team_id: int):
         "suspeitas": suspeitas,
         "commits": commits_resumo,
         "analisado_em": analisado_em.astimezone(BRASILIA),
+        "frozen_sha": row["frozen_sha"],
     }
 
 @app.get("/analise/{team_id}", response_class=HTMLResponse)
