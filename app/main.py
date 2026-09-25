@@ -1179,6 +1179,7 @@ async def area_equipe(
             "membros": membros,
             "contributors": contributors,
             "token": token,
+            "event_end": EVENT_END.isoformat(),
         },
     )
 
