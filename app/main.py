@@ -614,7 +614,7 @@ async def auth_callback(
 
 @app.get("/", response_class=HTMLResponse)
 async def homepage(request: Request):
-    return templates.TemplateResponse(request, "home.html", {"cronograma": CRONOGRAMA, "cronograma_marcos": CRONOGRAMA_MARCOS},"event_end": EVENT_END.isoformat(),)
+    return templates.TemplateResponse(request, "home.html", {"cronograma": CRONOGRAMA, "cronograma_marcos": CRONOGRAMA_MARCOS,"event_end": EVENT_END.isoformat()},)
 
 @app.get("/jurado/login", response_class=HTMLResponse)
 async def jurado_login_form(request: Request):
